@@ -16,14 +16,13 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.metrics.collector.ConfigCollector.CONFIG_MANAGER;
-import static com.ctrip.framework.apollo.metrics.collector.ConfigCollector.NAMESPACE_USED_TIMES;
+import static com.ctrip.framework.apollo.metrics.collector.ClientEventCollector.NAMESPACE_USED;
+import static com.ctrip.framework.apollo.metrics.collector.ClientEventCollector.NAMESPACE_USED_TIMES;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
-import com.ctrip.framework.apollo.metrics.Metrics;
 import com.ctrip.framework.apollo.metrics.MetricsConstant;
 import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
@@ -64,8 +63,9 @@ public class DefaultConfigManager implements ConfigManager {
       }
     }
 
-    Metrics.push(MetricsEvent.builder().withName(NAMESPACE_USED_TIMES)
-        .putAttachment(MetricsConstant.NAMESPACE, namespace).withTag(CONFIG_MANAGER).build());
+    MetricsEvent.builder().withName(NAMESPACE_USED_TIMES)
+        .putAttachment(MetricsConstant.NAMESPACE, namespace)
+        .withTag(NAMESPACE_USED).push();
 
     return config;
   }

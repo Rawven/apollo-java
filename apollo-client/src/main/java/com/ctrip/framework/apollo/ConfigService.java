@@ -39,7 +39,7 @@ public class ConfigService {
 
   private ConfigMonitor getMonitor() {
       if(!Metrics.isMetricsEnabled()){
-          throw new UnsupportedOperationException("Metrics is not supported");
+          throw new UnsupportedOperationException("Metrics is not enabled");
       }
         if (m_configMonitor == null) {
             synchronized (this) {
@@ -48,7 +48,6 @@ public class ConfigService {
                 }
             }
         }
-
       return m_configMonitor;
   }
   private ConfigManager getManager() {
@@ -98,7 +97,7 @@ public class ConfigService {
     return s_instance.getManager().getConfigFile(namespace, configFileFormat);
   }
 
-  public static ConfigMonitorMBean getConifgMonitor(){
+  public static ConfigMonitorMBean getConfigMonitor(){
       return s_instance.getMonitor();
   }
 

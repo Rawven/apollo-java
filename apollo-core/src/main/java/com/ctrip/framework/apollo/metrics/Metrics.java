@@ -14,7 +14,6 @@ import java.util.List;
 public abstract class Metrics {
 
   private static MetricsCollectorManager collectorManager;
-  private static Boolean isMetricsEnabled;
 
   private static void init() {
     collectorManager = new NopMetricsCollectorManager();
@@ -29,6 +28,7 @@ public abstract class Metrics {
 
   public static void push(MetricsEvent event) {
     if (collectorManager == null) {
+      //Lazy loading
       init();
     }
     for (MetricsCollector collector : collectorManager.getCollectors()) {
@@ -40,16 +40,11 @@ public abstract class Metrics {
   }
 
   public static boolean isMetricsEnabled() {
-    if (isMetricsEnabled == null) {
-      // 1. Get app.id from System Property
-      String enabled = System.getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED);
-      if (Boolean.parseBoolean(enabled)) {
-        return true;
-      }
-      enabled = Foundation.app()
-          .getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "false");
-      isMetricsEnabled = Boolean.parseBoolean(enabled);
+    String enabled = System.getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED);
+    if (enabled == null) {
+      enabled = Foundation.app().getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "false");
     }
-    return isMetricsEnabled;
+    return Boolean.parseBoolean(enabled);
   }
+
 }

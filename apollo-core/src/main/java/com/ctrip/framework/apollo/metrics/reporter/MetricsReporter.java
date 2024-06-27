@@ -11,23 +11,20 @@ import java.util.List;
  */
 public interface MetricsReporter extends Ordered {
 
-  /**
-   * 初始化方法
-   */
   void init(List<MetricsCollector> collectors);
 
   /**
-   * 用于注册Counter类型的指标
+   * used to register Counter type metrics
    */
   void registerCounterSample(CounterMetricsSample sample);
 
   /**
-   * 用于注册Gauge类型的指标
+   * used to register Gauge type metrics
    */
   void registerGaugeSample(GaugeMetricsSample<?> sample);
 
   /**
-   * 收集的指标结果
+   * result of the collect metrics
    */
   String response();
 

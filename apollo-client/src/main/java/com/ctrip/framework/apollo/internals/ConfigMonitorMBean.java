@@ -14,9 +14,13 @@ public interface ConfigMonitorMBean {
 
     int getExceptionNum();
 
-    String getNamespaceUsed();
+    String getNamespaceUsedName();
 
     String getNamespaceUsedTime();
+
+    String getNamespaceLatestUpdateTime();
+
+    String getNamespaceFirstLoadTimeSpend();
 
     String getDataWithCurrentMonitoringSystemFormat();
     //more method....

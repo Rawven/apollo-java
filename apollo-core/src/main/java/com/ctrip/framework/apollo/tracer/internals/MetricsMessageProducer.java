@@ -1,11 +1,5 @@
 package com.ctrip.framework.apollo.tracer.internals;
 
-import com.ctrip.framework.apollo.metrics.Metrics;
-import com.ctrip.framework.apollo.metrics.MetricsEvent;
-import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
-import com.ctrip.framework.apollo.tracer.spi.Transaction;
-import java.util.Objects;
-
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.APOLLO_CONFIG_EXCEPTION;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAME_VALUE_PAIRS;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.STATUS;
@@ -14,23 +8,28 @@ import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER_ERROR;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER_EVENT;
 
+import com.ctrip.framework.apollo.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
+import java.util.Objects;
+
 public class MetricsMessageProducer implements MessageProducer {
 
 
 
     @Override
     public void logError(Throwable cause) {
-        Metrics.push(MetricsEvent.builder().withName(TRACER_ERROR)
+        MetricsEvent.builder().withName(TRACER_ERROR)
             .withTag(TRACER)
             .putAttachment(THROWABLE,cause)
-            .build());
+            .push();
     }
 
     @Override
     public void logError(String message, Throwable cause) {
-        Metrics.push(MetricsEvent.builder().withName(TRACER_ERROR)
+        MetricsEvent.builder().withName(TRACER_ERROR)
             .withTag(TRACER)
-            .putAttachment(THROWABLE,cause).build());
+            .putAttachment(THROWABLE,cause).push();
     }
 
     @Override
@@ -45,10 +44,10 @@ public class MetricsMessageProducer implements MessageProducer {
     public void logEvent(String type, String name, String status,
         String nameValuePairs) {
         if(Objects.equals(type,APOLLO_CONFIG_EXCEPTION)) {
-            Metrics.push(MetricsEvent.builder().withName(TRACER_EVENT)
+            MetricsEvent.builder().withName(TRACER_EVENT)
                 .putAttachment(STATUS,status)
                 .putAttachment(NAME_VALUE_PAIRS,nameValuePairs)
-                .withTag(TRACER).build());
+                .withTag(TRACER).push();
         }
     }
 

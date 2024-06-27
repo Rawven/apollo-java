@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * @author Rawven
  */
-public class TracerCollector implements MetricsCollector {
+public class TracerEventCollector implements MetricsCollector {
 
   private final List<ApolloConfigException> exceptions = new ArrayList<>();
   private final List<String> namespace404 = new ArrayList<>();

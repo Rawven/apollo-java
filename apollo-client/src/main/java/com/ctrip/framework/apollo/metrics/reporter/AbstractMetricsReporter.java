@@ -31,7 +31,6 @@ public abstract class AbstractMetricsReporter implements MetricsReporter {
 
   @Override
   public void init(List<MetricsCollector> collectors) {
-    //...
     doInit();
     m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
     this.collectors = collectors;
@@ -41,6 +40,7 @@ public abstract class AbstractMetricsReporter implements MetricsReporter {
   protected abstract void doInit();
 
   private void initScheduleMetricsCollectSync() {
+    //collect metrics data schedule
     m_executorService = Executors.newScheduledThreadPool(1);
     m_executorService.scheduleAtFixedRate(new Runnable() {
       @Override

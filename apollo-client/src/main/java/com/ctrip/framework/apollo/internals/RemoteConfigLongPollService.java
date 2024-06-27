@@ -16,6 +16,9 @@
  */
 package com.ctrip.framework.apollo.internals;
 
+import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAMESPACE;
+import static com.ctrip.framework.apollo.metrics.MetricsConstant.TIMESTAMP;
+
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
@@ -28,14 +31,16 @@ import com.ctrip.framework.apollo.core.signature.Signature;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
+import com.ctrip.framework.apollo.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.metrics.collector.ClientEventCollector;
 import com.ctrip.framework.apollo.spi.ConfigServiceLoadBalancerClient;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
+import com.ctrip.framework.apollo.util.http.HttpClient;
 import com.ctrip.framework.apollo.util.http.HttpRequest;
 import com.ctrip.framework.apollo.util.http.HttpResponse;
-import com.ctrip.framework.apollo.util.http.HttpClient;
 import com.ctrip.framework.foundation.internals.ServiceBootstrap;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -265,6 +270,11 @@ public class RemoteConfigLongPollService {
       if (m_notifications.containsKey(namespaceNameWithPropertiesSuffix)) {
         m_notifications.put(namespaceNameWithPropertiesSuffix, notification.getNotificationId());
       }
+
+      MetricsEvent.builder().withName(ClientEventCollector.NAMESPACE_UPDATE)
+          .putAttachment(NAMESPACE, namespaceName)
+          .putAttachment(TIMESTAMP,System.currentTimeMillis())
+          .withTag(ClientEventCollector.CLIENT).push();
     }
   }
 

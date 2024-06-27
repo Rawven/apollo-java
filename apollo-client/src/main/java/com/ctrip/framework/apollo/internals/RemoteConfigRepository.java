@@ -16,6 +16,9 @@
  */
 package com.ctrip.framework.apollo.internals;
 
+import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAMESPACE;
+import static com.ctrip.framework.apollo.metrics.MetricsConstant.TIMESTAMP;
+
 import com.ctrip.framework.apollo.Apollo;
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -31,13 +34,15 @@ import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.enums.ConfigSourceType;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigStatusCodeException;
+import com.ctrip.framework.apollo.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.metrics.collector.ClientEventCollector;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
+import com.ctrip.framework.apollo.util.http.HttpClient;
 import com.ctrip.framework.apollo.util.http.HttpRequest;
 import com.ctrip.framework.apollo.util.http.HttpResponse;
-import com.ctrip.framework.apollo.util.http.HttpClient;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -111,7 +116,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   @Override
   public Properties getConfig() {
     if (m_configCache.get() == null) {
+      long start = System.currentTimeMillis();
       this.sync();
+      MetricsEvent.builder().withName(ClientEventCollector.NAMESPACE_FIRST_LOAD_SPEND).withTag(ClientEventCollector.CLIENT)
+          .putAttachment(NAMESPACE, m_namespace)
+          .putAttachment(TIMESTAMP, System.currentTimeMillis() - start).push();
     }
     return transformApolloConfigToProperties(m_configCache.get());
   }
@@ -147,6 +156,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     Transaction transaction = Tracer.newTransaction("Apollo.ConfigService", "syncRemoteConfig");
 
     try {
+
       ApolloConfig previous = m_configCache.get();
       ApolloConfig current = loadApolloConfig();
 

@@ -21,7 +21,6 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.internals.ConfigManager;
 import com.ctrip.framework.apollo.internals.ConfigMonitor;
-import com.ctrip.framework.apollo.internals.ConfigMonitorMBean;
 import com.ctrip.framework.apollo.metrics.Metrics;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigRegistry;
@@ -97,7 +96,7 @@ public class ConfigService {
     return s_instance.getManager().getConfigFile(namespace, configFileFormat);
   }
 
-  public static ConfigMonitorMBean getConfigMonitor(){
+  public static ConfigMonitor getConfigMonitor(){
       return s_instance.getMonitor();
   }
 

@@ -12,7 +12,7 @@ import javax.management.ObjectName;
 public final class JMXUtil {
 
   public static final String JMX = "JMX";
-  public static final String MBEAN_NAME = "com.ctrip.framework.apollo.metrics:type=ApolloMetrics";
+  public static final String MBEAN_NAME = "com.ctrip.framework.apollo.metrics:type=";
 
   public static ObjectName register(String name, Object mbean) {
     try {

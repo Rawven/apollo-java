@@ -19,6 +19,9 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author Rawven
+ */
 public class PrometheusMetricReporter extends AbstractMetricsReporter implements MetricsReporter {
     private static final Logger logger = LoggerFactory.getLogger(
         PrometheusMetricReporter.class);

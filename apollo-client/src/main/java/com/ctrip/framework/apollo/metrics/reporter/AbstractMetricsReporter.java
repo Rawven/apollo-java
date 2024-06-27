@@ -46,16 +46,17 @@ public abstract class AbstractMetricsReporter implements MetricsReporter {
       @Override
       public void run() {
         try {
-          log.info("Start to update metrics data job");
           updateMetricsData();
         } catch (Throwable ex) {
           //ignore
         }
       }
-    }, 1, m_configUtil.getMonitorCollectPeriod(), TimeUnit.SECONDS);
+      //need to give enough time to initialize
+    }, 5, m_configUtil.getMonitorCollectPeriod(), TimeUnit.SECONDS);
   }
 
   private void updateMetricsData() {
+    log.debug("Start to update metrics data job");
     for (MetricsCollector collector : collectors) {
       if (!collector.isSamplesUpdated()) {
         continue;

@@ -18,6 +18,7 @@ package com.ctrip.framework.apollo.internals;
 
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.TIMESTAMP;
+import static com.ctrip.framework.apollo.metrics.collector.TracerEventCollector.NAMESPACE404;
 
 import com.ctrip.framework.apollo.Apollo;
 import com.ctrip.framework.apollo.build.ApolloInjector;
@@ -78,7 +79,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private final RemoteConfigLongPollService remoteConfigLongPollService;
   private volatile AtomicReference<ApolloConfig> m_configCache;
   private final String m_namespace;
-  private final static ScheduledExecutorService m_executorService;
+  protected final static ScheduledExecutorService m_executorService;
   private final AtomicReference<ServiceDTO> m_longPollServiceDto;
   private final AtomicReference<ApolloNotificationMessages> m_remoteMessages;
   private final RateLimiter m_loadConfigRateLimiter;
@@ -271,7 +272,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
             statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
                 message);
           }
-          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException),"404",m_namespace);
+          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException),NAMESPACE404,m_namespace);
           transaction.setStatus(statusCodeException);
           exception = statusCodeException;
           if(ex.getStatusCode() == 404) {

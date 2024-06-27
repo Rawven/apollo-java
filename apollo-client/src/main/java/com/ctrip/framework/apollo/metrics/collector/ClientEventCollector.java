@@ -9,88 +9,75 @@ import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
 import com.google.common.collect.Maps;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Rawven
  */
-public class ClientEventCollector implements MetricsCollector {
+public class ClientEventCollector extends AbstractMetricsCollector implements
+    ClientEventCollectorMBean {
 
   public static final String CLIENT = "Client";
   public static final String CLIENT_ = CLIENT + "_";
-  public static final String NAMESPACE_UPDATE = CLIENT_ + "update";
+  public static final String NAMESPACE_UPDATE_TIME = CLIENT_ + "update";
   public static final String NAMESPACE_FIRST_LOAD_SPEND = CLIENT_ + "namespaceFirstLoadSpend";
-  public static final String NAMESPACE_USED = CLIENT_ + "namespaceUsed";
   public static final String NAMESPACE_USED_TIMES = CLIENT_ + "namespaceUsedTimes";
-  private final Map<String, Integer> namespaceUsed = Maps.newHashMap();
+  private final Map<String, Integer> namespaceUsedTime = Maps.newHashMap();
   private final Map<String, Long> namespaceFirstLoadSpend = Maps.newHashMap();
-  private final Map<String, String> namespaceUpdate = Maps.newHashMap();
+  private final Map<String, String> namespaceUpdateLatestTime = Maps.newHashMap();
 
+  public ClientEventCollector() {
+    super(CLIENT);
+  }
 
+  @Override
   public String getAllNamespaceUsedTimes() {
-    return namespaceUsed.toString();
-  }
-
-  public String getNamespaceLatestUpdate() {
-    return namespaceUpdate.toString();
+    return namespaceUsedTime.toString();
   }
 
   @Override
-  public boolean isSupport(String tag) {
-    return CLIENT.equals(tag);
+  public String getNamespaceLatestUpdateTime() {
+    return namespaceUpdateLatestTime.toString();
   }
 
   @Override
-  public void collect(MetricsEvent event) {
+  public void collect0(MetricsEvent event) {
+    String namespace;
+    long time;
     switch (event.getName()) {
       case NAMESPACE_USED_TIMES:
-        String namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
-        namespaceUsed.put(namespace, namespaceUsed.getOrDefault(namespace, 0) + 1);
+        namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
+        namespaceUsedTime.put(namespace, namespaceUsedTime.getOrDefault(namespace, 0) + 1);
         break;
-      case NAMESPACE_UPDATE:
-        remoteUpdate(event);
+      case NAMESPACE_UPDATE_TIME:
+        namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
+        time = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
+        String formattedTime = DATE_FORMATTER.format(Instant.ofEpochMilli(time));
+        namespaceUpdateLatestTime.put(namespace, formattedTime);
         break;
       case NAMESPACE_FIRST_LOAD_SPEND:
-        namespaceLoadFirstTime(event);
+        namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
+        time = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
+        namespaceFirstLoadSpend.put(namespace, time);
         break;
       default:
     }
   }
 
-  private void remoteUpdate(MetricsEvent event) {
-    String namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
-    long time = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
-    String formattedTime = DATE_FORMATTER.format(Instant.ofEpochMilli(time));
-    namespaceUpdate.put(namespace, formattedTime);
-  }
-
-  private void namespaceLoadFirstTime(MetricsEvent event) {
-    String namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
-    long time = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
-    namespaceFirstLoadSpend.put(namespace, time);
-  }
-
-
   @Override
-  public boolean isSamplesUpdated() {
-    //TODO
-    return true;
-  }
-
-  @Override
-  public List<MetricsSample> export() {
-    List<MetricsSample> samples = new ArrayList<>();
-    namespaceUsed.forEach((k, v) -> {
-      samples.add(new GaugeMetricsSample<>("namespace_" + k + "_used_times", v, value -> value));
+  public List<MetricsSample> export0(List<MetricsSample> samples) {
+    namespaceUsedTime.forEach((k, v) -> {
+      samples.add(
+          CounterMetricsSample.builder().name("namespace_" + k + "_usedTimes").value(v).build());
     });
-    HashMap<String, String> map = Maps.newHashMap();
-    map.putAll(namespaceUpdate);
-    samples.add(new GaugeMetricsSample<>(NAMESPACE_UPDATE, 1, value -> 1, map));
+    samples.add(
+        GaugeMetricsSample.builder().name(NAMESPACE_UPDATE_TIME).value(1)
+            .tags(namespaceUpdateLatestTime)
+            .build());
     namespaceFirstLoadSpend.forEach((k, v) -> {
-      samples.add(new CounterMetricsSample(NAMESPACE_FIRST_LOAD_SPEND + "_" + k, v));
+      samples.add(CounterMetricsSample.builder().name(NAMESPACE_FIRST_LOAD_SPEND + "_" + k).value(v)
+          .build());
     });
     return samples;
   }

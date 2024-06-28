@@ -63,7 +63,7 @@ public class ConfigMonitor {
       try {
         reporter = ServiceBootstrap.loadPrimary(MetricsReporter.class);
         if (reporter != null) {
-          reporter.init(metricsCollectors);
+          reporter.init(metricsCollectors,configUtil.getMonitorCollectPeriod());
         } else {
           logger.warn("No MetricsReporter found for protocol: {}", protocol);
         }

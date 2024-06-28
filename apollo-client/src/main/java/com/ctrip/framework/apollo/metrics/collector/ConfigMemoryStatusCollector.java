@@ -152,6 +152,7 @@ public class ConfigMemoryStatusCollector extends AbstractMetricsCollector implem
         .putTag(APPID, getAppId())
         .putTag(CLUSTER, getCluster())
         .putTag(ENV, getApolloEnv()).build());
+    //TODO
 //    exportThreadPoolMetrics(samples, abstractConfigExecutorService, "abstractConfig_");
 //    exportThreadPoolMetrics(samples, abstractConfigFileExecutorService, "abstractConfigFile_");
     exportThreadPoolMetrics(samples, remoteConfigRepositoryExecutorService,

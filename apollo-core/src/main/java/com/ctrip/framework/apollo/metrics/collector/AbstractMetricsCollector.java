@@ -17,20 +17,21 @@ public abstract class AbstractMetricsCollector implements MetricsCollector {
   private final AtomicBoolean isUpdated = new AtomicBoolean();
   private final List<String> tags;
 
-  public AbstractMetricsCollector(String...tags) {
+  public AbstractMetricsCollector(String... tags) {
     if (Metrics.isMetricsEnabled()) {
       JMXUtil.register(JMXUtil.MBEAN_NAME + this.getClass().getSimpleName(), this);
     }
     this.tags = Arrays.asList(tags);
   }
+
   @Override
-  public boolean isSupport(String tag){
-     for(String need : tags){
-       if( need.equals(tag)){
-         return true;
-       }
-     }
-     return false;
+  public boolean isSupport(String tag) {
+    for (String need : tags) {
+      if (need.equals(tag)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

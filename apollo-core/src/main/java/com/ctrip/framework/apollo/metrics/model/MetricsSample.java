@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.metrics.model;
 
 import com.ctrip.framework.apollo.metrics.util.MeterType;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,7 +11,8 @@ public class MetricsSample {
 
   protected String name;
   protected MeterType type;
-  protected Map<String, String> tags;
+  protected Map<String, String> tags = new HashMap<>();
+
 
   public String getName() {
     return "Apollo_" + name;
@@ -24,7 +26,10 @@ public class MetricsSample {
     return tags;
   }
 
-  public void setTag(Map<String, String> tags) {
-    this.tags = tags;
+  public MetricsSample putTag(String key, String value) {
+    tags.put(key, value);
+    return this;
   }
+
 }
+

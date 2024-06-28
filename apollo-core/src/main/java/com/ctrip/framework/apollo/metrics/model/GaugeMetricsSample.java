@@ -1,33 +1,24 @@
 package com.ctrip.framework.apollo.metrics.model;
 
-import static com.ctrip.framework.apollo.metrics.util.MeterType.GAUGE;
-
+import com.ctrip.framework.apollo.metrics.util.MeterType;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
-/**
- * @author Rawven
- */
 public class GaugeMetricsSample<T> extends MetricsSample {
 
   private T value;
-
   private ToDoubleFunction<T> apply;
 
   public GaugeMetricsSample(String name, T value, ToDoubleFunction<T> apply) {
     this.name = name;
     this.value = value;
     this.apply = apply;
-    this.type = GAUGE;
+    this.type = MeterType.GAUGE;
   }
 
-  public GaugeMetricsSample(String name, T value, ToDoubleFunction<T> apply,
-      Map<String, String> tags) {
-    this.name = name;
-    this.value = value;
-    this.apply = apply;
-    this.type = GAUGE;
-    this.setTag(tags);
+  public static <T> Builder<T> builder() {
+    return new Builder<>();
   }
 
   public T getValue() {
@@ -49,4 +40,44 @@ public class GaugeMetricsSample<T> extends MetricsSample {
   public double getApplyValue() {
     return getApply().applyAsDouble(getValue());
   }
+
+  public static class Builder<T> {
+
+    private String name;
+    private T value;
+    private ToDoubleFunction<T> apply = t -> 1;
+    private Map<String, String> tags = new HashMap<>();
+
+    public Builder<T> name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder<T> value(T value) {
+      this.value = value;
+      return this;
+    }
+
+    public Builder<T> apply(ToDoubleFunction<T> apply) {
+      this.apply = apply;
+      return this;
+    }
+
+    public Builder<T> putTag(String key, String value) {
+      this.tags.put(key, value);
+      return this;
+    }
+
+    public Builder<T> tags(Map<String, String> tags) {
+      this.tags.putAll(tags);
+      return this;
+    }
+
+    public GaugeMetricsSample<T> build() {
+      GaugeMetricsSample<T> sample = new GaugeMetricsSample<>(name, value, apply);
+      sample.tags.putAll(tags);
+      return sample;
+    }
+  }
 }
+

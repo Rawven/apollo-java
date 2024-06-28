@@ -66,9 +66,11 @@ public class MetricsEvent {
       this.tag = tag;
       return this;
     }
-    public void push(){
+
+    public void push() {
       Metrics.push(this.build());
     }
+
     // 构建 MetricsEvent 对象
     public MetricsEvent build() {
       return new MetricsEvent(this);

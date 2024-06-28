@@ -1,10 +1,10 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
-import com.ctrip.framework.apollo.metrics.collector.MemoryStatusCollector;
+import com.ctrip.framework.apollo.metrics.collector.ClientEventCollector;
+import com.ctrip.framework.apollo.metrics.collector.ConfigMemoryStatusCollector;
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollector;
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollectorManager;
-import com.ctrip.framework.apollo.metrics.collector.ClientEventCollector;
 import com.ctrip.framework.apollo.metrics.collector.TracerEventCollector;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.Lists;
@@ -29,14 +29,15 @@ public class DefaultMetricsCollectorManager implements MetricsCollectorManager {
       DefaultConfigManager configManager) {
     //init collector
     TracerEventCollector traceCollector = new TracerEventCollector();
-      MemoryStatusCollector memoryStatusCollector = new MemoryStatusCollector(configManager.m_configs,
-          configManager.m_configLocks, configManager.m_configFiles, configManager.m_configFileLocks,
-          configUtil);
+    ConfigMemoryStatusCollector configMemoryStatusCollector = new ConfigMemoryStatusCollector(configManager.m_configs,
+        configManager.m_configLocks, configManager.m_configFiles, configManager.m_configFileLocks,
+        configUtil, RemoteConfigRepository.m_executorService, AbstractConfig.m_executorService,
+        AbstractConfigFile.m_executorService);
     ClientEventCollector clientEventCollector = new ClientEventCollector();
     collectors = Lists.newArrayList(traceCollector, clientEventCollector,
-        memoryStatusCollector);
-    configMonitor.init(clientEventCollector, memoryStatusCollector, traceCollector,
-         configUtil);
+        configMemoryStatusCollector);
+    configMonitor.init(clientEventCollector, configMemoryStatusCollector, traceCollector, collectors,
+        configUtil);
   }
 
   @Override

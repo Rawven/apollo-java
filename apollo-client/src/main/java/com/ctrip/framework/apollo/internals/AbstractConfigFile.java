@@ -43,7 +43,7 @@ import com.google.common.collect.Lists;
  */
 public abstract class AbstractConfigFile implements ConfigFile, RepositoryChangeListener {
   private static final Logger logger = DeferredLoggerFactory.getLogger(AbstractConfigFile.class);
-  private static ExecutorService m_executorService;
+  protected static ExecutorService m_executorService;
   protected final ConfigRepository m_configRepository;
   protected final String m_namespace;
   protected final AtomicReference<Properties> m_configProperties;

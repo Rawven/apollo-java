@@ -42,7 +42,8 @@ public abstract class Metrics {
   public static boolean isMetricsEnabled() {
     String enabled = System.getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED);
     if (enabled == null) {
-      enabled = Foundation.app().getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "false");
+      enabled = Foundation.app()
+          .getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "false");
     }
     return Boolean.parseBoolean(enabled);
   }

@@ -11,7 +11,10 @@ import java.util.List;
  */
 public interface MetricsReporter extends Ordered {
 
-  void init(List<MetricsCollector> collectors);
+  /**
+   * init method
+   */
+  void init(List<MetricsCollector> collectors, long collectPeriod);
 
   /**
    * used to register Counter type metrics

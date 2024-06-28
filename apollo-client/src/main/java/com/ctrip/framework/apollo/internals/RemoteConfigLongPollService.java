@@ -18,6 +18,7 @@ package com.ctrip.framework.apollo.internals;
 
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.TIMESTAMP;
+import static com.ctrip.framework.apollo.metrics.collector.TracerEventCollector.NAMESPACE_TIMEOUT;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -214,7 +215,7 @@ public class RemoteConfigLongPollService {
         transaction.setStatus(Transaction.SUCCESS);
       } catch (Throwable ex) {
         lastServiceDto = null;
-        Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(ex),"timeout",assembleNamespaces());
+        Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(ex),NAMESPACE_TIMEOUT,assembleNamespaces());
         transaction.setStatus(ex);
         long sleepTimeInSecond = m_longPollFailSchedulePolicyInSecond.fail();
         logger.warn(
@@ -271,7 +272,7 @@ public class RemoteConfigLongPollService {
         m_notifications.put(namespaceNameWithPropertiesSuffix, notification.getNotificationId());
       }
 
-      MetricsEvent.builder().withName(ClientEventCollector.NAMESPACE_UPDATE)
+      MetricsEvent.builder().withName(ClientEventCollector.NAMESPACE_UPDATE_TIME)
           .putAttachment(NAMESPACE, namespaceName)
           .putAttachment(TIMESTAMP,System.currentTimeMillis())
           .withTag(ClientEventCollector.CLIENT).push();

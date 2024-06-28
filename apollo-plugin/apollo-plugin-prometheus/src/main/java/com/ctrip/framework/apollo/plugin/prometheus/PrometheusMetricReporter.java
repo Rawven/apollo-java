@@ -19,6 +19,9 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author Rawven
+ */
 public class PrometheusMetricReporter extends AbstractMetricsReporter implements MetricsReporter {
     private static final Logger logger = LoggerFactory.getLogger(
         PrometheusMetricReporter.class);
@@ -26,7 +29,6 @@ public class PrometheusMetricReporter extends AbstractMetricsReporter implements
     private final Map<String, Collector.Describable> map = new HashMap<>();
     private final String PROMETHEUS = "Prometheus";
     public PrometheusMetricReporter() {
-        super();
         ConfigUtil configUtil = ApolloInjector.getInstance(ConfigUtil.class);
         if(!Objects.equals(configUtil.getMonitorProtocol(), PROMETHEUS)){
             throw new IllegalStateException("PrometheusMetricReporter is not enabled");

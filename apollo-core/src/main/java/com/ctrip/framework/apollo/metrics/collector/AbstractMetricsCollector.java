@@ -1,9 +1,7 @@
 package com.ctrip.framework.apollo.metrics.collector;
 
-import com.ctrip.framework.apollo.metrics.Metrics;
 import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
-import com.ctrip.framework.apollo.metrics.util.JMXUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,9 +16,6 @@ public abstract class AbstractMetricsCollector implements MetricsCollector {
   private final List<String> tags;
 
   public AbstractMetricsCollector(String... tags) {
-    if (Metrics.isMetricsEnabled()) {
-      JMXUtil.register(JMXUtil.MBEAN_NAME + this.getClass().getSimpleName(), this);
-    }
     this.tags = Arrays.asList(tags);
   }
 

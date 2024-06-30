@@ -21,6 +21,7 @@ import java.util.List;
 public class TracerEventCollector extends AbstractMetricsCollector implements
     TracerEventCollectorMBean {
 
+
   public static final String NAMESPACE404 = "namespace404";
   public static final String NAMESPACE_TIMEOUT = "namespaceTimeout";
   private final List<ApolloConfigException> exceptions = new ArrayList<>();
@@ -41,6 +42,7 @@ public class TracerEventCollector extends AbstractMetricsCollector implements
     return namespaceTimeout.toString();
   }
 
+
   //TODO 报错信息该如何展示
   @Override
   public Integer getExceptionNum() {
@@ -48,9 +50,19 @@ public class TracerEventCollector extends AbstractMetricsCollector implements
   }
 
   @Override
+  public List<String> getExceptionDetails() {
+    List<String> exceptionDetails = new ArrayList<>();
+    for (ApolloConfigException exception : exceptions) {
+      exceptionDetails.add(exception.getCause().getClass().getSimpleName()+":"+exception.getCause().getMessage());
+    }
+    return exceptionDetails;
+  }
+
+  @Override
   public void collect0(MetricsEvent event) {
     switch (event.getName()) {
       case TRACER_ERROR:
+        //Tracer.logError
         ApolloConfigException exception = event.getAttachmentValue(THROWABLE);
         exceptions.add(exception);
         break;
@@ -72,6 +84,8 @@ public class TracerEventCollector extends AbstractMetricsCollector implements
   public List<MetricsSample> export0(List<MetricsSample> samples) {
     samples.add(
         CounterMetricsSample.builder().name("exceptionNum").value(exceptions.size()).build());
+
+    //TODO 非数值类型的指标
     samples.add(GaugeMetricsSample.builder().name(NAMESPACE404).value(namespace404.size())
         .apply(value -> (double) namespace404.size()).putTag("data", namespace404.toString())
         .build());

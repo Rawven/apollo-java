@@ -8,6 +8,7 @@ import com.ctrip.framework.apollo.metrics.model.MetricsSample;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -25,15 +26,18 @@ public class ConfigMemoryStatusCollector extends AbstractMetricsCollector implem
   public static final String CLUSTER = "cluster";
   public static final String ENV = "env";
   public static final String STARTUP_PARAMETERS = "startup_parameters";
-
+  public static final String[] THREAD_POOL_PARAMS = new String[]{"ThreadPoolName", "activeTaskCount", "queueSize",
+      "completedTaskCount",
+      "poolSize", "totalTaskCount", "corePoolSize", "maximumPoolSize", "largestPoolSize",
+      "queueCapacity", "queueRemainingCapacity", "currentLoad"};
   private final ConfigUtil m_configUtil;
   private final Map<String, Config> m_configs;
   //TODO
   private final Map<String, Object> m_configLocks;
   private final Map<String, ConfigFile> m_configFiles;
   private final Map<String, Object> m_configFileLocks;
-  private final ScheduledThreadPoolExecutor remoteConfigRepositoryExecutorService;
   //TODO
+  private final ScheduledThreadPoolExecutor remoteConfigRepositoryExecutorService;
   private final ThreadPoolExecutor abstractConfigExecutorService;
   private final ThreadPoolExecutor abstractConfigFileExecutorService;
 
@@ -153,41 +157,26 @@ public class ConfigMemoryStatusCollector extends AbstractMetricsCollector implem
         .putTag(CLUSTER, getCluster())
         .putTag(ENV, getApolloEnv()).build());
     //TODO
-//    exportThreadPoolMetrics(samples, abstractConfigExecutorService, "abstractConfig_");
-//    exportThreadPoolMetrics(samples, abstractConfigFileExecutorService, "abstractConfigFile_");
+    //exportThreadPoolMetrics(samples, abstractConfigExecutorService, "abstractConfig_");
+    //exportThreadPoolMetrics(samples, abstractConfigFileExecutorService, "abstractConfigFile_");
     exportThreadPoolMetrics(samples, remoteConfigRepositoryExecutorService,
-        "remoteConfigRepository_");
+        "remoteConfigRepository");
     return samples;
   }
 
   public void exportThreadPoolMetrics(List<MetricsSample> samples, ThreadPoolExecutor executor,
       String name) {
-    samples.add(GaugeMetricsSample.builder().name(name + "active_task_count")
-        .value(executor.getActiveCount()).apply(value -> (int) value).build());
-    samples.add(
-        GaugeMetricsSample.builder().name(name + "queue_size").value(executor.getQueue().size())
-            .apply(value -> (int) value).build());
-    samples.add(GaugeMetricsSample.builder().name(name + "completed_task_count")
-        .value(executor.getCompletedTaskCount()).apply(value -> (long) value).build());
-    samples.add(GaugeMetricsSample.builder().name(name + "pool_size").value(executor.getPoolSize())
-        .apply(value -> (int) value).build());
-    samples.add(
-        GaugeMetricsSample.builder().name(name + "total_task_count").value(executor.getTaskCount())
-            .apply(value -> (long) value).build());
-    samples.add(
-        GaugeMetricsSample.builder().name(name + "core_pool_size").value(executor.getCorePoolSize())
-            .apply(value -> (int) value).build());
-    samples.add(GaugeMetricsSample.builder().name(name + "maximum_pool_size")
-        .value(executor.getMaximumPoolSize()).apply(value -> (int) value).build());
-    samples.add(GaugeMetricsSample.builder().name(name + "largest_pool_size")
-        .value(executor.getLargestPoolSize()).apply(value -> (int) value).build());
-    samples.add(GaugeMetricsSample.builder().name(name + "queue_capacity")
-        .value(executor.getQueue().remainingCapacity() + executor.getQueue().size())
-        .apply(value -> (int) value).build());
-    samples.add(GaugeMetricsSample.builder().name(name + "queue_remaining_capacity")
-        .value(executor.getQueue().remainingCapacity()).apply(value -> (int) value).build());
-    samples.add(GaugeMetricsSample.builder().name(name + "current_load")
-        .value((double) executor.getPoolSize() / executor.getMaximumPoolSize())
-        .apply(value -> (double) value).build());
+    List<Double> list = Arrays.asList((double)executor.getActiveCount(),
+        (double)executor.getQueue().size(),
+        (double)executor.getCompletedTaskCount(), (double) executor.getPoolSize(),
+        (double) executor.getTaskCount(), (double) executor.getCorePoolSize(),
+        (double) executor.getMaximumPoolSize(), (double) executor.getLargestPoolSize(),
+        (double) (executor.getQueue().remainingCapacity() + executor.getQueue().size()),
+        (double) executor.getQueue().remainingCapacity(),
+        (double) executor.getPoolSize() / executor.getMaximumPoolSize());
+    for (int i = 0; i<list.size(); i++) {
+      samples.add(GaugeMetricsSample.builder().putTag(THREAD_POOL_PARAMS[0], name).name(THREAD_POOL_PARAMS[i+1])
+          .value(list.get(i)).apply(value -> (double)value).build());
+    }
   }
 }

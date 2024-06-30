@@ -11,8 +11,8 @@ import javax.management.ObjectName;
  */
 public final class JMXUtil {
 
-  public static final String JMX = "JMX";
-  public static final String MBEAN_NAME = "com.ctrip.framework.apollo.metrics:type=";
+  public static final String JMX = "jmx";
+  public static final String MBEAN_NAME = "apollo.client.monitor:type=";
 
   public static ObjectName register(String name, Object mbean) {
     try {
@@ -23,8 +23,8 @@ public final class JMXUtil {
       try {
         mbeanServer.registerMBean(mbean, objectName);
       } catch (InstanceAlreadyExistsException ex) {
-        mbeanServer.unregisterMBean(objectName);
         mbeanServer.registerMBean(mbean, objectName);
+        mbeanServer.unregisterMBean(objectName);
       }
 
       return objectName;
@@ -41,4 +41,5 @@ public final class JMXUtil {
       throw new IllegalArgumentException(name, e);
     }
   }
+  //TODO MBeanServer自定义
 }

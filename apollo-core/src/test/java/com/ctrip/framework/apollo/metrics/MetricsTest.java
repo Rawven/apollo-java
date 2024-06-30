@@ -29,7 +29,7 @@ public class MetricsTest {
   @Test
   public void testPushMetricsEvent() {
     // Enable metrics
-    System.setProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "true");
+    System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED, "true");
 
     // Call the method under test
     Metrics.push(mockEvent);
@@ -43,7 +43,7 @@ public class MetricsTest {
   @Test
   public void testPushMetricsEventWhenDisabled() {
     // Disable metrics
-    System.setProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "false");
+    System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED, "false");
 
     // Call the method under test
     Metrics.push(mockEvent);
@@ -57,15 +57,15 @@ public class MetricsTest {
   @Test
   public void testIsMetricsEnabled() {
     // Set system property to enable metrics
-    System.setProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "true");
+    System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED, "true");
     assertTrue(Metrics.isMetricsEnabled());
 
     // Set system property to disable metrics
-    System.setProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "false");
+    System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED, "false");
     assertFalse(Metrics.isMetricsEnabled());
 
     // Clear the system property and use Foundation
-    System.clearProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED);
+    System.clearProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED);
     assertFalse(Metrics.isMetricsEnabled());
     MockMetricsCollectorManager.reset();
   }

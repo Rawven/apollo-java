@@ -15,7 +15,7 @@ public class MetricsSample {
 
 
   public String getName() {
-    return "Apollo_" + name;
+    return "Apollo_Client_" + name;
   }
 
   public MeterType getType() {

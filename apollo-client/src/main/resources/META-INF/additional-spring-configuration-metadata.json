@@ -64,24 +64,24 @@
       "defaultValue": ""
     },
     {
-      "name": "apollo.monitor.protocol",
+      "name": "apollo.client.monitor.form",
       "type": "java.lang.String",
       "sourceType": "com.ctrip.framework.apollo.core.ApolloClientSystemConsts",
-      "description": "apollo metrics protocol",
+      "description": "apollo client monitor form ",
       "defaultValue": ""
     },
     {
-      "name": "apollo.monitor.enabled",
+      "name": "apollo.client.monitor.enabled",
       "type": "java.lang.String",
       "sourceType": "com.ctrip.framework.apollo.core.ApolloClientSystemConsts",
-      "description": "apollo metrics enabled",
+      "description": "apollo client monitor enabled",
       "defaultValue": "flase"
     },
     {
-      "name": "apollo.monitor.collect-period",
+      "name": "apollo.client.monitor.export-period",
       "type": "java.lang.String",
       "sourceType": "com.ctrip.framework.apollo.core.ApolloClientSystemConsts",
-      "description": "apollo metrics collect period",
+      "description": "apollo client export period",
       "defaultValue": ""
     },
     {

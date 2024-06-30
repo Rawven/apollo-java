@@ -23,6 +23,10 @@ public abstract class Metrics {
     }
   }
 
+//  public static GaugeMetricsSample<?> buildGaugeMetricsSample(String name, Object value) {
+//    return GaugeMetricsSample.builder().name(name).value(value).build();
+//  }
+
   public static void push(MetricsEvent event) {
     if (isMetricsEnabled()) {
       if (collectorManager == null) {
@@ -39,12 +43,13 @@ public abstract class Metrics {
   }
 
   public static boolean isMetricsEnabled() {
-    String enabled = System.getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED);
+    String enabled = System.getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED);
     if (enabled == null) {
       enabled = Foundation.app()
-          .getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED, "false");
+          .getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED, "false");
     }
     return Boolean.parseBoolean(enabled);
   }
+
 
 }

@@ -16,6 +16,8 @@
  */
 package com.ctrip.framework.apollo.util;
 
+import static com.ctrip.framework.apollo.util.factory.PropertiesFactory.APOLLO_PROPERTY_ORDER_ENABLE;
+
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.MetaDomainConsts;
@@ -29,8 +31,6 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.ctrip.framework.apollo.util.factory.PropertiesFactory.APOLLO_PROPERTY_ORDER_ENABLE;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -71,7 +71,7 @@ public class ConfigUtil {
   private boolean propertyNamesCacheEnabled = false;
   private boolean propertyFileCacheEnabled = true;
   private boolean overrideSystemProperties = true;
-  private String monitorProtocol = null;
+  private String monitorForm = null;
   private long monitorCollectPeriod = 10;
 
   public ConfigUtil() {
@@ -88,7 +88,7 @@ public class ConfigUtil {
     initPropertyNamesCacheEnabled();
     initPropertyFileCacheEnabled();
     initOverrideSystemProperties();
-    initMonitorProtocol();
+    initMonitorForm();
     initMonitorCollectPeriod();
   }
 
@@ -495,25 +495,25 @@ public class ConfigUtil {
             ApolloClientSystemConsts.APOLLO_OVERRIDE_SYSTEM_PROPERTIES,
             overrideSystemProperties);
   }
-    private void initMonitorProtocol() {
-        monitorProtocol = System.getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_PROTOCOL);
-        if (Strings.isNullOrEmpty(monitorProtocol)) {
-            monitorProtocol = Foundation.app().getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_PROTOCOL, null);
+    private void initMonitorForm() {
+        monitorForm = System.getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_FORM);
+        if (Strings.isNullOrEmpty(monitorForm)) {
+            monitorForm = Foundation.app().getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_FORM, null);
         }
     }
-    public String getMonitorProtocol() {
-        return monitorProtocol;
+    public String getMonitorForm() {
+        return monitorForm;
     }
     private void initMonitorCollectPeriod() {
-        String collectPeriod = System.getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_COLLECT_PERIOD);
+        String collectPeriod = System.getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD);
         if (Strings.isNullOrEmpty(collectPeriod)) {
-            collectPeriod = Foundation.app().getProperty(ApolloClientSystemConsts.APOLLO_MONITOR_COLLECT_PERIOD, null);
+            collectPeriod = Foundation.app().getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD, null);
         }
         if (!Strings.isNullOrEmpty(collectPeriod)) {
             try {
                 monitorCollectPeriod = Long.parseLong(collectPeriod);
             } catch (Throwable ex) {
-                logger.error("Config for {} is invalid: {}", ApolloClientSystemConsts.APOLLO_MONITOR_COLLECT_PERIOD, collectPeriod);
+                logger.error("Config for {} is invalid: {}", ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD, collectPeriod);
             }
         }
     }

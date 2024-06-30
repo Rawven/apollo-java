@@ -117,8 +117,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   @Override
   public Properties getConfig() {
     if (m_configCache.get() == null) {
+
       long start = System.currentTimeMillis();
+
       this.sync();
+
       MetricsEvent.builder().withName(ClientEventCollector.NAMESPACE_FIRST_LOAD_SPEND).withTag(ClientEventCollector.CLIENT)
           .putAttachment(NAMESPACE, m_namespace)
           .putAttachment(TIMESTAMP, System.currentTimeMillis() - start).push();
@@ -272,6 +275,9 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
             statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
                 message);
           }
+
+//          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException));
+
           Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException),NAMESPACE404,m_namespace);
           transaction.setStatus(statusCodeException);
           exception = statusCodeException;

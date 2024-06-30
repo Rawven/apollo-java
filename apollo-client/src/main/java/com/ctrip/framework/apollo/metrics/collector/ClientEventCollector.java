@@ -19,10 +19,9 @@ public class ClientEventCollector extends AbstractMetricsCollector implements
     ClientEventCollectorMBean {
 
   public static final String CLIENT = "Client";
-  public static final String CLIENT_ = CLIENT + "_";
-  public static final String NAMESPACE_UPDATE_TIME = CLIENT_ + "update";
-  public static final String NAMESPACE_FIRST_LOAD_SPEND = CLIENT_ + "namespaceFirstLoadSpend";
-  public static final String NAMESPACE_USED_TIMES = CLIENT_ + "namespaceUsedTimes";
+  public static final String NAMESPACE_UPDATE_TIME = "namespace_update_time";
+  public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_firstLoadSpend";
+  public static final String NAMESPACE_USAGE_COUNT = "namespace_usage_count";
   private final Map<String, Integer> namespaceUsedTime = Maps.newHashMap();
   private final Map<String, Long> namespaceFirstLoadSpend = Maps.newHashMap();
   private final Map<String, String> namespaceUpdateLatestTime = Maps.newHashMap();
@@ -46,7 +45,7 @@ public class ClientEventCollector extends AbstractMetricsCollector implements
     String namespace;
     long time;
     switch (event.getName()) {
-      case NAMESPACE_USED_TIMES:
+      case NAMESPACE_USAGE_COUNT:
         namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
         namespaceUsedTime.put(namespace, namespaceUsedTime.getOrDefault(namespace, 0) + 1);
         break;
@@ -71,14 +70,15 @@ public class ClientEventCollector extends AbstractMetricsCollector implements
       samples.add(
           CounterMetricsSample.builder().name("namespace_" + k + "_usedTimes").value(v).build());
     });
-    samples.add(
-        GaugeMetricsSample.builder().name(NAMESPACE_UPDATE_TIME).value(1)
-            .tags(namespaceUpdateLatestTime)
-            .build());
     namespaceFirstLoadSpend.forEach((k, v) -> {
       samples.add(CounterMetricsSample.builder().name(NAMESPACE_FIRST_LOAD_SPEND + "_" + k).value(v)
           .build());
     });
+    //TODO 非数值类型的指标
+    samples.add(GaugeMetricsSample.builder().name(NAMESPACE_UPDATE_TIME).value(1)
+        .tags(namespaceUpdateLatestTime).build());
+
+
     return samples;
   }
 }

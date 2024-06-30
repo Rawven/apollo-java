@@ -22,6 +22,7 @@ import org.slf4j.Logger;
  *
  * @author Rawven
  */
+//TODO 接口
 public class ConfigMonitor {
 
   private static final Logger logger = DeferredLoggerFactory.getLogger(ConfigMonitor.class);
@@ -50,7 +51,8 @@ public class ConfigMonitor {
   }
 
   public void init(ClientEventCollector clientEventCollector,
-      ConfigMemoryStatusCollector configMemoryStatusCollector, TracerEventCollector tracerEventCollector,
+      ConfigMemoryStatusCollector configMemoryStatusCollector,
+      TracerEventCollector tracerEventCollector,
       List<MetricsCollector> metricsCollectors,
       ConfigUtil configUtil) {
     this.clientEventCollector = clientEventCollector;
@@ -58,22 +60,25 @@ public class ConfigMonitor {
     this.tracerEventCollector = tracerEventCollector;
 
     //init reporter
-    String protocol = configUtil.getMonitorProtocol();
-     if (protocol != null && !JMXUtil.JMX.equals(protocol)) {
-      try {
-        reporter = ServiceBootstrap.loadPrimary(MetricsReporter.class);
-        if (reporter != null) {
-          reporter.init(metricsCollectors,configUtil.getMonitorCollectPeriod());
-        } else {
-          logger.warn("No MetricsReporter found for protocol: {}", protocol);
+    String form = configUtil.getMonitorForm();
+    //TODO 有无优化实现
+    if (form != null) {
+      if (JMXUtil.JMX.equals(form)) {
+        metricsCollectors.forEach(metricsCollector ->
+            JMXUtil.register(JMXUtil.MBEAN_NAME + metricsCollector.getClass().getSimpleName(),
+                metricsCollector));
+      } else {
+        try {
+          reporter = ServiceBootstrap.loadPrimary(MetricsReporter.class);
+          reporter.init(metricsCollectors, configUtil.getMonitorCollectPeriod());
+        } catch (Exception e) {
+          logger.error("Error initializing MetricsReporter for protocol: {}", form, e);
+          ApolloConfigException exception = new ApolloConfigException(
+              "Error initializing MetricsReporter for form: " + form, e);
+          Tracer.logError(exception);
+          throw exception;
         }
-      } catch (Exception e) {
-        logger.error("Error initializing MetricsReporter for protocol: {}", protocol, e);
-        ApolloConfigException exception = new ApolloConfigException(
-            "Error initializing MetricsReporter for protocol: " + protocol, e);
-        Tracer.logError(exception);
       }
     }
   }
-
 }

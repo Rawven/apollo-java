@@ -27,10 +27,10 @@ public class PrometheusMetricReporter extends AbstractMetricsReporter implements
         PrometheusMetricReporter.class);
     private final CollectorRegistry registry;
     private final Map<String, Collector.Describable> map = new HashMap<>();
-    private final String PROMETHEUS = "Prometheus";
+    private final String PROMETHEUS = "prometheus";
     public PrometheusMetricReporter() {
         ConfigUtil configUtil = ApolloInjector.getInstance(ConfigUtil.class);
-        if(!Objects.equals(configUtil.getMonitorProtocol(), PROMETHEUS)){
+        if(!Objects.equals(configUtil.getMonitorForm(), PROMETHEUS)){
             throw new IllegalStateException("PrometheusMetricReporter is not enabled");
         }
         this.registry = new CollectorRegistry();

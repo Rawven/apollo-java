@@ -13,12 +13,17 @@ public final class JMXUtil {
 
   public static final String JMX = "jmx";
   public static final String MBEAN_NAME = "apollo.client.monitor:type=";
+  //TODO 自定义MBeanServer
+  public static MBeanServer mbeanServer;
 
   public static ObjectName register(String name, Object mbean) {
     try {
       ObjectName objectName = new ObjectName(name);
 
-      MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+      //TODO
+      if(mbeanServer == null) {
+        mbeanServer = ManagementFactory.getPlatformMBeanServer();
+      }
 
       try {
         mbeanServer.registerMBean(mbean, objectName);
@@ -41,5 +46,4 @@ public final class JMXUtil {
       throw new IllegalArgumentException(name, e);
     }
   }
-  //TODO MBeanServer自定义
 }

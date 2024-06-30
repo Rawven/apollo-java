@@ -18,25 +18,30 @@ public class DefaultMetricsCollectorManager implements MetricsCollectorManager {
   private List<MetricsCollector> collectors;
 
   public DefaultMetricsCollectorManager() {
-    ConfigMonitor configMonitor = ApolloInjector.getInstance(ConfigMonitor.class);
     ConfigUtil configUtil = ApolloInjector.getInstance(ConfigUtil.class);
     DefaultConfigManager configManager = (DefaultConfigManager) ApolloInjector.getInstance(
         ConfigManager.class);
-    initialize(configMonitor, configUtil, configManager);
+    initialize(configUtil, configManager);
   }
 
-  private void initialize(ConfigMonitor configMonitor, ConfigUtil configUtil,
+  private void initialize(ConfigUtil configUtil,
       DefaultConfigManager configManager) {
     //init collector
     TracerEventCollector traceCollector = new TracerEventCollector();
-    ConfigMemoryStatusCollector configMemoryStatusCollector = new ConfigMemoryStatusCollector(configManager.m_configs,
+    ConfigMemoryStatusCollector configMemoryStatusCollector = new ConfigMemoryStatusCollector(
+        configManager.m_configs,
         configManager.m_configLocks, configManager.m_configFiles, configManager.m_configFileLocks,
         configUtil, RemoteConfigRepository.m_executorService, AbstractConfig.m_executorService,
         AbstractConfigFile.m_executorService);
     ClientEventCollector clientEventCollector = new ClientEventCollector();
     collectors = Lists.newArrayList(traceCollector, clientEventCollector,
         configMemoryStatusCollector);
-    configMonitor.init(clientEventCollector, configMemoryStatusCollector, traceCollector, collectors,
+
+    //init monitor
+    DefaultConfigMonitorImpl defaultConfigMonitorImpl = (DefaultConfigMonitorImpl) ApolloInjector.getInstance(
+        ConfigMonitor.class);
+    defaultConfigMonitorImpl.init(clientEventCollector, configMemoryStatusCollector, traceCollector,
+        collectors,
         configUtil);
   }
 

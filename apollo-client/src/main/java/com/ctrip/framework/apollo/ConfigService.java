@@ -43,7 +43,8 @@ public class ConfigService {
         if (m_configMonitor == null) {
             synchronized (this) {
                 if (m_configMonitor == null) {
-                    m_configMonitor = ApolloInjector.getInstance(ConfigMonitor.class);
+                    m_configMonitor = ApolloInjector.getInstance(
+                        ConfigMonitor.class);
                 }
             }
         }

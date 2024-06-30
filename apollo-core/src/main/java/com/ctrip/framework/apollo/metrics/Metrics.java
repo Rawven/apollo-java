@@ -23,9 +23,6 @@ public abstract class Metrics {
     }
   }
 
-//  public static GaugeMetricsSample<?> buildGaugeMetricsSample(String name, Object value) {
-//    return GaugeMetricsSample.builder().name(name).value(value).build();
-//  }
 
   public static void push(MetricsEvent event) {
     if (isMetricsEnabled()) {

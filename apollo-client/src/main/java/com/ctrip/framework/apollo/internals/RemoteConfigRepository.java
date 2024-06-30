@@ -18,7 +18,7 @@ package com.ctrip.framework.apollo.internals;
 
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.TIMESTAMP;
-import static com.ctrip.framework.apollo.metrics.collector.TracerEventCollector.NAMESPACE404;
+import static com.ctrip.framework.apollo.metrics.DefaultExceptionMetricsExposer.NAMESPACE404;
 
 import com.ctrip.framework.apollo.Apollo;
 import com.ctrip.framework.apollo.build.ApolloInjector;
@@ -36,7 +36,7 @@ import com.ctrip.framework.apollo.enums.ConfigSourceType;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigStatusCodeException;
 import com.ctrip.framework.apollo.metrics.MetricsEvent;
-import com.ctrip.framework.apollo.metrics.collector.ClientEventCollector;
+import com.ctrip.framework.apollo.metrics.DefaultNamespaceMetricsExposer;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import com.ctrip.framework.apollo.util.ConfigUtil;
@@ -122,7 +122,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
       this.sync();
 
-      MetricsEvent.builder().withName(ClientEventCollector.NAMESPACE_FIRST_LOAD_SPEND).withTag(ClientEventCollector.CLIENT)
+      MetricsEvent.builder().withName(DefaultNamespaceMetricsExposer.NAMESPACE_FIRST_LOAD_SPEND).withTag(
+              DefaultNamespaceMetricsExposer.NAMESPACE)
           .putAttachment(NAMESPACE, m_namespace)
           .putAttachment(TIMESTAMP, System.currentTimeMillis() - start).push();
     }
@@ -275,9 +276,6 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
             statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
                 message);
           }
-
-//          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException));
-
           Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException),NAMESPACE404,m_namespace);
           transaction.setStatus(statusCodeException);
           exception = statusCodeException;

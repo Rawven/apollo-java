@@ -16,8 +16,8 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.metrics.collector.ClientEventCollector.CLIENT;
-import static com.ctrip.framework.apollo.metrics.collector.ClientEventCollector.NAMESPACE_USAGE_COUNT;
+import static com.ctrip.framework.apollo.metrics.DefaultNamespaceMetricsExposer.NAMESPACE;
+import static com.ctrip.framework.apollo.metrics.DefaultNamespaceMetricsExposer.NAMESPACE_USAGE_COUNT;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
@@ -65,7 +65,7 @@ public class DefaultConfigManager implements ConfigManager {
 
     MetricsEvent.builder().withName(NAMESPACE_USAGE_COUNT)
         .putAttachment(MetricsConstant.NAMESPACE, namespace)
-        .withTag(CLIENT).push();
+        .withTag(NAMESPACE).push();
 
     return config;
   }

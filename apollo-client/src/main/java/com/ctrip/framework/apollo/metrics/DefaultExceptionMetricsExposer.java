@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.metrics.collector;
+package com.ctrip.framework.apollo.metrics;
 
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAME_VALUE_PAIRS;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.STATUS;
@@ -7,28 +7,34 @@ import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER_ERROR;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER_EVENT;
 
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
-import com.ctrip.framework.apollo.metrics.MetricsConstant;
-import com.ctrip.framework.apollo.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.metrics.collector.AbstractMetricsCollector;
+import com.ctrip.framework.apollo.metrics.exposer.ExceptionMetricsExposer;
 import com.ctrip.framework.apollo.metrics.model.CounterMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Rawven
  */
-public class TracerEventCollector extends AbstractMetricsCollector implements
-    TracerEventCollectorMBean {
+public class DefaultExceptionMetricsExposer extends AbstractMetricsCollector implements
+    ExceptionMetricsExposer {
 
 
   public static final String NAMESPACE404 = "namespace404";
   public static final String NAMESPACE_TIMEOUT = "namespaceTimeout";
-  private final List<ApolloConfigException> exceptions = new ArrayList<>();
-  private final List<String> namespace404 = new ArrayList<>();
-  private final List<String> namespaceTimeout = new ArrayList<>();
+  //TODO 会进行增长 但是不会有删除操作 ArrayBlockingQueue 线程安全且大小固定
+  private static final int MAX_EXCEPTIONS_SIZE = 25;
+  private final BlockingQueue<String> exceptions = new ArrayBlockingQueue<>(MAX_EXCEPTIONS_SIZE);
+  //TODO 对于数量恒定的namespace(用户正常配置使用情况下) 使用CopyOnWrite 内存固定不用考虑OOM
+  private final List<String> namespace404 = new CopyOnWriteArrayList<>();
+  private final List<String> namespaceTimeout = new CopyOnWriteArrayList<>();
 
-  public TracerEventCollector() {
+  public DefaultExceptionMetricsExposer() {
     super(MetricsConstant.TRACER);
   }
 
@@ -51,11 +57,7 @@ public class TracerEventCollector extends AbstractMetricsCollector implements
 
   @Override
   public List<String> getExceptionDetails() {
-    List<String> exceptionDetails = new ArrayList<>();
-    for (ApolloConfigException exception : exceptions) {
-      exceptionDetails.add(exception.getCause().getClass().getSimpleName()+":"+exception.getCause().getMessage());
-    }
-    return exceptionDetails;
+    return new ArrayList<>(exceptions);
   }
 
   @Override
@@ -64,7 +66,7 @@ public class TracerEventCollector extends AbstractMetricsCollector implements
       case TRACER_ERROR:
         //Tracer.logError
         ApolloConfigException exception = event.getAttachmentValue(THROWABLE);
-        exceptions.add(exception);
+        exceptions.add(exception.getCause().getClass().getSimpleName()+exception.getCause().getMessage());
         break;
       case TRACER_EVENT:
         String status = event.getAttachmentValue(STATUS);
@@ -93,5 +95,10 @@ public class TracerEventCollector extends AbstractMetricsCollector implements
         .apply(value -> (double) namespaceTimeout.size())
         .putTag("data", namespaceTimeout.toString()).build());
     return samples;
+  }
+
+  @Override
+  public String name() {
+    return "ExceptionMetrics";
   }
 }

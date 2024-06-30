@@ -25,7 +25,7 @@ public abstract class Metrics {
 
 
   public static void push(MetricsEvent event) {
-    if (isMetricsEnabled()) {
+    if (isClientMonitorEnabled()) {
       if (collectorManager == null) {
         //Lazy loading
         init();
@@ -39,7 +39,7 @@ public abstract class Metrics {
     }
   }
 
-  public static boolean isMetricsEnabled() {
+  public static boolean isClientMonitorEnabled() {
     String enabled = System.getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED);
     if (enabled == null) {
       enabled = Foundation.app()

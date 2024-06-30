@@ -1,16 +1,11 @@
-package com.ctrip.framework.apollo.metrics.collector;
+package com.ctrip.framework.apollo.metrics;
 
-import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.ConfigFile;
-import com.ctrip.framework.apollo.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.metrics.collector.AbstractMetricsCollector;
+import com.ctrip.framework.apollo.metrics.exposer.ThreadPoolMetricsExposer;
 import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
-import com.ctrip.framework.apollo.util.ConfigUtil;
-import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -19,53 +14,32 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * @author Rawven
  */
-public class ConfigMemoryStatusCollector extends AbstractMetricsCollector implements
-    ConfigMemoryStatusCollectorMBean {
+public class DefaultThreadPoolMetricsExposer extends AbstractMetricsCollector implements
+    ThreadPoolMetricsExposer {
 
-  public static final String APPID = "appId";
-  public static final String CLUSTER = "cluster";
-  public static final String ENV = "env";
-  public static final String STARTUP_PARAMETERS = "startup_parameters";
+
   public static final String[] THREAD_POOL_PARAMS = new String[]{"ThreadPoolName", "activeTaskCount", "queueSize",
       "completedTaskCount",
       "poolSize", "totalTaskCount", "corePoolSize", "maximumPoolSize", "largestPoolSize",
       "queueCapacity", "queueRemainingCapacity", "currentLoad"};
-  private final ConfigUtil m_configUtil;
-  private final Map<String, Config> m_configs;
-  //TODO
-  private final Map<String, Object> m_configLocks;
-  private final Map<String, ConfigFile> m_configFiles;
-  private final Map<String, Object> m_configFileLocks;
+
   //TODO
   private final ScheduledThreadPoolExecutor remoteConfigRepositoryExecutorService;
   private final ThreadPoolExecutor abstractConfigExecutorService;
   private final ThreadPoolExecutor abstractConfigFileExecutorService;
 
-  public ConfigMemoryStatusCollector(Map<String, Config> m_configs,
-      Map<String, Object> m_configLocks,
-      Map<String, ConfigFile> m_configFiles,
-      Map<String, Object> m_configFileLocks, ConfigUtil m_configUtil,
+  public DefaultThreadPoolMetricsExposer(
       ScheduledExecutorService remoteConfigRepositoryExecutorService,
       ExecutorService abstractConfigExecutorService,
       ExecutorService abstractConfigFileExecutorService) {
     super("Nop");
-    this.m_configs = m_configs;
-    this.m_configLocks = m_configLocks;
-    this.m_configFiles = m_configFiles;
-    this.m_configFileLocks = m_configFileLocks;
-    this.m_configUtil = m_configUtil;
     this.remoteConfigRepositoryExecutorService = (ScheduledThreadPoolExecutor) remoteConfigRepositoryExecutorService;
     this.abstractConfigExecutorService = (ThreadPoolExecutor) abstractConfigExecutorService;
     this.abstractConfigFileExecutorService = (ThreadPoolExecutor) abstractConfigFileExecutorService;
   }
 
 
-  @Override
-  public List<String> getAllUsedNamespaceName() {
-    ArrayList<String> namespaces = Lists.newArrayList();
-    m_configs.forEach((k, v) -> namespaces.add(k));
-    return namespaces;
-  }
+
 
   @Override
   public int getRemotePollThreadPoolActiveCount() {
@@ -119,18 +93,8 @@ public class ConfigMemoryStatusCollector extends AbstractMetricsCollector implem
   }
 
   @Override
-  public String getAppId() {
-    return m_configUtil.getAppId();
-  }
-
-  @Override
-  public String getCluster() {
-    return m_configUtil.getCluster();
-  }
-
-  @Override
-  public String getApolloEnv() {
-    return m_configUtil.getApolloEnv().name();
+  public String name() {
+    return "ThreadPoolMetrics";
   }
 
   @Override
@@ -151,11 +115,6 @@ public class ConfigMemoryStatusCollector extends AbstractMetricsCollector implem
 
   @Override
   public List<MetricsSample> export0(List<MetricsSample> samples) {
-    samples.add(GaugeMetricsSample.builder().name(STARTUP_PARAMETERS).value(1)
-        .apply(value -> 1)
-        .putTag(APPID, getAppId())
-        .putTag(CLUSTER, getCluster())
-        .putTag(ENV, getApolloEnv()).build());
     //TODO
     //exportThreadPoolMetrics(samples, abstractConfigExecutorService, "abstractConfig_");
     //exportThreadPoolMetrics(samples, abstractConfigFileExecutorService, "abstractConfigFile_");

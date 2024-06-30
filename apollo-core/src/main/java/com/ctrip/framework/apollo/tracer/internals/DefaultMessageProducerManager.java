@@ -33,7 +33,7 @@ public class DefaultMessageProducerManager implements MessageProducerManager {
 
     public DefaultMessageProducerManager() {
         List<MessageProducer> producers = new ArrayList<>();
-        if(Metrics.isMetricsEnabled()){
+        if(Metrics.isClientMonitorEnabled()){
             producers.add(new MetricsMessageProducer());
         }
         if (ClassLoaderUtil.isClassPresent(CatNames.CAT_CLASS)) {

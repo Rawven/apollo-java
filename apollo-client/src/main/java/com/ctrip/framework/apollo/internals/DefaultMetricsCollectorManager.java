@@ -1,11 +1,12 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
-import com.ctrip.framework.apollo.metrics.collector.ClientEventCollector;
-import com.ctrip.framework.apollo.metrics.collector.ConfigMemoryStatusCollector;
+import com.ctrip.framework.apollo.metrics.DefaultNamespaceMetricsExposer;
+import com.ctrip.framework.apollo.metrics.DefaultStartupParamsExposer;
+import com.ctrip.framework.apollo.metrics.DefaultThreadPoolMetricsExposer;
+import com.ctrip.framework.apollo.metrics.DefaultExceptionMetricsExposer;
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollector;
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollectorManager;
-import com.ctrip.framework.apollo.metrics.collector.TracerEventCollector;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -27,21 +28,23 @@ public class DefaultMetricsCollectorManager implements MetricsCollectorManager {
   private void initialize(ConfigUtil configUtil,
       DefaultConfigManager configManager) {
     //init collector
-    TracerEventCollector traceCollector = new TracerEventCollector();
-    ConfigMemoryStatusCollector configMemoryStatusCollector = new ConfigMemoryStatusCollector(
-        configManager.m_configs,
-        configManager.m_configLocks, configManager.m_configFiles, configManager.m_configFileLocks,
-        configUtil, RemoteConfigRepository.m_executorService, AbstractConfig.m_executorService,
+    DefaultExceptionMetricsExposer traceCollector = new DefaultExceptionMetricsExposer();
+    DefaultThreadPoolMetricsExposer configMemoryStatusCollector = new DefaultThreadPoolMetricsExposer(
+        RemoteConfigRepository.m_executorService, AbstractConfig.m_executorService,
         AbstractConfigFile.m_executorService);
-    ClientEventCollector clientEventCollector = new ClientEventCollector();
-    collectors = Lists.newArrayList(traceCollector, clientEventCollector,
-        configMemoryStatusCollector);
+    DefaultNamespaceMetricsExposer clientEventCollector = new DefaultNamespaceMetricsExposer(
+        configManager.m_configs,
+        configManager.m_configLocks, configManager.m_configFiles, configManager.m_configFileLocks);
+    DefaultStartupParamsExposer startupCollector = new DefaultStartupParamsExposer(configUtil);
+
+    //only save collector which will push event
+    collectors = Lists.newArrayList(traceCollector, clientEventCollector);
 
     //init monitor
-    DefaultConfigMonitorImpl defaultConfigMonitorImpl = (DefaultConfigMonitorImpl) ApolloInjector.getInstance(
+    DefaultConfigMonitor defaultConfigMonitor = (DefaultConfigMonitor) ApolloInjector.getInstance(
         ConfigMonitor.class);
-    defaultConfigMonitorImpl.init(clientEventCollector, configMemoryStatusCollector, traceCollector,
-        collectors,
+    defaultConfigMonitor.init(clientEventCollector, configMemoryStatusCollector, traceCollector,
+        startupCollector,
         configUtil);
   }
 

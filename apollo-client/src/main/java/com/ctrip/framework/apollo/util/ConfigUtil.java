@@ -517,7 +517,7 @@ public class ConfigUtil {
             }
         }
     }
-    public long getMonitorCollectPeriod() {
+    public long getMonitorExportPeriod() {
         return monitorCollectPeriod;
     }
 

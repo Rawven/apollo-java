@@ -104,7 +104,7 @@ public class DefaultInjector implements Injector {
       bind(RemoteConfigLongPollService.class).in(Singleton.class);
       bind(YamlParser.class).in(Singleton.class);
       bind(PropertiesFactory.class).to(DefaultPropertiesFactory.class).in(Singleton.class);
-      bind(ConfigMonitor.class).to(DefaultConfigMonitorImpl.class).in(Singleton.class);
+      bind(ConfigMonitor.class).to(DefaultConfigMonitor.class).in(Singleton.class);
     }
   }
 }

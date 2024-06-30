@@ -18,7 +18,7 @@ package com.ctrip.framework.apollo.internals;
 
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.TIMESTAMP;
-import static com.ctrip.framework.apollo.metrics.collector.TracerEventCollector.NAMESPACE_TIMEOUT;
+import static com.ctrip.framework.apollo.metrics.DefaultExceptionMetricsExposer.NAMESPACE_TIMEOUT;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -33,7 +33,7 @@ import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.metrics.MetricsEvent;
-import com.ctrip.framework.apollo.metrics.collector.ClientEventCollector;
+import com.ctrip.framework.apollo.metrics.DefaultNamespaceMetricsExposer;
 import com.ctrip.framework.apollo.spi.ConfigServiceLoadBalancerClient;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
@@ -272,10 +272,10 @@ public class RemoteConfigLongPollService {
         m_notifications.put(namespaceNameWithPropertiesSuffix, notification.getNotificationId());
       }
 
-      MetricsEvent.builder().withName(ClientEventCollector.NAMESPACE_UPDATE_TIME)
+      MetricsEvent.builder().withName(DefaultNamespaceMetricsExposer.NAMESPACE_UPDATE_TIME)
           .putAttachment(NAMESPACE, namespaceName)
           .putAttachment(TIMESTAMP,System.currentTimeMillis())
-          .withTag(ClientEventCollector.CLIENT).push();
+          .withTag(DefaultNamespaceMetricsExposer.NAMESPACE).push();
     }
   }
 

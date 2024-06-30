@@ -37,7 +37,7 @@ public class ConfigService {
   private volatile ConfigRegistry m_configRegistry;
 
   private ConfigMonitor getMonitor() {
-      if(!Metrics.isMetricsEnabled()){
+      if(!Metrics.isClientMonitorEnabled()){
           throw new UnsupportedOperationException("Metrics is not enabled");
       }
         if (m_configMonitor == null) {

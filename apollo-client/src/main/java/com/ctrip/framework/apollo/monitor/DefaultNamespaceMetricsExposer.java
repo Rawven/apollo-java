@@ -1,17 +1,20 @@
-package com.ctrip.framework.apollo.metrics;
+package com.ctrip.framework.apollo.monitor;
 
-import static com.ctrip.framework.apollo.core.utils.TimeUtil.DATE_FORMATTER;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
+import com.ctrip.framework.apollo.metrics.MetricsConstant;
+import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.metrics.collector.AbstractMetricsCollector;
-import com.ctrip.framework.apollo.metrics.exposer.NamespaceMetricsExposer;
 import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
+import com.ctrip.framework.apollo.monitor.exposer.NamespaceMetricsExposer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +26,14 @@ import org.slf4j.Logger;
 public class DefaultNamespaceMetricsExposer extends AbstractMetricsCollector implements
     NamespaceMetricsExposer {
 
-  private static final Logger logger = DeferredLoggerFactory.getLogger(DefaultNamespaceMetricsExposer.class);
-
+  public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.
+      ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
   public static final String NAMESPACE = "namespace";
   public static final String NAMESPACE_UPDATE_TIME = "namespace_update_time";
   public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_firstLoadSpend";
   public static final String NAMESPACE_USAGE_COUNT = "namespace_usage_count";
+  private static final Logger logger = DeferredLoggerFactory.getLogger(
+      DefaultNamespaceMetricsExposer.class);
   private final Map<String, Config> m_configs;
   private final Map<String, Object> m_configLocks;
   private final Map<String, ConfigFile> m_configFiles;
@@ -51,14 +56,14 @@ public class DefaultNamespaceMetricsExposer extends AbstractMetricsCollector imp
   @Override
   public List<String> getAllNamespaceUsageCount() {
     List<String> usedTimes = Lists.newArrayList();
-    namespaces.forEach((k, v) -> usedTimes.add(k+":"+v.usageCount));
+    namespaces.forEach((k, v) -> usedTimes.add(k + ":" + v.usageCount));
     return usedTimes;
   }
 
   @Override
   public List<String> getAllNamespacesLatestUpdateTime() {
     List<String> latestUpdateTimes = Lists.newArrayList();
-    namespaces.forEach((k, v) -> latestUpdateTimes.add(k+":"+v.latestUpdateTime));
+    namespaces.forEach((k, v) -> latestUpdateTimes.add(k + ":" +DATE_FORMATTER.format(Instant.ofEpochMilli(v.latestUpdateTime))));
     return latestUpdateTimes;
   }
 
@@ -72,7 +77,8 @@ public class DefaultNamespaceMetricsExposer extends AbstractMetricsCollector imp
   @Override
   public List<String> getAllNamespaceFirstLoadSpend() {
     List<String> firstLoadSpends = Lists.newArrayList();
-    namespaces.forEach((k, v) -> firstLoadSpends.add(k+":"+v.firstLoadSpend));
+    namespaces.forEach((k, v) -> firstLoadSpends.add(
+        k + ":" + v.firstLoadSpend));
     return firstLoadSpends;
   }
 
@@ -86,15 +92,15 @@ public class DefaultNamespaceMetricsExposer extends AbstractMetricsCollector imp
   @Override
   public void collect0(MetricsEvent event) {
     String namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
-    NamespaceMetrics namespaceMetrics = namespaces.computeIfAbsent(namespace, k -> new NamespaceMetrics());
+    NamespaceMetrics namespaceMetrics = namespaces.computeIfAbsent(namespace,
+        k -> new NamespaceMetrics());
     switch (event.getName()) {
       case NAMESPACE_USAGE_COUNT:
         namespaceMetrics.incrementUsedTime();
         break;
       case NAMESPACE_UPDATE_TIME:
         long updateTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
-        String formattedTime = DATE_FORMATTER.format(Instant.ofEpochMilli(updateTime));
-        namespaceMetrics.setLatestUpdateTime(formattedTime);
+        namespaceMetrics.setLatestUpdateTime(updateTime);
         break;
       case NAMESPACE_FIRST_LOAD_SPEND:
         long firstLoadSpendTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
@@ -109,9 +115,13 @@ public class DefaultNamespaceMetricsExposer extends AbstractMetricsCollector imp
   @Override
   public List<MetricsSample> export0(List<MetricsSample> samples) {
     namespaces.forEach((k, v) -> {
-      samples.add(GaugeMetricsSample.builder().name("namespace_status_"+k).value(1)
-          .putTag("usageCount", String.valueOf(v.usageCount)).putTag("firstLoadSpend",
-              String.valueOf(v.firstLoadSpend)).putTag("latestUpdatedTime",v.latestUpdateTime).build());
+      samples.add(
+          GaugeMetricsSample.builder().name("namespace_usage_count").value(v.usageCount)
+              .putTag("namespace", k).apply(value->  (int) value).build());
+      samples.add(GaugeMetricsSample.builder().name("namespace_first_load_spend")
+          .value(v.firstLoadSpend).apply(value->(long)value).putTag("namespace", k).build());
+      samples.add(GaugeMetricsSample.builder().name("namespace_latest_update_time")
+          .value(v.latestUpdateTime).apply(value->(long)value).putTag("namespace", k).build());
     });
 
     return samples;
@@ -123,9 +133,10 @@ public class DefaultNamespaceMetricsExposer extends AbstractMetricsCollector imp
   }
 
   public static class NamespaceMetrics {
-    private   int usageCount;
-    private  long firstLoadSpend;
-    private  String latestUpdateTime;
+
+    private int usageCount;
+    private long firstLoadSpend;
+    private long latestUpdateTime;
 
     @Override
     public String toString() {
@@ -152,11 +163,11 @@ public class DefaultNamespaceMetricsExposer extends AbstractMetricsCollector imp
       this.firstLoadSpend = firstLoadSpend;
     }
 
-    public String getLatestUpdateTime() {
+    public long getLatestUpdateTime() {
       return latestUpdateTime;
     }
 
-    public void setLatestUpdateTime(String latestUpdateTime) {
+    public void setLatestUpdateTime(long latestUpdateTime) {
       this.latestUpdateTime = latestUpdateTime;
     }
   }

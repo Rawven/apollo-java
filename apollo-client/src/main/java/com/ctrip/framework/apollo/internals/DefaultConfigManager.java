@@ -16,8 +16,8 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.metrics.DefaultNamespaceMetricsExposer.NAMESPACE;
-import static com.ctrip.framework.apollo.metrics.DefaultNamespaceMetricsExposer.NAMESPACE_USAGE_COUNT;
+import static com.ctrip.framework.apollo.monitor.DefaultNamespaceMetricsExposer.NAMESPACE;
+import static com.ctrip.framework.apollo.monitor.DefaultNamespaceMetricsExposer.NAMESPACE_USAGE_COUNT;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;

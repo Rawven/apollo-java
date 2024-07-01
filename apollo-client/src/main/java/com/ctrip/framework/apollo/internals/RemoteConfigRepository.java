@@ -18,7 +18,7 @@ package com.ctrip.framework.apollo.internals;
 
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.metrics.MetricsConstant.TIMESTAMP;
-import static com.ctrip.framework.apollo.metrics.DefaultExceptionMetricsExposer.NAMESPACE404;
+import static com.ctrip.framework.apollo.monitor.DefaultExceptionMetricsExposer.NAMESPACE_404;
 
 import com.ctrip.framework.apollo.Apollo;
 import com.ctrip.framework.apollo.build.ApolloInjector;
@@ -36,7 +36,7 @@ import com.ctrip.framework.apollo.enums.ConfigSourceType;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigStatusCodeException;
 import com.ctrip.framework.apollo.metrics.MetricsEvent;
-import com.ctrip.framework.apollo.metrics.DefaultNamespaceMetricsExposer;
+import com.ctrip.framework.apollo.monitor.DefaultNamespaceMetricsExposer;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import com.ctrip.framework.apollo.util.ConfigUtil;
@@ -276,7 +276,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
             statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
                 message);
           }
-          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException),NAMESPACE404,m_namespace);
+          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException),
+              NAMESPACE_404,m_namespace);
           transaction.setStatus(statusCodeException);
           exception = statusCodeException;
           if(ex.getStatusCode() == 404) {

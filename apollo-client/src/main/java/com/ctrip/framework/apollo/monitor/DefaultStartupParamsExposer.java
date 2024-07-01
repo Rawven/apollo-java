@@ -1,10 +1,11 @@
-package com.ctrip.framework.apollo.metrics;
+package com.ctrip.framework.apollo.monitor;
 
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
+import com.ctrip.framework.apollo.metrics.Metrics;
+import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.metrics.collector.AbstractMetricsCollector;
-import com.ctrip.framework.apollo.metrics.exposer.StartupParamsExposer;
-import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
+import com.ctrip.framework.apollo.monitor.exposer.StartupParamsExposer;
 import com.ctrip.framework.apollo.spring.config.PropertySourcesConstants;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import java.util.Collections;
@@ -34,11 +35,11 @@ public class DefaultStartupParamsExposer extends AbstractMetricsCollector implem
 
   @Override
   public List<MetricsSample> export0(List<MetricsSample> samples) {
-    samples.add(GaugeMetricsSample.builder().name(STARTUP_PARAMETERS).value(1)
-        .apply(value -> 1)
-        .putTag(APPID, getAppId())
-        .putTag(CLUSTER, getApolloCluster())
-        .putTag(ENV, getEnv()).build());
+//    samples.add(GaugeMetricsSample.builder().name(STARTUP_PARAMETERS).value(1)
+//        .apply(value -> 1)
+//        .putTag(APPID, getAppId())
+//        .putTag(CLUSTER, getApolloCluster())
+//        .putTag(ENV, getEnv()).build());
     return Collections.emptyList();
   }
 

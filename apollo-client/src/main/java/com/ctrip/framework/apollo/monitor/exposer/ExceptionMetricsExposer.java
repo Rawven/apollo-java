@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.metrics.exposer;
+package com.ctrip.framework.apollo.monitor.exposer;
 
 import java.util.List;
 import javax.management.MXBean;
@@ -10,7 +10,7 @@ import javax.management.MXBean;
 public interface ExceptionMetricsExposer {
 
   /**
-   *  get the namespaces which 404
+   * get the namespaces which 404
    */
   String getNamespace404();
 

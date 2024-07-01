@@ -1,9 +1,10 @@
-package com.ctrip.framework.apollo.metrics;
+package com.ctrip.framework.apollo.monitor;
 
+import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.metrics.collector.AbstractMetricsCollector;
-import com.ctrip.framework.apollo.metrics.exposer.ThreadPoolMetricsExposer;
 import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
+import com.ctrip.framework.apollo.monitor.exposer.ThreadPoolMetricsExposer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -115,8 +116,8 @@ public class DefaultThreadPoolMetricsExposer extends AbstractMetricsCollector im
   @Override
   public List<MetricsSample> export0(List<MetricsSample> samples) {
     //TODO
-    //exportThreadPoolMetrics(samples, abstractConfigExecutorService, "abstractConfig_");
-    //exportThreadPoolMetrics(samples, abstractConfigFileExecutorService, "abstractConfigFile_");
+    exportThreadPoolMetrics(samples, abstractConfigExecutorService, "abstractConfig");
+    exportThreadPoolMetrics(samples, abstractConfigFileExecutorService, "abstractConfigFile");
     exportThreadPoolMetrics(samples, remoteConfigRepositoryExecutorService,
         "remoteConfigRepository");
     return samples;

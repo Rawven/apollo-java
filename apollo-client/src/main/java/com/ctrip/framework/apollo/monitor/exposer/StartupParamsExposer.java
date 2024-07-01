@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.metrics.exposer;
+package com.ctrip.framework.apollo.monitor.exposer;
 
 import javax.management.MXBean;
 

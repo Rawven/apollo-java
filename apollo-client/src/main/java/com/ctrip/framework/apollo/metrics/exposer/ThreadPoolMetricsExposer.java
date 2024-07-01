@@ -2,6 +2,9 @@ package com.ctrip.framework.apollo.metrics.exposer;
 
 import javax.management.MXBean;
 
+/**
+ * @author Rawven
+ */
 @MXBean
 public interface ThreadPoolMetricsExposer {
 

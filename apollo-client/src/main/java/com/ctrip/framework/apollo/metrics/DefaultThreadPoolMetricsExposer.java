@@ -18,7 +18,8 @@ public class DefaultThreadPoolMetricsExposer extends AbstractMetricsCollector im
     ThreadPoolMetricsExposer {
 
 
-  public static final String[] THREAD_POOL_PARAMS = new String[]{"ThreadPoolName", "activeTaskCount", "queueSize",
+  public static final String[] THREAD_POOL_PARAMS = new String[]{"ThreadPoolName",
+      "activeTaskCount", "queueSize",
       "completedTaskCount",
       "poolSize", "totalTaskCount", "corePoolSize", "maximumPoolSize", "largestPoolSize",
       "queueCapacity", "queueRemainingCapacity", "currentLoad"};
@@ -37,8 +38,6 @@ public class DefaultThreadPoolMetricsExposer extends AbstractMetricsCollector im
     this.abstractConfigExecutorService = (ThreadPoolExecutor) abstractConfigExecutorService;
     this.abstractConfigFileExecutorService = (ThreadPoolExecutor) abstractConfigFileExecutorService;
   }
-
-
 
 
   @Override
@@ -125,17 +124,18 @@ public class DefaultThreadPoolMetricsExposer extends AbstractMetricsCollector im
 
   public void exportThreadPoolMetrics(List<MetricsSample> samples, ThreadPoolExecutor executor,
       String name) {
-    List<Double> list = Arrays.asList((double)executor.getActiveCount(),
-        (double)executor.getQueue().size(),
-        (double)executor.getCompletedTaskCount(), (double) executor.getPoolSize(),
+    List<Double> list = Arrays.asList((double) executor.getActiveCount(),
+        (double) executor.getQueue().size(),
+        (double) executor.getCompletedTaskCount(), (double) executor.getPoolSize(),
         (double) executor.getTaskCount(), (double) executor.getCorePoolSize(),
         (double) executor.getMaximumPoolSize(), (double) executor.getLargestPoolSize(),
         (double) (executor.getQueue().remainingCapacity() + executor.getQueue().size()),
         (double) executor.getQueue().remainingCapacity(),
         (double) executor.getPoolSize() / executor.getMaximumPoolSize());
-    for (int i = 0; i<list.size(); i++) {
-      samples.add(GaugeMetricsSample.builder().putTag(THREAD_POOL_PARAMS[0], name).name(THREAD_POOL_PARAMS[i+1])
-          .value(list.get(i)).apply(value -> (double)value).build());
+    for (int i = 0; i < list.size(); i++) {
+      samples.add(GaugeMetricsSample.builder().putTag(THREAD_POOL_PARAMS[0], name)
+          .name(THREAD_POOL_PARAMS[i + 1])
+          .value(list.get(i)).apply(value -> (double) value).build());
     }
   }
 }

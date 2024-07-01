@@ -48,8 +48,6 @@ public class DefaultExceptionMetricsExposer extends AbstractMetricsCollector imp
     return namespaceTimeout.toString();
   }
 
-
-  //TODO 报错信息该如何展示
   @Override
   public Integer getExceptionNum() {
     return exceptions.size();
@@ -64,9 +62,9 @@ public class DefaultExceptionMetricsExposer extends AbstractMetricsCollector imp
   public void collect0(MetricsEvent event) {
     switch (event.getName()) {
       case TRACER_ERROR:
-        //Tracer.logError
         ApolloConfigException exception = event.getAttachmentValue(THROWABLE);
-        exceptions.add(exception.getCause().getClass().getSimpleName()+exception.getCause().getMessage());
+        exceptions.add(
+            exception.getCause().getClass().getSimpleName() + exception.getCause().getMessage());
         break;
       case TRACER_EVENT:
         String status = event.getAttachmentValue(STATUS);
@@ -86,8 +84,6 @@ public class DefaultExceptionMetricsExposer extends AbstractMetricsCollector imp
   public List<MetricsSample> export0(List<MetricsSample> samples) {
     samples.add(
         CounterMetricsSample.builder().name("exceptionNum").value(exceptions.size()).build());
-
-    //TODO 非数值类型的指标
     samples.add(GaugeMetricsSample.builder().name(NAMESPACE404).value(namespace404.size())
         .apply(value -> (double) namespace404.size()).putTag("data", namespace404.toString())
         .build());

@@ -10,13 +10,17 @@ import com.ctrip.framework.apollo.util.ConfigUtil;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author Rawven
+ */
 public class DefaultStartupParamsExposer extends AbstractMetricsCollector implements
     StartupParamsExposer {
-   private final ConfigUtil configUtil;
+
   public static final String APPID = "appId";
   public static final String CLUSTER = "cluster";
   public static final String ENV = "env";
   public static final String STARTUP_PARAMETERS = "startup_parameters";
+  private final ConfigUtil configUtil;
 
   public DefaultStartupParamsExposer(ConfigUtil configUtil) {
     super("Nop");
@@ -34,7 +38,7 @@ public class DefaultStartupParamsExposer extends AbstractMetricsCollector implem
         .apply(value -> 1)
         .putTag(APPID, getAppId())
         .putTag(CLUSTER, getApolloCluster())
-        .putTag(ENV,getEnv()).build());
+        .putTag(ENV, getEnv()).build());
     return Collections.emptyList();
   }
 

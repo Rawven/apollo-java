@@ -18,5 +18,4 @@ public class NopMessageCollectorManagerTest {
   public void testGetNopMetricsCollectorManager() {
     Assert.assertTrue(metricsCollectorManager.getCollectors().isEmpty());
   }
-
 }

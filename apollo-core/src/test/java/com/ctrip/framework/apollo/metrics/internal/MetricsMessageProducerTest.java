@@ -17,7 +17,7 @@ public class MetricsMessageProducerTest {
 
   @Before
   public void setUp() throws Exception {
-    System.setProperty(ApolloClientSystemConsts.APOLLO_MONITOR_ENABLED,"true");
+    System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED,"true");
     messageProducerManager = new DefaultMessageProducerManager();
   }
 

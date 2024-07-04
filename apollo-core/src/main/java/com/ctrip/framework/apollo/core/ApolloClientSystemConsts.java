@@ -163,17 +163,17 @@ public class ApolloClientSystemConsts {
   public static final String APOLLO_OVERRIDE_SYSTEM_PROPERTIES = "apollo.override-system-properties";
 
   /**
-   * apollo monitor enabled
+   * apollo client monitor enabled
    */
-  public static final String APOLLO_MONITOR_ENABLED = "apollo.monitor.enabled";
+  public static final String APOLLO_CLIENT_MONITOR_ENABLED = "apollo.client.monitor.enabled";
 
   /**
-   * apollo monitor protocol {JMX,Prometheus}
+   * apollo client monitor form {such as jmx,prometheus}
    */
-  public static final String APOLLO_MONITOR_PROTOCOL = "apollo.monitor.protocol";
+  public static final String APOLLO_CLIENT_MONITOR_FORM = "apollo.client.monitor.form";
 
   /**
-   * apollo monitor collect period
+   * apollo client monitor collect period
    */
-  public static final String APOLLO_MONITOR_COLLECT_PERIOD = "apollo.monitor.collect-period";
+  public static final String APOLLO_CLIENT_MONITOR_EXPORT_PERIOD = "apollo.client.monitor.export-period";
 }

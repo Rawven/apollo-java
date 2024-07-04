@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>apollo-plugin-prometheus</artifactId>
+    <artifactId>apollo-plugin-client-prometheus</artifactId>
     <name>Apollo Plugin Prometheus</name>
     <packaging>jar</packaging>
 

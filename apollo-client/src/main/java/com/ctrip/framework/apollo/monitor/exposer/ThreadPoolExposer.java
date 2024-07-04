@@ -1,11 +1,13 @@
-package com.ctrip.framework.apollo.metrics.collector;
+package com.ctrip.framework.apollo.monitor.exposer;
 
-import java.util.List;
+import javax.management.MXBean;
 
-public interface ConfigMemoryStatusCollectorMBean {
+/**
+ * @author Rawven
+ */
+@MXBean
+public interface ThreadPoolExposer {
 
-
-  List<String> getAllUsedNamespaceName();
 
   int getRemotePollThreadPoolActiveCount();
 
@@ -27,9 +29,4 @@ public interface ConfigMemoryStatusCollectorMBean {
 
   double getRemotePollThreadPoolCurrentLoad();
 
-  String getAppId();
-
-  String getCluster();
-
-  String getApolloEnv();
 }

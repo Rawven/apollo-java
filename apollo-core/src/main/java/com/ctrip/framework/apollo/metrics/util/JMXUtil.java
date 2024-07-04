@@ -11,20 +11,25 @@ import javax.management.ObjectName;
  */
 public final class JMXUtil {
 
-  public static final String JMX = "JMX";
-  public static final String MBEAN_NAME = "com.ctrip.framework.apollo.metrics:type=";
+  public static final String JMX = "jmx";
+  public static final String MBEAN_NAME = "apollo.client.monitor:type=";
+  //TODO 自定义MBeanServer
+  public static MBeanServer mbeanServer;
 
   public static ObjectName register(String name, Object mbean) {
     try {
       ObjectName objectName = new ObjectName(name);
 
-      MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+      //TODO
+      if(mbeanServer == null) {
+        mbeanServer = ManagementFactory.getPlatformMBeanServer();
+      }
 
       try {
         mbeanServer.registerMBean(mbean, objectName);
       } catch (InstanceAlreadyExistsException ex) {
-        mbeanServer.unregisterMBean(objectName);
         mbeanServer.registerMBean(mbean, objectName);
+        mbeanServer.unregisterMBean(objectName);
       }
 
       return objectName;

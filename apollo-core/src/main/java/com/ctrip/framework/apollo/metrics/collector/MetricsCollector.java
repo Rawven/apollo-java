@@ -10,9 +10,14 @@ import java.util.List;
 public interface MetricsCollector {
 
   /**
+   * name
+   */
+  String name();
+
+  /**
    * 是否支持该指标
    */
-  boolean isSupport(String tag);
+  boolean isSupport(MetricsEvent event);
 
   /**
    * 收集指标

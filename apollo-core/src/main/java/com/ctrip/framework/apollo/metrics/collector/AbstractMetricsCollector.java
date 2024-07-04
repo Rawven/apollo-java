@@ -20,9 +20,9 @@ public abstract class AbstractMetricsCollector implements MetricsCollector {
   }
 
   @Override
-  public boolean isSupport(String tag) {
+  public boolean isSupport(MetricsEvent event) {
     for (String need : tags) {
-      if (need.equals(tag)) {
+      if (need.equals(event.getTag())) {
         return true;
       }
     }

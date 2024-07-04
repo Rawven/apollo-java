@@ -4,7 +4,7 @@ import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.metrics.collector.AbstractMetricsCollector;
 import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
-import com.ctrip.framework.apollo.monitor.exposer.ThreadPoolMetricsExposer;
+import com.ctrip.framework.apollo.monitor.exposer.ThreadPoolExposer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -15,8 +15,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * @author Rawven
  */
-public class DefaultThreadPoolMetricsExposer extends AbstractMetricsCollector implements
-    ThreadPoolMetricsExposer {
+public class DefaultThreadPoolCollector extends AbstractMetricsCollector implements
+    ThreadPoolExposer {
 
 
   public static final String[] THREAD_POOL_PARAMS = new String[]{"ThreadPoolName",
@@ -30,7 +30,7 @@ public class DefaultThreadPoolMetricsExposer extends AbstractMetricsCollector im
   private final ThreadPoolExecutor abstractConfigExecutorService;
   private final ThreadPoolExecutor abstractConfigFileExecutorService;
 
-  public DefaultThreadPoolMetricsExposer(
+  public DefaultThreadPoolCollector(
       ScheduledExecutorService remoteConfigRepositoryExecutorService,
       ExecutorService abstractConfigExecutorService,
       ExecutorService abstractConfigFileExecutorService) {
@@ -98,7 +98,7 @@ public class DefaultThreadPoolMetricsExposer extends AbstractMetricsCollector im
   }
 
   @Override
-  public boolean isSupport(String tag) {
+  public boolean isSupport(MetricsEvent event) {
     return false;
   }
 

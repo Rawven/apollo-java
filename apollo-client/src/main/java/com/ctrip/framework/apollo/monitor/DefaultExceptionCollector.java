@@ -12,7 +12,7 @@ import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.metrics.collector.AbstractMetricsCollector;
 import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.MetricsSample;
-import com.ctrip.framework.apollo.monitor.exposer.ExceptionMetricsExposer;
+import com.ctrip.framework.apollo.monitor.exposer.ExceptionExposer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -22,8 +22,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * @author Rawven
  */
-public class DefaultExceptionMetricsExposer extends AbstractMetricsCollector implements
-    ExceptionMetricsExposer {
+public class DefaultExceptionCollector extends AbstractMetricsCollector implements
+    ExceptionExposer {
 
 
   public static final String NAMESPACE_404 = "namespace404";
@@ -35,7 +35,7 @@ public class DefaultExceptionMetricsExposer extends AbstractMetricsCollector imp
   private final List<String> namespace404 = new CopyOnWriteArrayList<>();
   private final List<String> namespaceTimeout = new CopyOnWriteArrayList<>();
 
-  public DefaultExceptionMetricsExposer() {
+  public DefaultExceptionCollector() {
     super(MetricsConstant.TRACER);
   }
 
@@ -84,12 +84,13 @@ public class DefaultExceptionMetricsExposer extends AbstractMetricsCollector imp
   @Override
   public List<MetricsSample> export0(List<MetricsSample> samples) {
     samples.add(
-        GaugeMetricsSample.builder().name("exceptionNum").value(exceptions.size()).apply(value -> (int)value).build());
+        GaugeMetricsSample.builder().name("exceptionNum").value(exceptions.size())
+            .apply(value -> (int) value).build());
     samples.add(
         GaugeMetricsSample.builder().name(NAMESPACE_404 + "_Num").value(namespace404.size())
-            .apply(value -> (int)value).build());
+            .apply(value -> (int) value).build());
     samples.add(GaugeMetricsSample.builder().name(NAMESPACE_TIMEOUT + "_Num")
-        .value(namespaceTimeout.size()).apply(value -> (int)value).build());
+        .value(namespaceTimeout.size()).apply(value -> (int) value).build());
     return samples;
   }
 

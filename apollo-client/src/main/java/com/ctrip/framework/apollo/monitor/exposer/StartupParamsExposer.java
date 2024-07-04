@@ -8,6 +8,8 @@ import javax.management.MXBean;
 @MXBean
 public interface StartupParamsExposer {
 
+  String getStartupParams(String key);
+
   String getApolloAccessKeySecret();
 
   Boolean getApolloAutoUpdateInjectedSpringProperties();

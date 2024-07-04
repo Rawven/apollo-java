@@ -7,7 +7,7 @@ import javax.management.MXBean;
  * @author Rawven
  */
 @MXBean
-public interface ExceptionMetricsExposer {
+public interface ExceptionExposer {
 
   /**
    * get the namespaces which 404

@@ -31,7 +31,7 @@ public abstract class Metrics {
         init();
       }
       for (MetricsCollector collector : collectorManager.getCollectors()) {
-        if (collector.isSupport(event.getTag())) {
+        if (collector.isSupport(event)) {
           collector.collect(event);
           return;
         }

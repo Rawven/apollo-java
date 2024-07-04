@@ -29,7 +29,7 @@ import java.util.List;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class DefaultMessageProducerManager implements MessageProducerManager {
-    private static MessageProducer producer = new MessageProducerComposite(new ArrayList<>());
+    private static MessageProducer producer;
 
     public DefaultMessageProducerManager() {
         List<MessageProducer> producers = new ArrayList<>();
@@ -40,10 +40,9 @@ public class DefaultMessageProducerManager implements MessageProducerManager {
             producers.add(new CatMessageProducer());
         }
         if (producers.isEmpty()) {
-            producer = new NullMessageProducer();
-        }else {
-            producer = new MessageProducerComposite(producers);
+            producers.add(new NullMessageProducer());
         }
+        producer = new MessageProducerComposite(producers);
     }
     @Override
     public MessageProducer getProducer() {

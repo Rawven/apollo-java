@@ -1,17 +1,17 @@
 package com.ctrip.framework.apollo.internals;
 
-import com.ctrip.framework.apollo.monitor.exposer.NamespaceMetricsExposer;
+import com.ctrip.framework.apollo.monitor.exposer.NamespaceExposer;
 import com.ctrip.framework.apollo.monitor.exposer.StartupParamsExposer;
-import com.ctrip.framework.apollo.monitor.exposer.ThreadPoolMetricsExposer;
-import com.ctrip.framework.apollo.monitor.exposer.ExceptionMetricsExposer;
+import com.ctrip.framework.apollo.monitor.exposer.ThreadPoolExposer;
+import com.ctrip.framework.apollo.monitor.exposer.ExceptionExposer;
 
 public interface ConfigMonitor {
 
-  ThreadPoolMetricsExposer getMemoryStatusExposer();
+  ThreadPoolExposer getMemoryStatusExposer();
 
-  ExceptionMetricsExposer getTracerEventExposer();
+  ExceptionExposer getTracerEventExposer();
 
-  NamespaceMetricsExposer getClientEventExposer();
+  NamespaceExposer getClientEventExposer();
 
   StartupParamsExposer getStartupParamsExposer();
 

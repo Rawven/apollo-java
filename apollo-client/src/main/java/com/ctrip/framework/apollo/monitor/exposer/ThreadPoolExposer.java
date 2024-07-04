@@ -6,7 +6,7 @@ import javax.management.MXBean;
  * @author Rawven
  */
 @MXBean
-public interface ThreadPoolMetricsExposer {
+public interface ThreadPoolExposer {
 
 
   int getRemotePollThreadPoolActiveCount();

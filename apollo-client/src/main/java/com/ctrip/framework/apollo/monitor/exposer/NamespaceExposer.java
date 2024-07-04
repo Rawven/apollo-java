@@ -7,7 +7,19 @@ import javax.management.MXBean;
  * @author Rawven
  */
 @MXBean
-public interface NamespaceMetricsExposer {
+public interface NamespaceExposer {
+
+  String getNamespaceReleaseKey(String namespace);
+
+  long getNamespaceUsageCount(String namespace);
+
+  String getNamespaceLatestUpdateTime(String namespace);
+
+  long getNamespaceFirstLoadSpend(String namespace);
+
+  List<String> getNamespaceItemName(String namespace);
+
+  List<String> getAllNamespaceReleaseKey();
 
   List<String> getAllNamespaceUsageCount();
 

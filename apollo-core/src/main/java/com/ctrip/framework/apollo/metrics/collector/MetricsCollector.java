@@ -9,28 +9,27 @@ import java.util.List;
  */
 public interface MetricsCollector {
 
-  /**
-   * name
-   */
+
   String name();
 
   /**
-   * 是否支持该指标
+   * is support the event
    */
   boolean isSupport(MetricsEvent event);
 
   /**
-   * 收集指标
+   * collect metrics from event
    */
   void collect(MetricsEvent event);
 
   /**
-   * 是否更新了指标样本
+   * is samples updated
    */
   boolean isSamplesUpdated();
 
   /**
-   * 导出指标
+   *
+   * export to a format recognized by the monitoring system
    */
   List<MetricsSample> export();
 

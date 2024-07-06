@@ -51,7 +51,6 @@ public class DefaultMetricsCollectorManager implements MetricsCollectorManager {
 
     //init reporter
     String form = configUtil.getMonitorForm();
-    //TODO 思考优化实现
     MetricsReporter reporter = null;
     if (form != null) {
       if (JMXUtil.JMX.equals(form)) {
@@ -63,7 +62,8 @@ public class DefaultMetricsCollectorManager implements MetricsCollectorManager {
           reporter = ServiceBootstrap.loadPrimary(MetricsReporter.class);
           reporter.init(collectors, configUtil.getMonitorExportPeriod());
         } catch (Exception e) {
-          logger.error("Error initializing MetricsReporter for protocol: {}", form, e);
+          logger.error("Error initializing MetricsReporter for protocol: {} ."
+              + "Please make sure you include the necessary dependencies,such as apollo-plugin-client-prometheus", form, e);
           ApolloConfigException exception = new ApolloConfigException(
               "Error initializing MetricsReporter for form: " + form, e);
           Tracer.logError(exception);
@@ -71,7 +71,6 @@ public class DefaultMetricsCollectorManager implements MetricsCollectorManager {
         }
       }
     }
-
     //init monitor
     DefaultConfigMonitor defaultConfigMonitor = (DefaultConfigMonitor) ApolloInjector.getInstance(
         ConfigMonitor.class);

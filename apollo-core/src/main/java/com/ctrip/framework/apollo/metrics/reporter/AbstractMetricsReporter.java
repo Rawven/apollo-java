@@ -20,9 +20,9 @@ import org.slf4j.Logger;
 @SuppressWarnings("all")
 public abstract class AbstractMetricsReporter implements MetricsReporter {
 
-  private static final Logger log = DeferredLoggerFactory.getLogger(
+  protected static final Logger log = DeferredLoggerFactory.getLogger(
       AbstractMetricsReporter.class);
-  private static ScheduledExecutorService m_executorService;
+  public static ScheduledExecutorService m_executorService;
   private List<MetricsCollector> collectors;
 
   @Override
@@ -50,7 +50,7 @@ public abstract class AbstractMetricsReporter implements MetricsReporter {
     }, 5, collectPeriod, TimeUnit.SECONDS);
   }
 
-  private void updateMetricsData() {
+  protected void updateMetricsData() {
     log.debug("Start to update metrics data job");
     for (MetricsCollector collector : collectors) {
       if (!collector.isSamplesUpdated()) {
@@ -63,7 +63,7 @@ public abstract class AbstractMetricsReporter implements MetricsReporter {
     }
   }
 
-  private void registerSample(MetricsSample sample) {
+  protected void registerSample(MetricsSample sample) {
     try {
       switch (sample.getType()) {
         case GAUGE:

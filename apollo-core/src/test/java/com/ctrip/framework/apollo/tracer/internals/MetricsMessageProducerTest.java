@@ -1,11 +1,8 @@
-package com.ctrip.framework.apollo.metrics.internal;
+package com.ctrip.framework.apollo.tracer.internals;
 
 import static org.junit.Assert.assertTrue;
 
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
-import com.ctrip.framework.apollo.tracer.internals.DefaultMessageProducerManager;
-import com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite;
-import com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducerManager;
 import java.util.List;

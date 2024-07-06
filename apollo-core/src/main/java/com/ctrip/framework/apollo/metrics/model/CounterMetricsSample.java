@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class CounterMetricsSample extends MetricsSample {
 
-  private AtomicDouble value;
+  private final AtomicDouble value;
 
   public CounterMetricsSample(String name, double num) {
     this.name = name;
@@ -34,7 +34,7 @@ public class CounterMetricsSample extends MetricsSample {
 
     private String name;
     private double value;
-    private Map<String, String> tags = new HashMap<>();
+    private final Map<String, String> tags = new HashMap<>();
 
     public CounterMetricsSample.Builder name(String name) {
       this.name = name;

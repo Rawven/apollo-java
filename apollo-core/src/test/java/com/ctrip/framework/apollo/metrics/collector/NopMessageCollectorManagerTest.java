@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.metrics.internal;
+package com.ctrip.framework.apollo.metrics.collector;
 
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollectorManager;
 import com.ctrip.framework.apollo.metrics.collector.internal.NopMetricsCollectorManager;

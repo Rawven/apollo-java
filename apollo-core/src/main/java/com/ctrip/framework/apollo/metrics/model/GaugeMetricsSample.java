@@ -46,7 +46,7 @@ public class GaugeMetricsSample<T> extends MetricsSample {
     private String name;
     private T value;
     private ToDoubleFunction<T> apply = t -> 1;
-    private Map<String, String> tags = new HashMap<>();
+    private final Map<String, String> tags = new HashMap<>();
 
     public Builder<T> name(String name) {
       this.name = name;

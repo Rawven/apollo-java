@@ -1,13 +1,14 @@
 package com.ctrip.framework.apollo.monitor;
 
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAME_VALUE_PAIRS;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.STATUS;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.THROWABLE;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER_ERROR;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER_EVENT;
+
+import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.NAME_VALUE_PAIRS;
+import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.STATUS;
+import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.THROWABLE;
+import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.TRACER;
+import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.TRACER_ERROR;
+import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.TRACER_EVENT;
 
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
-import com.ctrip.framework.apollo.metrics.MetricsConstant;
 import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.metrics.collector.AbstractMetricsCollector;
 import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
@@ -25,9 +26,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class DefaultExceptionCollector extends AbstractMetricsCollector implements
     ExceptionExposer {
 
-
-  public static final String NAMESPACE_404 = "namespace404";
-  public static final String NAMESPACE_TIMEOUT = "namespaceTimeout";
+  public static final String NAMESPACE_404 = "namespace_404_num";
+  public static final String NAMESPACE_TIMEOUT = "namespace_time_out";
+  public static final String EXCEPTION_NUM = "exception_num";
   //TODO 会进行增长 但是不会有删除操作 ArrayBlockingQueue 线程安全且大小固定
   private static final int MAX_EXCEPTIONS_SIZE = 25;
   private final BlockingQueue<String> exceptions = new ArrayBlockingQueue<>(MAX_EXCEPTIONS_SIZE);
@@ -36,7 +37,7 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
   private final List<String> namespaceTimeout = new CopyOnWriteArrayList<>();
 
   public DefaultExceptionCollector() {
-    super(MetricsConstant.TRACER);
+    super(TRACER);
   }
 
   @Override
@@ -70,10 +71,15 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
       case TRACER_EVENT:
         String status = event.getAttachmentValue(STATUS);
         String namespace = event.getAttachmentValue(NAME_VALUE_PAIRS);
-        if (status.equals(NAMESPACE_404)) {
-          namespace404.add(namespace);
-        } else if (status.equals(NAMESPACE_TIMEOUT)) {
-          namespaceTimeout.add(namespace);
+        switch (status) {
+          case NAMESPACE_404:
+            namespace404.add(namespace);
+            break;
+          case NAMESPACE_TIMEOUT:
+            namespaceTimeout.add(namespace);
+            break;
+          default:
+            break;
         }
         break;
       default:
@@ -84,12 +90,12 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
   @Override
   public List<MetricsSample> export0(List<MetricsSample> samples) {
     samples.add(
-        GaugeMetricsSample.builder().name("exceptionNum").value(exceptions.size())
+        GaugeMetricsSample.builder().name(EXCEPTION_NUM).value(exceptions.size())
             .apply(value -> (int) value).build());
     samples.add(
-        GaugeMetricsSample.builder().name(NAMESPACE_404 + "_Num").value(namespace404.size())
+        GaugeMetricsSample.builder().name(NAMESPACE_404).value(namespace404.size())
             .apply(value -> (int) value).build());
-    samples.add(GaugeMetricsSample.builder().name(NAMESPACE_TIMEOUT + "_Num")
+    samples.add(GaugeMetricsSample.builder().name(NAMESPACE_TIMEOUT)
         .value(namespaceTimeout.size()).apply(value -> (int) value).build());
     return samples;
   }

@@ -8,6 +8,9 @@ import java.util.List;
  */
 public interface MetricsCollectorManager extends Ordered {
 
+  /**
+   * get collectors
+   */
   List<MetricsCollector> getCollectors();
 
   @Override

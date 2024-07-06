@@ -1,12 +1,10 @@
-package com.ctrip.framework.apollo.metrics.internal;
+package com.ctrip.framework.apollo.metrics.collector;
 
-import com.ctrip.framework.apollo.metrics.collector.MetricsCollector;
-import com.ctrip.framework.apollo.metrics.collector.MetricsCollectorManager;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MockMetricsCollectorManager implements MetricsCollectorManager {
-  private  static List<MetricsCollector> collectors = new ArrayList<>();
+  private  static final List<MetricsCollector> collectors = new ArrayList<>();
 
   @Override
   public List<MetricsCollector> getCollectors() {

@@ -11,7 +11,7 @@ public class MetricsSample {
 
   protected String name;
   protected MeterType type;
-  protected Map<String, String> tags = new HashMap<>();
+  protected final Map<String, String> tags = new HashMap<>();
 
 
   public String getName() {

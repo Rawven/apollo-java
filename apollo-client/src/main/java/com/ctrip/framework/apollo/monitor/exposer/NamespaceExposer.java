@@ -9,12 +9,24 @@ import javax.management.MXBean;
 @MXBean
 public interface NamespaceExposer {
 
+  /**
+   * get namespace release key
+   */
   String getNamespaceReleaseKey(String namespace);
 
+  /**
+   * get namespace usage count
+   */
   long getNamespaceUsageCount(String namespace);
 
+  /**
+   * get namespace latest update time
+   */
   String getNamespaceLatestUpdateTime(String namespace);
 
+  /**
+   * get time which namespace first load spend
+   */
   long getNamespaceFirstLoadSpend(String namespace);
 
   List<String> getNamespaceItemName(String namespace);

@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollector;
-import com.ctrip.framework.apollo.metrics.internal.MockMetricsCollectorManager;
+import com.ctrip.framework.apollo.metrics.collector.MockMetricsCollectorManager;
 import org.junit.Before;
 import org.junit.Test;
 

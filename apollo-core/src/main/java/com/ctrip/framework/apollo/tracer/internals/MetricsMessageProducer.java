@@ -1,20 +1,23 @@
 package com.ctrip.framework.apollo.tracer.internals;
 
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.APOLLO_CONFIG_EXCEPTION;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAME_VALUE_PAIRS;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.STATUS;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.THROWABLE;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER_ERROR;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.TRACER_EVENT;
-
 import com.ctrip.framework.apollo.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import java.util.Objects;
 
+/**
+ * metrics message producer
+ * @author Rawven
+ */
 public class MetricsMessageProducer implements MessageProducer {
 
+    public static final String APOLLO_CONFIG_EXCEPTION = "ApolloConfigException";
+    public static final String TRACER = "Tracer";
+    public static final String TRACER_ERROR = TRACER + ".Error";
+    public static final String TRACER_EVENT = TRACER + ".Event";
+    public static final String THROWABLE = TRACER + ".throwable";
+    public static final String STATUS = TRACER + ".status";
+    public static final String NAME_VALUE_PAIRS = TRACER + ".nameValuePairs";
 
 
     @Override

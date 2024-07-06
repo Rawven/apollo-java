@@ -30,10 +30,11 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.
       ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
   public static final String NAMESPACE = "namespace";
-  public static final String NAMESPACE_UPDATE_TIME = "namespace_update_time";
-  public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_firstLoadSpend";
+  public static final String NAMESPACE_UPDATE_TIME = "namespace_latest_update_time";
+  public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_first_load_spend_time";
   public static final String NAMESPACE_USAGE_COUNT = "namespace_usage_count";
   public static final String NAMESPACE_RELEASE_KEY = "namespace_release_key";
+  public static final String RELEASE_KEY = "release_key";
   private static final Logger logger = DeferredLoggerFactory.getLogger(
       DefaultNamespaceCollector.class);
   private final Map<String, Config> m_configs;
@@ -54,34 +55,29 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
     this.m_configFileLocks = m_configFileLocks;
   }
 
-
-  public Map<String, NamespaceMetrics> getAllNamespaceMetrics() {
-    return namespaces;
-  }
-
   @Override
   public String getNamespaceReleaseKey(String namespace) {
     NamespaceMetrics namespaceMetrics = namespaces.get(namespace);
-    return namespaceMetrics == null ? null : namespaceMetrics.releaseKey;
+    return namespaceMetrics == null ? null : namespaceMetrics.getReleaseKey();
   }
 
   @Override
   public long getNamespaceUsageCount(String namespace) {
     NamespaceMetrics namespaceMetrics = namespaces.get(namespace);
-    return namespaceMetrics == null ? 0 : namespaceMetrics.usageCount;
+    return namespaceMetrics == null ? 0 : namespaceMetrics.getUsageCount();
   }
 
   @Override
   public String getNamespaceLatestUpdateTime(String namespace) {
     NamespaceMetrics namespaceMetrics = namespaces.get(namespace);
     return namespaceMetrics == null ? null
-        : DATE_FORMATTER.format(Instant.ofEpochMilli(namespaceMetrics.latestUpdateTime));
+        : DATE_FORMATTER.format(Instant.ofEpochMilli(namespaceMetrics.getLatestUpdateTime()));
   }
 
   @Override
   public long getNamespaceFirstLoadSpend(String namespace) {
     NamespaceMetrics namespaceMetrics = namespaces.get(namespace);
-    return namespaceMetrics == null ? 0 : namespaceMetrics.firstLoadSpend;
+    return namespaceMetrics == null ? 0 : namespaceMetrics.getFirstLoadSpend();
   }
 
   @Override
@@ -93,14 +89,14 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   @Override
   public List<String> getAllNamespaceReleaseKey() {
     List<String> releaseKeys = Lists.newArrayList();
-    namespaces.forEach((k, v) -> releaseKeys.add(k + ":" + v.releaseKey));
+    namespaces.forEach((k, v) -> releaseKeys.add(k + ":" + v.getReleaseKey()));
     return releaseKeys;
   }
 
   @Override
   public List<String> getAllNamespaceUsageCount() {
     List<String> usedTimes = Lists.newArrayList();
-    namespaces.forEach((k, v) -> usedTimes.add(k + ":" + v.usageCount));
+    namespaces.forEach((k, v) -> usedTimes.add(k + ":" + v.getUsageCount()));
     return usedTimes;
   }
 
@@ -108,7 +104,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   public List<String> getAllNamespacesLatestUpdateTime() {
     List<String> latestUpdateTimes = Lists.newArrayList();
     namespaces.forEach((k, v) -> latestUpdateTimes.add(
-        k + ":" + DATE_FORMATTER.format(Instant.ofEpochMilli(v.latestUpdateTime))));
+        k + ":" + DATE_FORMATTER.format(Instant.ofEpochMilli(v.getLatestUpdateTime()))));
     return latestUpdateTimes;
   }
 
@@ -123,7 +119,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   public List<String> getAllNamespaceFirstLoadSpend() {
     List<String> firstLoadSpends = Lists.newArrayList();
     namespaces.forEach((k, v) -> firstLoadSpends.add(
-        k + ":" + v.firstLoadSpend));
+        k + ":" + v.getFirstLoadSpend()));
     return firstLoadSpends;
   }
 
@@ -152,7 +148,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
         namespaceMetrics.setFirstLoadSpend(firstLoadSpendTime);
         break;
       case NAMESPACE_RELEASE_KEY:
-        String releaseKey = event.getAttachmentValue("releaseKey");
+        String releaseKey = event.getAttachmentValue(RELEASE_KEY);
         namespaceMetrics.setReleaseKey(releaseKey);
         break;
       default:
@@ -165,12 +161,13 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   public List<MetricsSample> export0(List<MetricsSample> samples) {
     namespaces.forEach((k, v) -> {
       samples.add(
-          GaugeMetricsSample.builder().name("namespace_usage_count").value(v.usageCount)
-              .putTag("namespace", k).apply(value -> (int) value).build());
-      samples.add(GaugeMetricsSample.builder().name("namespace_first_load_spend")
-          .value(v.firstLoadSpend).apply(value -> (long) value).putTag("namespace", k).build());
-      samples.add(GaugeMetricsSample.builder().name("namespace_latest_update_time")
-          .value(v.latestUpdateTime).apply(value -> (long) value).putTag("namespace", k).build());
+          GaugeMetricsSample.builder().name(NAMESPACE_USAGE_COUNT).value(v.getUsageCount())
+              .putTag(NAMESPACE, k).apply(value -> (int) value).build());
+      samples.add(GaugeMetricsSample.builder().name(NAMESPACE_FIRST_LOAD_SPEND)
+          .value(v.getFirstLoadSpend()).apply(value -> (long) value).putTag(NAMESPACE, k).build());
+      samples.add(GaugeMetricsSample.builder().name(NAMESPACE_UPDATE_TIME)
+          .value(v.getLatestUpdateTime()).apply(value -> (long) value).putTag(NAMESPACE, k)
+          .build());
     });
 
     return samples;

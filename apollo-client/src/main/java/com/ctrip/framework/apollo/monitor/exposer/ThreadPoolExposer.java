@@ -9,24 +9,66 @@ import javax.management.MXBean;
 public interface ThreadPoolExposer {
 
 
-  int getRemotePollThreadPoolActiveCount();
+  int getRemoteConfigRepositoryThreadPoolActiveCount();
 
-  int getRemotePollThreadPoolQueueSize();
+  int getRemoteConfigRepositoryThreadPoolQueueSize();
 
-  int getRemotePollThreadPoolCorePoolSize();
+  int getRemoteConfigRepositoryThreadPoolCorePoolSize();
 
-  int getRemotePollThreadPoolMaximumPoolSize();
+  int getRemoteConfigRepositoryThreadPoolMaximumPoolSize();
 
-  int getRemotePollThreadPoolPoolSize();
+  int getRemoteConfigRepositoryThreadPoolPoolSize();
 
-  long getRemotePollThreadPoolTaskCount();
+  long getRemoteConfigRepositoryThreadPoolTaskCount();
 
-  long getRemotePollThreadPoolCompletedTaskCount();
+  long getRemoteConfigRepositoryThreadPoolCompletedTaskCount();
 
-  int getRemotePollThreadPoolLargestPoolSize();
+  int getRemoteConfigRepositoryThreadPoolLargestPoolSize();
 
-  int getRemotePollThreadPoolRemainingCapacity();
+  int getRemoteConfigRepositoryThreadPoolRemainingCapacity();
 
-  double getRemotePollThreadPoolCurrentLoad();
+  double getRemoteConfigRepositoryThreadPoolCurrentLoad();
+
+
+  int getAbstractConfigThreadPoolActiveCount();
+
+  int getAbstractConfigThreadPoolQueueSize();
+
+  int getAbstractConfigThreadPoolCorePoolSize();
+
+  int getAbstractConfigThreadPoolMaximumPoolSize();
+
+  int getAbstractConfigThreadPoolPoolSize();
+
+  long getAbstractConfigThreadPoolTaskCount();
+
+  long getAbstractConfigThreadPoolCompletedTaskCount();
+
+  int getAbstractConfigThreadPoolLargestPoolSize();
+
+  int getAbstractConfigThreadPoolRemainingCapacity();
+
+  double getAbstractConfigThreadPoolCurrentLoad();
+
+
+  int getAbstractConfigFileThreadPoolActiveCount();
+
+  int getAbstractConfigFileThreadPoolQueueSize();
+
+  int getAbstractConfigFileThreadPoolCorePoolSize();
+
+  int getAbstractConfigFileThreadPoolMaximumPoolSize();
+
+  int getAbstractConfigFileThreadPoolPoolSize();
+
+  long getAbstractConfigFileThreadPoolTaskCount();
+
+  long getAbstractConfigFileThreadPoolCompletedTaskCount();
+
+  int getAbstractConfigFileThreadPoolLargestPoolSize();
+
+  int getAbstractConfigFileThreadPoolRemainingCapacity();
+
+  double getAbstractConfigFileThreadPoolCurrentLoad();
 
 }

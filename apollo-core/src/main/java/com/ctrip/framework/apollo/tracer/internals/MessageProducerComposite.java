@@ -4,8 +4,12 @@ import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import java.util.List;
 
+/**
+ * message producer composite
+ * @author Rawven
+ */
 public class MessageProducerComposite implements MessageProducer {
-    private List<MessageProducer> producers;
+    private final List<MessageProducer> producers;
 
     public MessageProducerComposite(List<MessageProducer> list) {
         this.producers = list;

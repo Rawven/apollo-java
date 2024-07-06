@@ -41,7 +41,7 @@ public class MetricsEvent {
   public String toString() {
     return "MetricsEvent{" +
         "name='" + name + '\'' +
-        ", attachments=" + attachments.toString() +
+        ", attachments=" + attachments +
         ", tag='" + tag + '\'' +
         '}';
   }

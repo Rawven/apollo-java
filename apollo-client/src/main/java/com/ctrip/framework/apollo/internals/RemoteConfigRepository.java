@@ -170,6 +170,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         logger.debug("Remote Config refreshed!");
         m_configCache.set(current);
         this.fireRepositoryChange(m_namespace, this.getConfig());
+
+        MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_RELEASE_KEY).withTag(
+            DefaultNamespaceCollector.NAMESPACE).putAttachment(DefaultNamespaceCollector.RELEASE_KEY,
+            current.getReleaseKey()).putAttachment(DefaultNamespaceCollector.NAMESPACE,current.getNamespaceName()).push();
       }
 
       if (current != null) {

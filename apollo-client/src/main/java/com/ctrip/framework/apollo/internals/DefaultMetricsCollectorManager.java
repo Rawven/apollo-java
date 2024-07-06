@@ -2,18 +2,15 @@ package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
-import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollector;
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollectorManager;
 import com.ctrip.framework.apollo.metrics.reporter.MetricsReporter;
-import com.ctrip.framework.apollo.metrics.util.JMXUtil;
+import com.ctrip.framework.apollo.metrics.reporter.MetricsReporterFactory;
 import com.ctrip.framework.apollo.monitor.DefaultExceptionCollector;
 import com.ctrip.framework.apollo.monitor.DefaultNamespaceCollector;
 import com.ctrip.framework.apollo.monitor.DefaultStartupParamsCollector;
 import com.ctrip.framework.apollo.monitor.DefaultThreadPoolCollector;
-import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.util.ConfigUtil;
-import com.ctrip.framework.foundation.internals.ServiceBootstrap;
 import com.google.common.collect.Lists;
 import java.util.List;
 import org.slf4j.Logger;
@@ -49,34 +46,16 @@ public class DefaultMetricsCollectorManager implements MetricsCollectorManager {
         threadPoolCollector,
         startupCollector);
 
-    //init reporter
-    String form = configUtil.getMonitorForm();
-    MetricsReporter reporter = null;
-    if (form != null) {
-      if (JMXUtil.JMX.equals(form)) {
-        collectors.forEach(metricsCollector ->
-            JMXUtil.register(JMXUtil.MBEAN_NAME + metricsCollector.name(),
-                metricsCollector));
-      } else {
-        try {
-          reporter = ServiceBootstrap.loadPrimary(MetricsReporter.class);
-          reporter.init(collectors, configUtil.getMonitorExportPeriod());
-        } catch (Exception e) {
-          logger.error("Error initializing MetricsReporter for protocol: {} ."
-              + "Please make sure you include the necessary dependencies,such as apollo-plugin-client-prometheus", form, e);
-          ApolloConfigException exception = new ApolloConfigException(
-              "Error initializing MetricsReporter for form: " + form, e);
-          Tracer.logError(exception);
-          throw exception;
-        }
-      }
-    }
-    //init monitor
+    //init reporter and monitor
+    MetricsReporterFactory reporterFactory = ApolloInjector.getInstance(MetricsReporterFactory.class);
+    MetricsReporter metricsReporter = reporterFactory.getMetricsReporter(collectors);
+
     DefaultConfigMonitor defaultConfigMonitor = (DefaultConfigMonitor) ApolloInjector.getInstance(
         ConfigMonitor.class);
     defaultConfigMonitor.init(namespaceCollector, threadPoolCollector, exceptionCollector,
-        startupCollector, reporter
+        startupCollector, metricsReporter
     );
+
   }
 
   @Override

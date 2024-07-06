@@ -17,6 +17,13 @@ public interface MetricsReporter extends Ordered {
   void init(List<MetricsCollector> collectors, long collectPeriod);
 
   /**
+   * is support
+   *
+   * @param form form
+   * @return
+   */
+  boolean isSupport(String form);
+  /**
    * used to register Counter type metrics
    */
   void registerCounterSample(CounterMetricsSample sample);

@@ -17,6 +17,7 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
+import com.ctrip.framework.apollo.metrics.reporter.MetricsReporterFactory;
 import com.ctrip.framework.apollo.spi.ApolloInjectorCustomizer;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
@@ -105,6 +106,7 @@ public class DefaultInjector implements Injector {
       bind(YamlParser.class).in(Singleton.class);
       bind(PropertiesFactory.class).to(DefaultPropertiesFactory.class).in(Singleton.class);
       bind(ConfigMonitor.class).to(DefaultConfigMonitor.class).in(Singleton.class);
+      bind(MetricsReporterFactory.class).to(DefaultMetricsReporterFactory.class).in(Singleton.class);
     }
   }
 }

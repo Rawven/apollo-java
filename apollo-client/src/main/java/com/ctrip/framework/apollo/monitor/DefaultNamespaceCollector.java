@@ -34,7 +34,9 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_first_load_spend_time";
   public static final String NAMESPACE_USAGE_COUNT = "namespace_usage_count";
   public static final String NAMESPACE_RELEASE_KEY = "namespace_release_key";
-  public static final String RELEASE_KEY = "release_key";
+  public static final String NAMESPACE_ITEM_NUM = "namespace_item_num";
+  public static final String CONFIG_FILE_NUM = "config_file_num";
+  public static final String NAMESPACE_LATEST_RELEASE_KEY = "namespace_latest_release_key";
   private static final Logger logger = DeferredLoggerFactory.getLogger(
       DefaultNamespaceCollector.class);
   private final Map<String, Config> m_configs;
@@ -148,7 +150,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
         namespaceMetrics.setFirstLoadSpend(firstLoadSpendTime);
         break;
       case NAMESPACE_RELEASE_KEY:
-        String releaseKey = event.getAttachmentValue(RELEASE_KEY);
+        String releaseKey = event.getAttachmentValue(NAMESPACE_LATEST_RELEASE_KEY);
         namespaceMetrics.setReleaseKey(releaseKey);
         break;
       default:
@@ -168,6 +170,11 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
       samples.add(GaugeMetricsSample.builder().name(NAMESPACE_UPDATE_TIME)
           .value(v.getLatestUpdateTime()).apply(value -> (long) value).putTag(NAMESPACE, k)
           .build());
+      samples.add(GaugeMetricsSample.builder().name(NAMESPACE_ITEM_NUM)
+          .value(m_configs.get(k).getPropertyNames().size()).apply(value -> (int) value)
+          .putTag(NAMESPACE, k).build());
+      samples.add(GaugeMetricsSample.builder().name(CONFIG_FILE_NUM)
+          .value(m_configFiles.size()).apply(value -> (int) value).build());
     });
 
     return samples;

@@ -172,7 +172,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         this.fireRepositoryChange(m_namespace, this.getConfig());
 
         MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_RELEASE_KEY).withTag(
-            DefaultNamespaceCollector.NAMESPACE).putAttachment(DefaultNamespaceCollector.RELEASE_KEY,
+            DefaultNamespaceCollector.NAMESPACE).putAttachment(DefaultNamespaceCollector.NAMESPACE_LATEST_RELEASE_KEY,
             current.getReleaseKey()).putAttachment(DefaultNamespaceCollector.NAMESPACE,current.getNamespaceName()).push();
       }
 

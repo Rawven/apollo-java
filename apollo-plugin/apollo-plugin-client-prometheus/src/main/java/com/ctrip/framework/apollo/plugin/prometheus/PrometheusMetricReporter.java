@@ -1,11 +1,9 @@
 package com.ctrip.framework.apollo.plugin.prometheus;
 
-import com.ctrip.framework.apollo.build.ApolloInjector;
-import com.ctrip.framework.apollo.metrics.reporter.AbstractMetricsReporter;
 import com.ctrip.framework.apollo.metrics.model.CounterMetricsSample;
 import com.ctrip.framework.apollo.metrics.model.GaugeMetricsSample;
+import com.ctrip.framework.apollo.metrics.reporter.AbstractMetricsReporter;
 import com.ctrip.framework.apollo.metrics.reporter.MetricsReporter;
-import com.ctrip.framework.apollo.util.ConfigUtil;
 import io.prometheus.client.Collector;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
@@ -15,7 +13,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,16 +26,17 @@ public class PrometheusMetricReporter extends AbstractMetricsReporter implements
   private final Map<String, Collector.Describable> map = new HashMap<>();
   private final String PROMETHEUS = "prometheus";
   public PrometheusMetricReporter() {
-    ConfigUtil configUtil = ApolloInjector.getInstance(ConfigUtil.class);
-    if(!Objects.equals(configUtil.getMonitorForm(), PROMETHEUS)){
-      throw new IllegalStateException("PrometheusMetricReporter is not enabled");
-    }
     this.registry = new CollectorRegistry();
   }
 
   @Override
   public void doInit() {
 
+  }
+
+  @Override
+  public boolean isSupport(String form) {
+    return PROMETHEUS.equals(form);
   }
 
   @Override

@@ -23,7 +23,7 @@ public abstract class AbstractMetricsReporter implements MetricsReporter {
   protected static final Logger log = DeferredLoggerFactory.getLogger(
       AbstractMetricsReporter.class);
   public static ScheduledExecutorService m_executorService;
-  private List<MetricsCollector> collectors;
+  protected List<MetricsCollector> collectors;
 
   @Override
   public void init(List<MetricsCollector> collectors, long collectPeriod) {

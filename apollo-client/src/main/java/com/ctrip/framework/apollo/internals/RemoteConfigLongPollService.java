@@ -16,9 +16,9 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.NAMESPACE;
-import static com.ctrip.framework.apollo.metrics.MetricsConstant.TIMESTAMP;
-import static com.ctrip.framework.apollo.monitor.DefaultExceptionCollector.NAMESPACE_TIMEOUT;
+import static com.ctrip.framework.apollo.monitor.metrics.MetricsConstant.NAMESPACE;
+import static com.ctrip.framework.apollo.monitor.metrics.MetricsConstant.TIMESTAMP;
+import static com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultExceptionCollector.NAMESPACE_TIMEOUT;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -32,8 +32,8 @@ import com.ctrip.framework.apollo.core.signature.Signature;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
-import com.ctrip.framework.apollo.metrics.MetricsEvent;
-import com.ctrip.framework.apollo.monitor.DefaultNamespaceCollector;
+import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultNamespaceCollector;
 import com.ctrip.framework.apollo.spi.ConfigServiceLoadBalancerClient;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;

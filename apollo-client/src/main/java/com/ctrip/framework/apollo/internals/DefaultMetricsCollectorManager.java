@@ -1,14 +1,14 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
-import com.ctrip.framework.apollo.metrics.collector.MetricsCollector;
-import com.ctrip.framework.apollo.metrics.collector.MetricsCollectorManager;
-import com.ctrip.framework.apollo.metrics.reporter.MetricsReporter;
-import com.ctrip.framework.apollo.metrics.reporter.MetricsReporterFactory;
-import com.ctrip.framework.apollo.monitor.DefaultExceptionCollector;
-import com.ctrip.framework.apollo.monitor.DefaultNamespaceCollector;
-import com.ctrip.framework.apollo.monitor.DefaultStartupParamsCollector;
-import com.ctrip.framework.apollo.monitor.DefaultThreadPoolCollector;
+import com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultExceptionCollector;
+import com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultNamespaceCollector;
+import com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultStartupParamsCollector;
+import com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultThreadPoolCollector;
+import com.ctrip.framework.apollo.monitor.metrics.collector.MetricsCollector;
+import com.ctrip.framework.apollo.monitor.metrics.collector.MetricsCollectorManager;
+import com.ctrip.framework.apollo.monitor.metrics.reporter.MetricsReporter;
+import com.ctrip.framework.apollo.monitor.metrics.reporter.MetricsReporterFactory;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.Lists;
 import java.util.List;

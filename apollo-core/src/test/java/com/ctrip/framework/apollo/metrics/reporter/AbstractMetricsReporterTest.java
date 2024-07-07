@@ -1,7 +1,9 @@
 package com.ctrip.framework.apollo.metrics.reporter;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,6 +48,11 @@ public class AbstractMetricsReporterTest {
     }
 
     @Override
+    public boolean isSupport(String form) {
+      return "mock".equals(form);
+    }
+
+    @Override
     public void registerCounterSample(CounterMetricsSample sample) {
       // Mock implementation for test purposes
     }
@@ -61,6 +68,11 @@ public class AbstractMetricsReporterTest {
     reporter.init(collectors, collectPeriod);
 
     assertNotNull(AbstractMetricsReporter.m_executorService);
+  }
+  @Test
+  public void testIsSupport(){
+     assertTrue(reporter.isSupport("mock"));
+     assertFalse(reporter.isSupport("mock1"));
   }
 
   @Test

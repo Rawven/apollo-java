@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.metrics.reporter;
 
+import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
 import com.ctrip.framework.apollo.metrics.collector.MetricsCollector;
 import com.ctrip.framework.apollo.metrics.model.CounterMetricsSample;
@@ -36,7 +37,8 @@ public abstract class AbstractMetricsReporter implements MetricsReporter {
 
   private void initScheduleMetricsCollectSync(long collectPeriod) {
     //collect metrics data schedule
-    m_executorService = Executors.newScheduledThreadPool(1);
+    m_executorService = Executors.newScheduledThreadPool(1,
+        ApolloThreadFactory.create("MetricsReporter", true));
     m_executorService.scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {

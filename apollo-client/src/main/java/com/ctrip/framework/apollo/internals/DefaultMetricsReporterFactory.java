@@ -15,10 +15,12 @@ import org.slf4j.Logger;
 public class DefaultMetricsReporterFactory implements MetricsReporterFactory {
   private static final Logger logger = DeferredLoggerFactory.getLogger(
       DefaultMetricsCollectorManager.class);
-  private  ConfigUtil m_configUtil;
+  private final ConfigUtil m_configUtil;
+
   public DefaultMetricsReporterFactory(){
     m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
   }
+
   @Override
   public MetricsReporter getMetricsReporter(List<MetricsCollector> collectors) {
     //init reporter

@@ -29,7 +29,7 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
   public static final String NAMESPACE_404 = "namespace_404_num";
   public static final String NAMESPACE_TIMEOUT = "namespace_time_out";
   public static final String EXCEPTION_NUM = "exception_num";
-  //TODO 会进行增长 但是不会有删除操作 ArrayBlockingQueue 线程安全且大小固定
+  //TODO 会进行增长 但是不会有删除操作 使用ArrayBlockingQueue 线程安全且大小固定
   private static final int MAX_EXCEPTIONS_SIZE = 25;
   private final BlockingQueue<String> exceptions = new ArrayBlockingQueue<>(MAX_EXCEPTIONS_SIZE);
   //TODO 对于数量恒定的namespace(用户正常配置使用情况下) 使用CopyOnWrite 内存固定不用考虑OOM

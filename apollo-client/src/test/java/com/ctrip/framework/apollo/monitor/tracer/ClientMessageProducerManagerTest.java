@@ -18,8 +18,8 @@ package com.ctrip.framework.apollo.monitor.tracer;
 
 import static org.junit.Assert.assertTrue;
 
+import com.ctrip.framework.apollo.tracer.internals.ClientMessageProducerManager;
 import com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite;
-import com.ctrip.framework.apollo.tracer.internals.DefaultMessageProducerManager;
 import com.ctrip.framework.apollo.tracer.internals.cat.CatMessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducerManager;
@@ -30,12 +30,12 @@ import org.junit.Test;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class DefaultMessageProducerManagerTest {
+public class ClientMessageProducerManagerTest {
   private MessageProducerManager messageProducerManager;
 
   @Before
   public void setUp() throws Exception {
-    messageProducerManager = new DefaultMessageProducerManager();
+    messageProducerManager = new ClientMessageProducerManager();
   }
 
   @Test

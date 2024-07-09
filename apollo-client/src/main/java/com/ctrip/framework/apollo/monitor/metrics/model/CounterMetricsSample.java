@@ -34,8 +34,8 @@ public class CounterMetricsSample extends MetricsSample {
     this.type = MeterType.COUNTER;
   }
 
-  public static <T> GaugeMetricsSample.Builder<T> builder() {
-    return new GaugeMetricsSample.Builder<>();
+  public static CounterBuilder builder() {
+    return new CounterBuilder();
   }
 
   public Double getValue() {
@@ -46,28 +46,28 @@ public class CounterMetricsSample extends MetricsSample {
     this.value.set(value);
   }
 
-  public static class Builder {
+  public static class CounterBuilder {
 
+    private final Map<String, String> tags = new HashMap<>();
     private String name;
     private double value;
-    private final Map<String, String> tags = new HashMap<>();
 
-    public Builder name(String name) {
+    public CounterBuilder name(String name) {
       this.name = name;
       return this;
     }
 
-    public Builder value(double value) {
+    public CounterBuilder value(double value) {
       this.value = value;
       return this;
     }
 
-    public Builder putTag(String key, String value) {
+    public CounterBuilder putTag(String key, String value) {
       this.tags.put(key, value);
       return this;
     }
 
-    public Builder tags(Map<String, String> tags) {
+    public CounterBuilder tags(Map<String, String> tags) {
       this.tags.putAll(tags);
       return this;
     }

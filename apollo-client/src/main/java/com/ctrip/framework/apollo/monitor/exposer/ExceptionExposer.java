@@ -25,15 +25,6 @@ import javax.management.MXBean;
 @MXBean
 public interface ExceptionExposer {
 
-  /**
-   * get the namespaces which 404
-   */
-  String getNamespace404();
-
-  /**
-   * get the namespace which timeout
-   */
-  String getNamespaceTimeout();
 
   /**
    * get the number of exceptions

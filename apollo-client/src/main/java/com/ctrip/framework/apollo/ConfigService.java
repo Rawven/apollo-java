@@ -21,9 +21,9 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.internals.ConfigManager;
 import com.ctrip.framework.apollo.internals.ConfigMonitor;
-import com.ctrip.framework.apollo.metrics.Metrics;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigRegistry;
+import com.ctrip.framework.apollo.util.ConfigUtil;
 
 /**
  * Entry point for client config use
@@ -35,9 +35,10 @@ public class ConfigService {
   private volatile ConfigMonitor m_configMonitor;
   private volatile ConfigManager m_configManager;
   private volatile ConfigRegistry m_configRegistry;
+  private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
 
   private ConfigMonitor getMonitor() {
-      if(!Metrics.isClientMonitorEnabled()){
+      if(!m_configUtil.isClientMonitorEnabled()){
           throw new UnsupportedOperationException("Metrics is not enabled");
       }
         if (m_configMonitor == null) {

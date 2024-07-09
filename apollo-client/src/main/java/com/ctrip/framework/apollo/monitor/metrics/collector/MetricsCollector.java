@@ -44,7 +44,6 @@ public interface MetricsCollector {
   boolean isSamplesUpdated();
 
   /**
-   *
    * export to a format recognized by the monitoring system
    */
   List<MetricsSample> export();

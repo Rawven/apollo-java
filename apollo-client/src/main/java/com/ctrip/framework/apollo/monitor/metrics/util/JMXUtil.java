@@ -27,8 +27,6 @@ import javax.management.ObjectName;
  */
 public final class JMXUtil {
 
-  public static final String JMX = "jmx";
-  public static final String MBEAN_NAME = "apollo.client.monitor:type=";
   //TODO 自定义MBeanServer
   public static MBeanServer mbeanServer;
 
@@ -37,7 +35,7 @@ public final class JMXUtil {
       ObjectName objectName = new ObjectName(name);
 
       //TODO
-      if(mbeanServer == null) {
+      if (mbeanServer == null) {
         mbeanServer = ManagementFactory.getPlatformMBeanServer();
       }
 

@@ -45,6 +45,16 @@ public interface NamespaceExposer {
    */
   long getNamespaceFirstLoadSpend(String namespace);
 
+  /**
+   * get the namespaces which 404
+   */
+  String getNamespace404();
+
+  /**
+   * get the namespace which timeout
+   */
+  String getNamespaceTimeout();
+
   List<String> getNamespaceItemName(String namespace);
 
   List<String> getAllNamespaceReleaseKey();

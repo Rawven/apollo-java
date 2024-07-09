@@ -17,10 +17,14 @@
 package com.ctrip.framework.apollo.monitor.metrics.collector;
 
 import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.monitor.metrics.model.CounterMetricsSample;
+import com.ctrip.framework.apollo.monitor.metrics.model.GaugeMetricsSample;
 import com.ctrip.framework.apollo.monitor.metrics.model.MetricsSample;
+import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -30,6 +34,8 @@ public abstract class AbstractMetricsCollector implements MetricsCollector {
 
   private final AtomicBoolean isUpdated = new AtomicBoolean();
   private final List<String> tags;
+  public Map<String, CounterMetricsSample> counterSamples = Maps.newHashMap();
+  public Map<String, GaugeMetricsSample> gaugeSamples = Maps.newHashMap();
 
   public AbstractMetricsCollector(String... tags) {
     this.tags = Arrays.asList(tags);
@@ -58,12 +64,15 @@ public abstract class AbstractMetricsCollector implements MetricsCollector {
 
   @Override
   public List<MetricsSample> export() {
+    export0();
     List<MetricsSample> samples = new ArrayList<>();
-    return export0(samples);
+    samples.addAll(counterSamples.values());
+    samples.addAll(gaugeSamples.values());
+    return samples;
   }
 
   public abstract void collect0(MetricsEvent event);
 
-  public abstract List<MetricsSample> export0(List<MetricsSample> samples);
+  public abstract void export0();
 
 }

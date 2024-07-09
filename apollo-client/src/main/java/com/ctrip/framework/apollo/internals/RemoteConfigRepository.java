@@ -179,7 +179,6 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_RELEASE_KEY).withTag(
             NAMESPACE).putAttachment(DefaultNamespaceCollector.NAMESPACE_LATEST_RELEASE_KEY,
             current.getReleaseKey()).putAttachment(NAMESPACE,current.getNamespaceName()).push();
-
       }
 
       transaction.setStatus(Transaction.SUCCESS);
@@ -280,9 +279,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
                 appId, cluster, m_namespace);
             statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
                 message);
+            MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_NOT_FOUND).withTag(
+                NAMESPACE).putAttachment(NAMESPACE, m_namespace).push();
           }
-          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException),
-              String.valueOf(ex.getStatusCode()),m_namespace);
+          Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException));
           transaction.setStatus(statusCodeException);
           exception = statusCodeException;
           if(ex.getStatusCode() == 404) {

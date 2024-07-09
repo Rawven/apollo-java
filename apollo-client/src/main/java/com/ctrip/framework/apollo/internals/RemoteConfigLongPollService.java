@@ -18,7 +18,6 @@ package com.ctrip.framework.apollo.internals;
 
 import static com.ctrip.framework.apollo.monitor.metrics.MetricsConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.monitor.metrics.MetricsConstant.TIMESTAMP;
-import static com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultExceptionCollector.NAMESPACE_TIMEOUT;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -56,6 +55,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.gson.Gson;
 import java.lang.reflect.Type;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
@@ -215,9 +215,14 @@ public class RemoteConfigLongPollService {
         transaction.setStatus(Transaction.SUCCESS);
       } catch (Throwable ex) {
         lastServiceDto = null;
-        Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(ex),NAMESPACE_TIMEOUT,assembleNamespaces());
+        Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(ex));
         transaction.setStatus(ex);
         long sleepTimeInSecond = m_longPollFailSchedulePolicyInSecond.fail();
+        if (ex.getCause() instanceof SocketTimeoutException) {
+          MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_TIMEOUT)
+              .putAttachment(NAMESPACE, assembleNamespaces())
+              .withTag(DefaultNamespaceCollector.NAMESPACE).push();
+        }
         logger.warn(
             "Long polling failed, will retry in {} seconds. appId: {}, cluster: {}, namespaces: {}, long polling url: {}, reason: {}",
             sleepTimeInSecond, appId, cluster, assembleNamespaces(), url, ExceptionUtil.getDetailMessage(ex));

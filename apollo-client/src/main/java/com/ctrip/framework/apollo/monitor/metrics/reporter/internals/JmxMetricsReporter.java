@@ -16,6 +16,9 @@
  */
 package com.ctrip.framework.apollo.monitor.metrics.reporter.internals;
 
+import static com.ctrip.framework.apollo.monitor.metrics.MetricsConstant.JMX;
+import static com.ctrip.framework.apollo.monitor.metrics.MetricsConstant.MBEAN_NAME;
+
 import com.ctrip.framework.apollo.monitor.metrics.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.metrics.model.CounterMetricsSample;
 import com.ctrip.framework.apollo.monitor.metrics.model.GaugeMetricsSample;
@@ -30,14 +33,14 @@ public class JmxMetricsReporter implements MetricsReporter {
 
   @Override
   public void init(List<MetricsCollector> collectors, long collectPeriod) {
-     collectors.forEach(metricsCollector ->
-             JMXUtil.register(JMXUtil.MBEAN_NAME + metricsCollector.name(),
-                 metricsCollector));
+    collectors.forEach(metricsCollector ->
+        JMXUtil.register(MBEAN_NAME + metricsCollector.name(),
+            metricsCollector));
   }
 
   @Override
   public boolean isSupport(String form) {
-       return JMXUtil.JMX.equals(form);
+    return JMX.equals(form);
   }
 
   @Override

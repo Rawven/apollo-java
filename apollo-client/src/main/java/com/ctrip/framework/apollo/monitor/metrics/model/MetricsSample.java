@@ -25,13 +25,16 @@ import java.util.Map;
  */
 public class MetricsSample {
 
+  protected final Map<String, String> tags = new HashMap<>();
   protected String name;
   protected MeterType type;
-  protected final Map<String, String> tags = new HashMap<>();
-
 
   public String getName() {
     return "Apollo_Client_" + name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public MeterType getType() {
@@ -41,11 +44,5 @@ public class MetricsSample {
   public Map<String, String> getTags() {
     return tags;
   }
-
-  public MetricsSample putTag(String key, String value) {
-    tags.put(key, value);
-    return this;
-  }
-
 }
 

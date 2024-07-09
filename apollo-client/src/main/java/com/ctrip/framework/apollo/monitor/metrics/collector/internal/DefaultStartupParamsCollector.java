@@ -18,15 +18,11 @@ package com.ctrip.framework.apollo.monitor.metrics.collector.internal;
 
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.monitor.exposer.StartupParamsExposer;
-import com.ctrip.framework.apollo.monitor.metrics.Metrics;
 import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.monitor.metrics.collector.AbstractMetricsCollector;
-import com.ctrip.framework.apollo.monitor.metrics.model.MetricsSample;
 import com.ctrip.framework.apollo.spring.config.PropertySourcesConstants;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.Maps;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,7 +49,7 @@ public class DefaultStartupParamsCollector extends AbstractMetricsCollector impl
     map.put("apollo.config-service",
         System.getProperty(ApolloClientSystemConsts.APOLLO_CONFIG_SERVICE));
     map.put("apollo.client.monitor.form", configUtil.getMonitorForm());
-    map.put("apollo.client.monitor.enabled", Metrics.isClientMonitorEnabled());
+    map.put("apollo.client.monitor.enabled", configUtil.isClientMonitorEnabled());
     map.put("apollo.client.monitor.export-period", configUtil.getMonitorExportPeriod());
     map.put("apollo.meta", configUtil.getMetaServerDomainName());
     map.put("apollo.property.names.cache.enable", configUtil.isPropertyNamesCacheEnabled());
@@ -68,10 +64,14 @@ public class DefaultStartupParamsCollector extends AbstractMetricsCollector impl
   }
 
   @Override
-  public List<MetricsSample> export0(List<MetricsSample> samples) {
-    return Collections.emptyList();
+  public void export0() {
+    return;
   }
 
+  @Override
+  public boolean isSamplesUpdated() {
+    return false;
+  }
 
   @Override
   public String getStartupParams(String key) {

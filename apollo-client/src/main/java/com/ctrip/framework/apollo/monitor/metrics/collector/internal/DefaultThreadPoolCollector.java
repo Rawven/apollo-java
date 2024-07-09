@@ -23,7 +23,6 @@ import com.ctrip.framework.apollo.monitor.exposer.ThreadPoolExposer;
 import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.monitor.metrics.collector.AbstractMetricsCollector;
 import com.ctrip.framework.apollo.monitor.metrics.model.GaugeMetricsSample;
-import com.ctrip.framework.apollo.monitor.metrics.model.MetricsSample;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -68,20 +67,19 @@ public class DefaultThreadPoolCollector extends AbstractMetricsCollector impleme
   }
 
   @Override
-  public boolean isSamplesUpdated() {
-    // memory status special
-    return true;
+  public void export0() {
+    exportThreadPoolMetrics(abstractConfigExecutorService,
+        AbstractConfig.class.getSimpleName());
+    exportThreadPoolMetrics(abstractConfigFileExecutorService,
+        AbstractConfigFile.class.getSimpleName());
+    exportThreadPoolMetrics(remoteConfigRepositoryExecutorService,
+        RemoteConfigRepository.class.getSimpleName());
   }
 
   @Override
-  public List<MetricsSample> export0(List<MetricsSample> samples) {
-    exportThreadPoolMetrics(samples, abstractConfigExecutorService,
-        AbstractConfig.class.getSimpleName());
-    exportThreadPoolMetrics(samples, abstractConfigFileExecutorService,
-        AbstractConfigFile.class.getSimpleName());
-    exportThreadPoolMetrics(samples, remoteConfigRepositoryExecutorService,
-        RemoteConfigRepository.class.getSimpleName());
-    return samples;
+  public boolean isSamplesUpdated() {
+    // memory status special
+    return true;
   }
 
   @Override
@@ -89,7 +87,8 @@ public class DefaultThreadPoolCollector extends AbstractMetricsCollector impleme
     return "ThreadPoolMetrics";
   }
 
-  public void exportThreadPoolMetrics(List<MetricsSample> samples, ThreadPoolExecutor executor,
+  @SuppressWarnings("unchecked")
+  public void exportThreadPoolMetrics(ThreadPoolExecutor executor,
       String name) {
     List<Double> list = Arrays.asList((double) executor.getActiveCount(),
         (double) executor.getQueue().size(),
@@ -100,9 +99,13 @@ public class DefaultThreadPoolCollector extends AbstractMetricsCollector impleme
         (double) executor.getQueue().remainingCapacity(),
         (double) executor.getPoolSize() / executor.getMaximumPoolSize());
     for (int i = 0; i < list.size(); i++) {
-      samples.add(GaugeMetricsSample.builder().putTag(THREAD_POOL_PARAMS[0], name)
-          .name(THREAD_POOL_PARAMS[i + 1])
-          .value(list.get(i)).apply(value -> (double) value).build());
+      if (!gaugeSamples.containsKey(name + THREAD_POOL_PARAMS[i + 1])) {
+        gaugeSamples.put(name + THREAD_POOL_PARAMS[i + 1],
+            GaugeMetricsSample.builder().putTag(THREAD_POOL_PARAMS[0], name)
+                .name(THREAD_POOL_PARAMS[i + 1])
+                .value(0).apply(value -> (double) value).build());
+      }
+      gaugeSamples.get(name + THREAD_POOL_PARAMS[i + 1]).setValue(list.get(i));
     }
   }
 

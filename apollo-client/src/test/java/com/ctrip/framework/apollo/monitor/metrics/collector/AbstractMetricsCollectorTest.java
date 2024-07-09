@@ -46,9 +46,8 @@ public class AbstractMetricsCollectorTest {
       }
 
       @Override
-      public List<MetricsSample> export0(List<MetricsSample> samples) {
+      public void export0() {
         // 模拟实现
-        return samples;
       }
     };
   }

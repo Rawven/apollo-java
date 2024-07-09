@@ -39,6 +39,7 @@ public interface MetricsReporter extends Ordered {
    * @return
    */
   boolean isSupport(String form);
+
   /**
    * used to register Counter type metrics
    */

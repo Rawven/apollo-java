@@ -17,20 +17,21 @@
 package com.ctrip.framework.apollo.tracer.internals;
 
 import com.ctrip.framework.apollo.core.utils.ClassLoaderUtil;
-import com.ctrip.framework.apollo.monitor.metrics.Metrics;
 import com.ctrip.framework.apollo.tracer.internals.cat.CatMessageProducer;
 import com.ctrip.framework.apollo.tracer.internals.cat.CatNames;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducerManager;
+import com.ctrip.framework.apollo.util.ConfigUtil;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClientMessageProducerManager implements MessageProducerManager {
   private static MessageProducer producer;
+  private static ConfigUtil m_configUtil = new ConfigUtil();
 
   public ClientMessageProducerManager() {
     List<MessageProducer> producers = new ArrayList<>();
-    if(Metrics.isClientMonitorEnabled()){
+    if(m_configUtil.isClientMonitorEnabled()){
       producers.add(new MetricsMessageProducer());
     }
     if (ClassLoaderUtil.isClassPresent(CatNames.CAT_CLASS)) {
@@ -41,6 +42,7 @@ public class ClientMessageProducerManager implements MessageProducerManager {
     }
     producer = new MessageProducerComposite(producers);
   }
+
   @Override
   public MessageProducer getProducer() {
     return producer;

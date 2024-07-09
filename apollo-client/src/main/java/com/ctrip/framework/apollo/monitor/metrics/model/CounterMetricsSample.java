@@ -25,8 +25,8 @@ import java.util.Map;
  */
 public class CounterMetricsSample extends MetricsSample {
 
-  private  double nowValue;
-  private  double increaseValue;
+  private double nowValue;
+  private double increaseValue;
 
   public CounterMetricsSample(String name, double num) {
     this.name = name;
@@ -38,20 +38,18 @@ public class CounterMetricsSample extends MetricsSample {
   public static CounterBuilder builder() {
     return new CounterBuilder();
   }
+
   public void resetValue(double value) {
     increaseValue = value - nowValue;
     nowValue = value;
   }
 
-  public Double getValue() {
-    return nowValue;
-  }
   public Double getIncreaseValue() {
     return increaseValue;
   }
 
   public void setValue(Double value) {
-    this.nowValue=value;
+    this.nowValue = value;
   }
 
   public static class CounterBuilder {

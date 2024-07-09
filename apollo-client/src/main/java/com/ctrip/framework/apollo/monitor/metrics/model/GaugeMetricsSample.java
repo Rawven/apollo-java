@@ -22,9 +22,10 @@ import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
 public class GaugeMetricsSample<T> extends MetricsSample {
-  public static  ToDoubleFunction<Object> intConverter = v -> (int)v;
-  public static  ToDoubleFunction<Object> longConverter = v -> (long)v;
-  public static  ToDoubleFunction<Object> doubleConverter = v -> (double)v;
+
+  public static ToDoubleFunction<Object> intConverter = v -> (int) v;
+  public static ToDoubleFunction<Object> longConverter = v -> (long) v;
+  public static ToDoubleFunction<Object> doubleConverter = v -> (double) v;
 
   private T value;
   private ToDoubleFunction<T> apply;

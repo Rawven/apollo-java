@@ -17,7 +17,7 @@
 package com.ctrip.framework.apollo.monitor.metrics.collector.internal;
 
 
-import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.ERROR;
+import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.ERROR_METRICS;
 import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.THROWABLE;
 
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
@@ -43,7 +43,12 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
   private final AtomicInteger exceptionNum = new AtomicInteger(0);
 
   public DefaultExceptionCollector() {
-    super(ERROR);
+    super(ERROR_METRICS);
+  }
+
+  @Override
+  public String name() {
+    return ERROR_METRICS;
   }
 
   @Override
@@ -73,8 +78,4 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
     counterSamples.get(EXCEPTION_NUM).resetValue(exceptionNum.get());
   }
 
-  @Override
-  public String name() {
-    return "ExceptionMetrics";
-  }
 }

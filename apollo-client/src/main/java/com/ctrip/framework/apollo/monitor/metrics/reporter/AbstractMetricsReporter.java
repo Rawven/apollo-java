@@ -36,6 +36,7 @@ import org.slf4j.Logger;
  */
 @SuppressWarnings("all")
 public abstract class AbstractMetricsReporter implements MetricsReporter {
+
   protected static final Logger log = DeferredLoggerFactory.getLogger(
       AbstractMetricsReporter.class);
 

@@ -36,7 +36,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class DefaultThreadPoolCollector extends AbstractMetricsCollector implements
     ThreadPoolExposer {
 
-
+  public static final String THREAD_POOL_METRICS = "ThreadPoolMetrics";
   public static final String[] THREAD_POOL_PARAMS = new String[]{"ThreadPoolName",
       "activeTaskCount", "queueSize",
       "completedTaskCount",
@@ -55,6 +55,11 @@ public class DefaultThreadPoolCollector extends AbstractMetricsCollector impleme
     this.remoteConfigRepositoryExecutorService = (ScheduledThreadPoolExecutor) remoteConfigRepositoryExecutorService;
     this.abstractConfigExecutorService = (ThreadPoolExecutor) abstractConfigExecutorService;
     this.abstractConfigFileExecutorService = (ThreadPoolExecutor) abstractConfigFileExecutorService;
+  }
+
+  @Override
+  public String name() {
+    return THREAD_POOL_METRICS;
   }
 
   @Override
@@ -82,10 +87,6 @@ public class DefaultThreadPoolCollector extends AbstractMetricsCollector impleme
     return true;
   }
 
-  @Override
-  public String name() {
-    return "ThreadPoolMetrics";
-  }
 
   @SuppressWarnings("unchecked")
   public void exportThreadPoolMetrics(ThreadPoolExecutor executor,

@@ -17,7 +17,7 @@
 package com.ctrip.framework.apollo.internals;
 
 
-import static com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultNamespaceCollector.NAMESPACE;
+import static com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultNamespaceCollector.NAMESPACE_METRICS;
 import static com.ctrip.framework.apollo.monitor.metrics.MetricsConstant.TIMESTAMP;
 
 import com.ctrip.framework.apollo.Apollo;
@@ -123,8 +123,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       this.sync();
 
       MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_FIRST_LOAD_SPEND).withTag(
-              NAMESPACE)
-          .putAttachment(NAMESPACE, m_namespace)
+              NAMESPACE_METRICS)
+          .putAttachment(NAMESPACE_METRICS, m_namespace)
           .putAttachment(TIMESTAMP, System.currentTimeMillis() - start).push();
     }
     return transformApolloConfigToProperties(m_configCache.get());
@@ -177,8 +177,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         Tracer.logEvent(String.format("Apollo.Client.Configs.%s", current.getNamespaceName()),
             current.getReleaseKey());
         MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_RELEASE_KEY).withTag(
-            NAMESPACE).putAttachment(DefaultNamespaceCollector.NAMESPACE_LATEST_RELEASE_KEY,
-            current.getReleaseKey()).putAttachment(NAMESPACE,current.getNamespaceName()).push();
+            NAMESPACE_METRICS).putAttachment(DefaultNamespaceCollector.NAMESPACE_LATEST_RELEASE_KEY,
+            current.getReleaseKey()).putAttachment(NAMESPACE_METRICS,current.getNamespaceName()).push();
       }
 
       transaction.setStatus(Transaction.SUCCESS);
@@ -280,7 +280,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
             statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
                 message);
             MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_NOT_FOUND).withTag(
-                NAMESPACE).putAttachment(NAMESPACE, m_namespace).push();
+                NAMESPACE_METRICS).putAttachment(NAMESPACE_METRICS, m_namespace).push();
           }
           Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException));
           transaction.setStatus(statusCodeException);

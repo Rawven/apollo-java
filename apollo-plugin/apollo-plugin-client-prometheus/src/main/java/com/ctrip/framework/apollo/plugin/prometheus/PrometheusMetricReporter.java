@@ -55,7 +55,7 @@ public class PrometheusMetricReporter extends AbstractMetricsReporter implements
     } else {
       counter = (Counter) map.get(sample.getName());
     }
-    counter.labels(tags[1]).inc(sample.getValue());
+    counter.labels(tags[1]).inc(sample.getIncreaseValue());
   }
 
   @Override

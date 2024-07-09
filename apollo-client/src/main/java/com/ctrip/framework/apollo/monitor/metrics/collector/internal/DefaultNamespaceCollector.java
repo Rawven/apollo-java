@@ -17,6 +17,9 @@
 package com.ctrip.framework.apollo.monitor.metrics.collector.internal;
 
 
+import static com.ctrip.framework.apollo.monitor.metrics.model.GaugeMetricsSample.intConverter;
+import static com.ctrip.framework.apollo.monitor.metrics.model.GaugeMetricsSample.longConverter;
+
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
@@ -35,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToDoubleFunction;
 import org.slf4j.Logger;
 
@@ -114,36 +116,38 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   @Override
   public void export0() {
     namespaces.forEach((k, v) -> {
-      updateCounterSample(k + NAMESPACE_USAGE_COUNT, k, v.getUsageCount());
-      updateGaugeSample(k + NAMESPACE_FIRST_LOAD_SPEND, k, v.getFirstLoadSpend(),
-          value -> (long) value);
-      updateGaugeSample(k + NAMESPACE_UPDATE_TIME, k, v.getLatestUpdateTime(),
-          value -> (long) value);
-      updateGaugeSample(k + NAMESPACE_ITEM_NUM, k, m_configs.get(k).getPropertyNames().size(),
-          value -> (int) value);
-      updateGaugeSample(k + CONFIG_FILE_NUM, k, m_configFiles.size(), value -> (int) value);
-      updateGaugeSample(k + NAMESPACE_NOT_FOUND, k, namespace404.size(), value -> (int) value);
-      updateGaugeSample(k + NAMESPACE_TIMEOUT, k, namespaceTimeout.size(), value -> (int) value);
+      updateCounterSample(NAMESPACE_USAGE_COUNT, k, v.getUsageCount());
+      updateGaugeSample(NAMESPACE_FIRST_LOAD_SPEND, k, v.getFirstLoadSpend(),
+          longConverter);
+      updateGaugeSample(NAMESPACE_UPDATE_TIME, k, v.getLatestUpdateTime(),
+           longConverter);
+      updateGaugeSample(NAMESPACE_ITEM_NUM, k, m_configs.get(k).getPropertyNames().size(),
+          intConverter);
+      updateGaugeSample(CONFIG_FILE_NUM, k, m_configFiles.size(), intConverter);
+      updateGaugeSample(NAMESPACE_NOT_FOUND, k, namespace404.size(), intConverter);
+      updateGaugeSample(NAMESPACE_TIMEOUT, k, namespaceTimeout.size(), intConverter);
     });
   }
 
   private void updateCounterSample(String key, String namespace, double value) {
-    if (!counterSamples.containsKey(key)) {
-      counterSamples.put(key,
+    String mapKey = namespace+key;
+    if (!counterSamples.containsKey(mapKey)) {
+      counterSamples.put(mapKey,
           CounterMetricsSample.builder().putTag(NAMESPACE, namespace).name(key).value(0).build());
     }
-    counterSamples.get(key).setValue(value);
+    counterSamples.get(mapKey).resetValue(value);
   }
 
   @SuppressWarnings("unchecked")
   private void updateGaugeSample(String key, String namespace, Object value,
       ToDoubleFunction<Object> applyFunction) {
-    if (!gaugeSamples.containsKey(key)) {
-      gaugeSamples.put(key,
+    String mapKey = namespace+key;
+    if (!gaugeSamples.containsKey(mapKey)) {
+      gaugeSamples.put(mapKey,
           GaugeMetricsSample.builder().putTag(NAMESPACE, namespace).name(key).value(0)
               .apply(applyFunction).build());
     }
-    gaugeSamples.get(key).setValue(value);
+    gaugeSamples.get(mapKey).setValue(value);
   }
 
   @Override
@@ -238,7 +242,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
 
   public static class NamespaceMetrics {
 
-    private final AtomicInteger usageCount = new AtomicInteger(0);
+    private  int usageCount;
     private long firstLoadSpend;
     private long latestUpdateTime;
     private String releaseKey = "default";
@@ -262,11 +266,11 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
     }
 
     public int getUsageCount() {
-      return usageCount.getAndSet(0);
+      return usageCount;
     }
 
     public void incrementUsageCount() {
-      this.usageCount.incrementAndGet();
+      this.usageCount++;
     }
 
     public long getFirstLoadSpend() {

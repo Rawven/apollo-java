@@ -51,15 +51,10 @@ public class DefaultThreadPoolCollector extends AbstractMetricsCollector impleme
       ScheduledExecutorService remoteConfigRepositoryExecutorService,
       ExecutorService abstractConfigExecutorService,
       ExecutorService abstractConfigFileExecutorService) {
-    super("Nop");
+    super(THREAD_POOL_METRICS, "Nop");
     this.remoteConfigRepositoryExecutorService = (ScheduledThreadPoolExecutor) remoteConfigRepositoryExecutorService;
     this.abstractConfigExecutorService = (ThreadPoolExecutor) abstractConfigExecutorService;
     this.abstractConfigFileExecutorService = (ThreadPoolExecutor) abstractConfigFileExecutorService;
-  }
-
-  @Override
-  public String name() {
-    return THREAD_POOL_METRICS;
   }
 
   @Override

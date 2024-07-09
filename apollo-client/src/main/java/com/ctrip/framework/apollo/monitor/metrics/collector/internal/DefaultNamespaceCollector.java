@@ -73,17 +73,13 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
       Map<String, Object> m_configLocks,
       Map<String, ConfigFile> m_configFiles,
       Map<String, Object> m_configFileLocks) {
-    super(NAMESPACE_METRICS);
+    super(NAMESPACE_METRICS, NAMESPACE_METRICS);
     this.m_configs = m_configs;
     this.m_configLocks = m_configLocks;
     this.m_configFiles = m_configFiles;
     this.m_configFileLocks = m_configFileLocks;
   }
 
-  @Override
-  public String name() {
-    return NAMESPACE_METRICS;
-  }
 
   @Override
   public void collect0(MetricsEvent event) {

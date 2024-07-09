@@ -97,7 +97,9 @@ public class ApolloApplicationContextInitializer implements
       ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_FORM,
       ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED,
       ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD,
-      PropertySourcesConstants.APOLLO_BOOTSTRAP_NAMESPACES};
+      PropertySourcesConstants.APOLLO_BOOTSTRAP_NAMESPACES,
+      PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED,
+      PropertySourcesConstants.APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED};
 
   private final ConfigPropertySourceFactory configPropertySourceFactory = SpringInjector
       .getInstance(ConfigPropertySourceFactory.class);

@@ -33,7 +33,6 @@ import static com.ctrip.framework.apollo.spring.config.PropertySourcesConstants.
 import static com.ctrip.framework.apollo.spring.config.PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED;
 import static com.ctrip.framework.apollo.spring.config.PropertySourcesConstants.APOLLO_BOOTSTRAP_NAMESPACES;
 
-import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.monitor.exposer.StartupParamsExposer;
 import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.monitor.metrics.collector.AbstractMetricsCollector;
@@ -54,19 +53,18 @@ public class DefaultStartupParamsCollector extends AbstractMetricsCollector impl
   public DefaultStartupParamsCollector(ConfigUtil configUtil) {
     super("Nop");
     map.put(APOLLO_ACCESS_KEY_SECRET, configUtil.getAccessKeySecret());
-
     map.put(APOLLO_AUTO_UPDATE_INJECTED_SPRING_PROPERTIES,
         configUtil.isAutoUpdateInjectedSpringPropertiesEnabled());
-    map.put(APOLLO_BOOTSTRAP_ENABLED, System.getProperty(APOLLO_BOOTSTRAP_ENABLED));
+    map.put(APOLLO_BOOTSTRAP_ENABLED, Boolean.parseBoolean(System.getProperty(APOLLO_BOOTSTRAP_ENABLED)));
     map.put(APOLLO_BOOTSTRAP_NAMESPACES,
         System.getProperty(APOLLO_BOOTSTRAP_NAMESPACES));
     map.put(APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED,
-        System.getProperty(APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED));
+        Boolean.parseBoolean(System.getProperty(APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED)));
     map.put(APOLLO_OVERRIDE_SYSTEM_PROPERTIES, configUtil.isOverrideSystemProperties());
     map.put(APOLLO_CACHE_DIR, configUtil.getDefaultLocalCacheDir());
     map.put(APOLLO_CLUSTER, configUtil.getCluster());
     map.put(APOLLO_CONFIG_SERVICE,
-        System.getProperty(ApolloClientSystemConsts.APOLLO_CONFIG_SERVICE));
+        System.getProperty(APOLLO_CONFIG_SERVICE));
     map.put(APOLLO_CLIENT_MONITOR_FORM, configUtil.getMonitorForm());
     map.put(APOLLO_CLIENT_MONITOR_ENABLED, configUtil.isClientMonitorEnabled());
     map.put(APOLLO_CLIENT_MONITOR_EXPORT_PERIOD, configUtil.getMonitorExportPeriod());

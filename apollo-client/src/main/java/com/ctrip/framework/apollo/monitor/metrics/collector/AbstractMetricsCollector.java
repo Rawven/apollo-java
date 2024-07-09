@@ -36,9 +36,16 @@ public abstract class AbstractMetricsCollector implements MetricsCollector {
   public final Map<String, GaugeMetricsSample> gaugeSamples = Maps.newHashMap();
   private final AtomicBoolean isUpdated = new AtomicBoolean();
   private final List<String> tags;
+  private final String name;
 
-  public AbstractMetricsCollector(String... tags) {
+  public AbstractMetricsCollector(String name, String... tags) {
+    this.name = name;
     this.tags = Arrays.asList(tags);
+  }
+
+  @Override
+  public String name() {
+    return name;
   }
 
   @Override

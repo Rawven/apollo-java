@@ -65,7 +65,6 @@ public class DefaultStartupParamsCollector extends AbstractMetricsCollector impl
 
   @Override
   public void export0() {
-    return;
   }
 
   @Override

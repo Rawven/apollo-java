@@ -38,7 +38,6 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
     ExceptionExposer {
 
   public static final String EXCEPTION_NUM = "exception_num";
-  //TODO 会进行增长 但是不会有删除操作 使用ArrayBlockingQueue 线程安全且大小固定
   private static final int MAX_EXCEPTIONS_SIZE = 25;
   private final BlockingQueue<String> exceptions = new ArrayBlockingQueue<>(MAX_EXCEPTIONS_SIZE);
   private final AtomicInteger exceptionNum = new AtomicInteger(0);

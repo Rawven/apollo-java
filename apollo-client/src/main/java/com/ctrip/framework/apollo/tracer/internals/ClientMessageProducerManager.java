@@ -25,6 +25,9 @@ import com.ctrip.framework.apollo.util.ConfigUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Rawven
+ */
 public class ClientMessageProducerManager implements MessageProducerManager {
   private static MessageProducer producer;
   private static ConfigUtil m_configUtil = new ConfigUtil();

@@ -35,6 +35,7 @@ public abstract class Metrics {
     }
   }
 
+
   public static void push(MetricsEvent event) {
     if (collectorManager != null) {
       for (MetricsCollector collector : collectorManager.getCollectors()) {
@@ -45,6 +46,7 @@ public abstract class Metrics {
       }
     }
   }
+
 }
 
 

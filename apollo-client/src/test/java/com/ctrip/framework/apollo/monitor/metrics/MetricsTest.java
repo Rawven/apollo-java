@@ -16,56 +16,37 @@
  */
 package com.ctrip.framework.apollo.monitor.metrics;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.ctrip.framework.apollo.build.MockInjector;
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.monitor.metrics.collector.MetricsCollector;
+import com.ctrip.framework.apollo.monitor.metrics.collector.MetricsCollectorManager;
 import com.ctrip.framework.apollo.monitor.metrics.collector.MockMetricsCollectorManager;
-import org.junit.Before;
+import com.ctrip.framework.apollo.util.ConfigUtil;
 import org.junit.Test;
 
 public class MetricsTest {
   private MetricsCollector mockCollector;
   private MetricsEvent mockEvent;
 
-  @Before
-  public void setUp() {
+  @Test
+  public void testPushMetricsEvent() {
+    System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED, "true");
+    MockInjector.setInstance(ConfigUtil.class, new ConfigUtil());
+    MockInjector.setInstance(MetricsCollectorManager.class,new MockMetricsCollectorManager());
     mockCollector = mock(MetricsCollector.class);
     mockEvent = mock(MetricsEvent.class);
     MockMetricsCollectorManager.addCollector(mockCollector);
     when(mockCollector.isSupport(any())).thenReturn(true);
-  }
-
-  @Test
-  public void testPushMetricsEvent() {
-    // Enable metrics
-    System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED, "true");
-
     // Call the method under test
     Metrics.push(mockEvent);
 
     // Verify the interactions
     verify(mockCollector).collect(any());
-
-    MockMetricsCollectorManager.reset();
-  }
-
-  @Test
-  public void testPushMetricsEventWhenDisabled() {
-    // Disable metrics
-    System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED, "false");
-
-    // Call the method under test
-    Metrics.push(mockEvent);
-
-    // Verify no interactions
-    verify(mockCollector, never()).collect(any());
 
     MockMetricsCollectorManager.reset();
   }

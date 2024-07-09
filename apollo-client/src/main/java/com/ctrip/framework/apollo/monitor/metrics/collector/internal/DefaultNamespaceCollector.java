@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.ToDoubleFunction;
 import org.slf4j.Logger;
 
 /**
@@ -44,8 +45,8 @@ import org.slf4j.Logger;
 public class DefaultNamespaceCollector extends AbstractMetricsCollector implements
     NamespaceExposer {
 
-  public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.
-      ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
+  public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
+      "yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
   public static final String NAMESPACE = "namespace";
   public static final String NAMESPACE_UPDATE_TIME = "namespace_latest_update_time";
   public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_first_load_spend_time";
@@ -62,7 +63,6 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   private final Map<String, Object> m_configLocks;
   private final Map<String, ConfigFile> m_configFiles;
   private final Map<String, Object> m_configFileLocks;
-  //TODO 对于数量恒定的namespace(用户正常配置使用情况下) 使用ConcurrentHashMap 内存固定不用考虑OOM
   private final Map<String, NamespaceMetrics> namespaces = Maps.newConcurrentMap();
   private final List<String> namespace404 = Lists.newCopyOnWriteArrayList();
   private final List<String> namespaceTimeout = Lists.newCopyOnWriteArrayList();
@@ -76,6 +76,74 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
     this.m_configLocks = m_configLocks;
     this.m_configFiles = m_configFiles;
     this.m_configFileLocks = m_configFileLocks;
+  }
+
+  @Override
+  public void collect0(MetricsEvent event) {
+    String namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
+    NamespaceMetrics namespaceMetrics = namespaces.computeIfAbsent(namespace,
+        k -> new NamespaceMetrics());
+    switch (event.getName()) {
+      case NAMESPACE_USAGE_COUNT:
+        namespaceMetrics.incrementUsageCount();
+        break;
+      case NAMESPACE_UPDATE_TIME:
+        long updateTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
+        namespaceMetrics.setLatestUpdateTime(updateTime);
+        break;
+      case NAMESPACE_FIRST_LOAD_SPEND:
+        long firstLoadSpendTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
+        namespaceMetrics.setFirstLoadSpend(firstLoadSpendTime);
+        break;
+      case NAMESPACE_RELEASE_KEY:
+        String releaseKey = event.getAttachmentValue(NAMESPACE_LATEST_RELEASE_KEY);
+        namespaceMetrics.setReleaseKey(releaseKey);
+        break;
+      case NAMESPACE_TIMEOUT:
+        namespaceTimeout.add(namespace);
+        break;
+      case NAMESPACE_NOT_FOUND:
+        namespace404.add(namespace);
+        break;
+      default:
+        logger.warn("Unknown event: {}", event);
+        break;
+    }
+  }
+
+  @Override
+  public void export0() {
+    namespaces.forEach((k, v) -> {
+      updateCounterSample(k + NAMESPACE_USAGE_COUNT, k, v.getUsageCount());
+      updateGaugeSample(k + NAMESPACE_FIRST_LOAD_SPEND, k, v.getFirstLoadSpend(),
+          value -> (long) value);
+      updateGaugeSample(k + NAMESPACE_UPDATE_TIME, k, v.getLatestUpdateTime(),
+          value -> (long) value);
+      updateGaugeSample(k + NAMESPACE_ITEM_NUM, k, m_configs.get(k).getPropertyNames().size(),
+          value -> (int) value);
+      updateGaugeSample(k + CONFIG_FILE_NUM, k, m_configFiles.size(), value -> (int) value);
+      updateGaugeSample(k + NAMESPACE_NOT_FOUND, k, namespace404.size(), value -> (int) value);
+      updateGaugeSample(k + NAMESPACE_TIMEOUT, k, namespaceTimeout.size(), value -> (int) value);
+    });
+  }
+
+  private void updateCounterSample(String key, String namespace, double value) {
+    if (!counterSamples.containsKey(key)) {
+      counterSamples.put(key,
+          CounterMetricsSample.builder().putTag(NAMESPACE, namespace).name(key).value(0).build());
+    }
+    counterSamples.get(key).setValue(value);
+  }
+
+  @SuppressWarnings("unchecked")
+  private void updateGaugeSample(String key, String namespace, Object value,
+      ToDoubleFunction<Object> applyFunction) {
+    if (!gaugeSamples.containsKey(key)) {
+      gaugeSamples.put(key,
+          GaugeMetricsSample.builder().putTag(NAMESPACE, namespace).name(key).value(0)
+              .apply(applyFunction).build());
+    }
+    gaugeSamples.get(key).setValue(value);
   }
 
   @Override
@@ -164,109 +232,13 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   }
 
   @Override
-  public void collect0(MetricsEvent event) {
-    String namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
-    NamespaceMetrics namespaceMetrics = namespaces.computeIfAbsent(namespace,
-        k -> new NamespaceMetrics());
-    switch (event.getName()) {
-      case NAMESPACE_USAGE_COUNT:
-        namespaceMetrics.incrementUsageCount();
-        break;
-      case NAMESPACE_UPDATE_TIME:
-        long updateTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
-        namespaceMetrics.setLatestUpdateTime(updateTime);
-        break;
-      case NAMESPACE_FIRST_LOAD_SPEND:
-        long firstLoadSpendTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
-        namespaceMetrics.setFirstLoadSpend(firstLoadSpendTime);
-        break;
-      case NAMESPACE_RELEASE_KEY:
-        String releaseKey = event.getAttachmentValue(NAMESPACE_LATEST_RELEASE_KEY);
-        namespaceMetrics.setReleaseKey(releaseKey);
-        break;
-      case NAMESPACE_TIMEOUT:
-        namespaceTimeout.add(namespace);
-        break;
-      case NAMESPACE_NOT_FOUND:
-        namespace404.add(namespace);
-        break;
-      default:
-        logger.warn("Unknown event: {}", event);
-        break;
-    }
-  }
-
-  @Override
-  @SuppressWarnings("all")
-  public void export0() {
-    namespaces.forEach((k, v) -> {
-      // 替换 computeIfAbsent 为 containsKey 和 put
-      if (!counterSamples.containsKey(k + NAMESPACE_USAGE_COUNT)) {
-        counterSamples.put(k + NAMESPACE_USAGE_COUNT,
-            CounterMetricsSample.builder().putTag(NAMESPACE, k)
-                .name(NAMESPACE_USAGE_COUNT).value(0).build());
-      }
-      counterSamples.get(k + NAMESPACE_USAGE_COUNT).setValue((double) v.getUsageCount());
-
-      if (!gaugeSamples.containsKey(k + NAMESPACE_FIRST_LOAD_SPEND)) {
-        gaugeSamples.put(k + NAMESPACE_FIRST_LOAD_SPEND,
-            GaugeMetricsSample.builder().putTag(NAMESPACE, k)
-                .name(NAMESPACE_FIRST_LOAD_SPEND).value(0)
-                .apply(value -> (long) value).build());
-      }
-      gaugeSamples.get(k + NAMESPACE_FIRST_LOAD_SPEND).setValue(v.getFirstLoadSpend());
-
-      if (!gaugeSamples.containsKey(k + NAMESPACE_UPDATE_TIME)) {
-        gaugeSamples.put(k + NAMESPACE_UPDATE_TIME,
-            GaugeMetricsSample.builder().putTag(NAMESPACE, k)
-                .name(NAMESPACE_UPDATE_TIME).value(0)
-                .apply(value -> (long) value).build());
-      }
-      gaugeSamples.get(k + NAMESPACE_UPDATE_TIME).setValue(v.getLatestUpdateTime());
-
-      if (!gaugeSamples.containsKey(k + NAMESPACE_ITEM_NUM)) {
-        gaugeSamples.put(k + NAMESPACE_ITEM_NUM,
-            GaugeMetricsSample.builder().putTag(NAMESPACE, k)
-                .name(NAMESPACE_ITEM_NUM).value(0)
-                .apply(value -> (int) value).build());
-      }
-      gaugeSamples.get(k + NAMESPACE_ITEM_NUM).setValue(m_configs.get(k).getPropertyNames().size());
-
-      if (!gaugeSamples.containsKey(k + CONFIG_FILE_NUM)) {
-        gaugeSamples.put(k + CONFIG_FILE_NUM,
-            GaugeMetricsSample.builder().putTag(NAMESPACE, k)
-                .name(CONFIG_FILE_NUM).value(0)
-                .apply(value -> (int) value).build());
-      }
-      gaugeSamples.get(k + CONFIG_FILE_NUM).setValue(m_configFiles.size());
-
-      if (!gaugeSamples.containsKey(k + NAMESPACE_NOT_FOUND)) {
-        gaugeSamples.put(k + NAMESPACE_NOT_FOUND,
-            GaugeMetricsSample.builder().putTag(NAMESPACE, k)
-                .name(NAMESPACE_NOT_FOUND).value(0)
-                .apply(value -> (int) value).build());
-      }
-      gaugeSamples.get(k + NAMESPACE_NOT_FOUND).setValue(namespace404.size());
-
-      if (!gaugeSamples.containsKey(k + NAMESPACE_TIMEOUT)) {
-        gaugeSamples.put(k + NAMESPACE_TIMEOUT,
-            GaugeMetricsSample.builder().putTag(NAMESPACE, k)
-                .name(NAMESPACE_TIMEOUT).value(0)
-                .apply(value -> (int) value).build());
-      }
-      gaugeSamples.get(k + NAMESPACE_TIMEOUT).setValue(namespaceTimeout.size());
-    });
-
-  }
-
-  @Override
   public String name() {
     return "NamespaceMetrics";
   }
 
-  public class NamespaceMetrics {
+  public static class NamespaceMetrics {
 
-    private AtomicInteger usageCount = new AtomicInteger(0);
+    private final AtomicInteger usageCount = new AtomicInteger(0);
     private long firstLoadSpend;
     private long latestUpdateTime;
     private String releaseKey = "default";
@@ -279,13 +251,13 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
       this.releaseKey = releaseKey;
     }
 
-
     @Override
     public String toString() {
-      return "NamespaceInfo{" +
-          "usedTime=" + usageCount +
+      return "NamespaceMetrics{" +
+          "usageCount=" + usageCount +
           ", firstLoadSpend=" + firstLoadSpend +
-          ", updateLatestTime='" + latestUpdateTime + '\'' + ", releaseKey='" + releaseKey + '\'' +
+          ", latestUpdateTime=" + latestUpdateTime +
+          ", releaseKey='" + releaseKey + '\'' +
           '}';
     }
 

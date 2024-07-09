@@ -27,7 +27,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-//TODO 修改 MockInjector
 public class AbstractMetricsCollectorTest {
 
   private AbstractMetricsCollector metricsCollector;

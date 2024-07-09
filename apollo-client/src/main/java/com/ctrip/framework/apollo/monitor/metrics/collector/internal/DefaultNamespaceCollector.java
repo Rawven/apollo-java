@@ -49,7 +49,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
 
   public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
       "yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
-  public static final String NAMESPACE = "namespace";
+  public static final String NAMESPACE_METRICS = "namespaceStatusMetrics";
   public static final String NAMESPACE_UPDATE_TIME = "namespace_latest_update_time";
   public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_first_load_spend_time";
   public static final String NAMESPACE_USAGE_COUNT = "namespace_usage_count";
@@ -73,11 +73,16 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
       Map<String, Object> m_configLocks,
       Map<String, ConfigFile> m_configFiles,
       Map<String, Object> m_configFileLocks) {
-    super(NAMESPACE);
+    super(NAMESPACE_METRICS);
     this.m_configs = m_configs;
     this.m_configLocks = m_configLocks;
     this.m_configFiles = m_configFiles;
     this.m_configFileLocks = m_configFileLocks;
+  }
+
+  @Override
+  public String name() {
+    return NAMESPACE_METRICS;
   }
 
   @Override
@@ -120,7 +125,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
       updateGaugeSample(NAMESPACE_FIRST_LOAD_SPEND, k, v.getFirstLoadSpend(),
           longConverter);
       updateGaugeSample(NAMESPACE_UPDATE_TIME, k, v.getLatestUpdateTime(),
-           longConverter);
+          longConverter);
       updateGaugeSample(NAMESPACE_ITEM_NUM, k, m_configs.get(k).getPropertyNames().size(),
           intConverter);
       updateGaugeSample(CONFIG_FILE_NUM, k, m_configFiles.size(), intConverter);
@@ -130,10 +135,11 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   }
 
   private void updateCounterSample(String key, String namespace, double value) {
-    String mapKey = namespace+key;
+    String mapKey = namespace + key;
     if (!counterSamples.containsKey(mapKey)) {
       counterSamples.put(mapKey,
-          CounterMetricsSample.builder().putTag(NAMESPACE, namespace).name(key).value(0).build());
+          CounterMetricsSample.builder().putTag(NAMESPACE_METRICS, namespace).name(key).value(0)
+              .build());
     }
     counterSamples.get(mapKey).resetValue(value);
   }
@@ -141,10 +147,10 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
   @SuppressWarnings("unchecked")
   private void updateGaugeSample(String key, String namespace, Object value,
       ToDoubleFunction<Object> applyFunction) {
-    String mapKey = namespace+key;
+    String mapKey = namespace + key;
     if (!gaugeSamples.containsKey(mapKey)) {
       gaugeSamples.put(mapKey,
-          GaugeMetricsSample.builder().putTag(NAMESPACE, namespace).name(key).value(0)
+          GaugeMetricsSample.builder().putTag(NAMESPACE_METRICS, namespace).name(key).value(0)
               .apply(applyFunction).build());
     }
     gaugeSamples.get(mapKey).setValue(value);
@@ -235,14 +241,9 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
     return namespaceItems;
   }
 
-  @Override
-  public String name() {
-    return "NamespaceMetrics";
-  }
-
   public static class NamespaceMetrics {
 
-    private  int usageCount;
+    private int usageCount;
     private long firstLoadSpend;
     private long latestUpdateTime;
     private String releaseKey = "default";

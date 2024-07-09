@@ -16,11 +16,27 @@
  */
 package com.ctrip.framework.apollo.monitor.metrics.collector.internal;
 
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_ACCESS_KEY_SECRET;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CACHE_DIR;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_FORM;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLUSTER;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CONFIG_SERVICE;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_META;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_OVERRIDE_SYSTEM_PROPERTIES;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_PROPERTY_NAMES_CACHE_ENABLE;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_PROPERTY_ORDER_ENABLE;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APP_ID;
+import static com.ctrip.framework.apollo.core.ConfigConsts.APOLLO_AUTO_UPDATE_INJECTED_SPRING_PROPERTIES;
+import static com.ctrip.framework.apollo.spring.config.PropertySourcesConstants.APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED;
+import static com.ctrip.framework.apollo.spring.config.PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED;
+import static com.ctrip.framework.apollo.spring.config.PropertySourcesConstants.APOLLO_BOOTSTRAP_NAMESPACES;
+
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.monitor.exposer.StartupParamsExposer;
 import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
 import com.ctrip.framework.apollo.monitor.metrics.collector.AbstractMetricsCollector;
-import com.ctrip.framework.apollo.spring.config.PropertySourcesConstants;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.Maps;
 import java.util.Map;
@@ -31,31 +47,39 @@ import java.util.Map;
 public class DefaultStartupParamsCollector extends AbstractMetricsCollector implements
     StartupParamsExposer {
 
+  public static final String ENV = "env";
+  public static final String STARTUP_PARAMS = "StartUpParams";
   private final Map<String, Object> map = Maps.newHashMap();
 
   public DefaultStartupParamsCollector(ConfigUtil configUtil) {
     super("Nop");
-    map.put("apollo.access-key.secret", configUtil.getAccessKeySecret());
-    map.put("apollo.autoUpdateInjectedSpringProperties",
+    map.put(APOLLO_ACCESS_KEY_SECRET, configUtil.getAccessKeySecret());
+
+    map.put(APOLLO_AUTO_UPDATE_INJECTED_SPRING_PROPERTIES,
         configUtil.isAutoUpdateInjectedSpringPropertiesEnabled());
-    map.put("apollo.bootstrap.enabled", configUtil.isAutoUpdateInjectedSpringPropertiesEnabled());
-    map.put("apollo.bootstrap.namespaces",
-        System.getProperty(PropertySourcesConstants.APOLLO_BOOTSTRAP_NAMESPACES));
-    map.put("apollo.bootstrap.eagerLoad.enabled",
-        configUtil.isAutoUpdateInjectedSpringPropertiesEnabled());
-    map.put("apollo.override-system-properties", configUtil.isOverrideSystemProperties());
-    map.put("apollo.cache-dir", configUtil.getDefaultLocalCacheDir());
-    map.put("apollo.cluster", configUtil.getCluster());
-    map.put("apollo.config-service",
+    map.put(APOLLO_BOOTSTRAP_ENABLED, System.getProperty(APOLLO_BOOTSTRAP_ENABLED));
+    map.put(APOLLO_BOOTSTRAP_NAMESPACES,
+        System.getProperty(APOLLO_BOOTSTRAP_NAMESPACES));
+    map.put(APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED,
+        System.getProperty(APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED));
+    map.put(APOLLO_OVERRIDE_SYSTEM_PROPERTIES, configUtil.isOverrideSystemProperties());
+    map.put(APOLLO_CACHE_DIR, configUtil.getDefaultLocalCacheDir());
+    map.put(APOLLO_CLUSTER, configUtil.getCluster());
+    map.put(APOLLO_CONFIG_SERVICE,
         System.getProperty(ApolloClientSystemConsts.APOLLO_CONFIG_SERVICE));
-    map.put("apollo.client.monitor.form", configUtil.getMonitorForm());
-    map.put("apollo.client.monitor.enabled", configUtil.isClientMonitorEnabled());
-    map.put("apollo.client.monitor.export-period", configUtil.getMonitorExportPeriod());
-    map.put("apollo.meta", configUtil.getMetaServerDomainName());
-    map.put("apollo.property.names.cache.enable", configUtil.isPropertyNamesCacheEnabled());
-    map.put("apollo.property.order.enable", configUtil.isPropertiesOrderEnabled());
-    map.put("app.id", configUtil.getAppId());
-    map.put("env", configUtil.getApolloEnv());
+    map.put(APOLLO_CLIENT_MONITOR_FORM, configUtil.getMonitorForm());
+    map.put(APOLLO_CLIENT_MONITOR_ENABLED, configUtil.isClientMonitorEnabled());
+    map.put(APOLLO_CLIENT_MONITOR_EXPORT_PERIOD, configUtil.getMonitorExportPeriod());
+    map.put(APOLLO_META, configUtil.getMetaServerDomainName());
+    map.put(APOLLO_PROPERTY_NAMES_CACHE_ENABLE, configUtil.isPropertyNamesCacheEnabled());
+    map.put(APOLLO_PROPERTY_ORDER_ENABLE, configUtil.isPropertiesOrderEnabled());
+    map.put(APP_ID, configUtil.getAppId());
+    map.put(ENV, configUtil.getApolloEnv());
+  }
+
+  @Override
+  public String name() {
+    return STARTUP_PARAMS;
   }
 
   @Override
@@ -84,95 +108,92 @@ public class DefaultStartupParamsCollector extends AbstractMetricsCollector impl
 
   @Override
   public String getApolloAccessKeySecret() {
-    Object value = map.get("apollo.access-key.secret");
+    Object value = map.get(APOLLO_ACCESS_KEY_SECRET);
     if (value == null) {
-      return "No secret";
+      return "";
     }
     return value.toString();
   }
 
   @Override
   public Boolean getApolloAutoUpdateInjectedSpringProperties() {
-    return (Boolean) map.get("apollo.autoUpdateInjectedSpringProperties");
+    return (Boolean) map.get(APOLLO_AUTO_UPDATE_INJECTED_SPRING_PROPERTIES);
   }
 
   @Override
   public Boolean getApolloBootstrapEnabled() {
-    return (Boolean) map.get("apollo.bootstrap.enabled");
+    return (Boolean) map.get(APOLLO_BOOTSTRAP_ENABLED);
   }
 
   @Override
   public String getApolloBootstrapNamespaces() {
-    return (String) map.get("apollo.bootstrap.namespaces");
+    return (String) map.get(APOLLO_BOOTSTRAP_NAMESPACES);
   }
 
   @Override
   public Boolean getApolloBootstrapEagerLoadEnabled() {
-    return (Boolean) map.get("apollo.bootstrap.eagerLoad.enabled");
+    return (Boolean) map.get(APOLLO_BOOTSTRAP_EAGER_LOAD_ENABLED);
   }
 
   @Override
   public Boolean getApolloOverrideSystemProperties() {
-    return (Boolean) map.get("apollo.override-system-properties");
+    return (Boolean) map.get(APOLLO_OVERRIDE_SYSTEM_PROPERTIES);
   }
 
   @Override
   public String getApolloCacheDir() {
-    return map.get("apollo.cache-dir").toString();
+    return map.get(APOLLO_CACHE_DIR).toString();
   }
 
   @Override
   public String getApolloCluster() {
-    return map.get("apollo.cluster").toString();
+    return map.get(
+        APOLLO_CLUSTER).toString();
   }
 
   @Override
   public String getApolloConfigService() {
-    return map.get("apollo.config-service").toString();
+    return map.get(APOLLO_CONFIG_SERVICE).toString();
   }
 
   @Override
   public String getApolloClientMonitorForm() {
-    return map.get("apollo.client.monitor.form").toString();
+    return map.get(APOLLO_CLIENT_MONITOR_FORM).toString();
   }
 
   @Override
   public Boolean getApolloClientMonitorEnabled() {
-    return (Boolean) map.get("apollo.client.monitor.enabled");
+    return (Boolean) map.get(APOLLO_CLIENT_MONITOR_ENABLED);
   }
 
   @Override
   public long getApolloClientMonitorExportPeriod() {
-    return (Long) map.get("apollo.client.monitor.export-period");
+    return (Long) map.get(APOLLO_CLIENT_MONITOR_EXPORT_PERIOD);
   }
 
   @Override
   public String getApolloMeta() {
-    return map.get("apollo.meta").toString();
+    return map.get(APOLLO_META).toString();
   }
 
   @Override
   public Boolean getApolloPropertyNamesCacheEnable() {
-    return (Boolean) map.get("apollo.property.names.cache.enable");
+    return (Boolean) map.get(APOLLO_PROPERTY_NAMES_CACHE_ENABLE);
   }
 
   @Override
   public Boolean getApolloPropertyOrderEnable() {
-    return (Boolean) map.get("apollo.property.order.enable");
+    return (Boolean) map.get(APOLLO_PROPERTY_ORDER_ENABLE);
   }
 
   @Override
   public String getEnv() {
-    return map.get("env").toString();
+    return map.get(ENV).toString();
   }
 
   @Override
   public String getAppId() {
-    return map.get("app.id").toString();
+    return map.get(APP_ID).toString();
   }
 
-  @Override
-  public String name() {
-    return "StartUpParams";
-  }
 }

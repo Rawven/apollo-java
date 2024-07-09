@@ -26,22 +26,22 @@ import com.ctrip.framework.apollo.tracer.spi.Transaction;
  */
 public class MetricsMessageProducer implements MessageProducer {
 
-    public static final String ERROR = "error";
-    public static final String THROWABLE = ERROR + ".throwable";
+    public static final String ERROR_METRICS = "errorMetrics";
+    public static final String THROWABLE = ERROR_METRICS + ".throwable";
 
 
     @Override
     public void logError(Throwable cause) {
-        MetricsEvent.builder().withName(ERROR)
-            .withTag(ERROR)
+        MetricsEvent.builder().withName(ERROR_METRICS)
+            .withTag(ERROR_METRICS)
             .putAttachment(THROWABLE,cause)
             .push();
     }
 
     @Override
     public void logError(String message, Throwable cause) {
-        MetricsEvent.builder().withName(ERROR)
-            .withTag(ERROR)
+        MetricsEvent.builder().withName(ERROR_METRICS)
+            .withTag(ERROR_METRICS)
             .putAttachment(THROWABLE,cause).push();
     }
 

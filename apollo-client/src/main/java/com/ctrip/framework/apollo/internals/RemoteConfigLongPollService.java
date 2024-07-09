@@ -221,7 +221,7 @@ public class RemoteConfigLongPollService {
         if (ex.getCause() instanceof SocketTimeoutException) {
           MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_TIMEOUT)
               .putAttachment(NAMESPACE, assembleNamespaces())
-              .withTag(DefaultNamespaceCollector.NAMESPACE).push();
+              .withTag(DefaultNamespaceCollector.NAMESPACE_METRICS).push();
         }
         logger.warn(
             "Long polling failed, will retry in {} seconds. appId: {}, cluster: {}, namespaces: {}, long polling url: {}, reason: {}",
@@ -280,7 +280,7 @@ public class RemoteConfigLongPollService {
       MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_UPDATE_TIME)
           .putAttachment(NAMESPACE, namespaceName)
           .putAttachment(TIMESTAMP,System.currentTimeMillis())
-          .withTag(DefaultNamespaceCollector.NAMESPACE).push();
+          .withTag(DefaultNamespaceCollector.NAMESPACE_METRICS).push();
     }
   }
 

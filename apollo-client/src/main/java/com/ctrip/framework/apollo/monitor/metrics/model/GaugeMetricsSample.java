@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
 public class GaugeMetricsSample<T> extends MetricsSample {
+  public static  ToDoubleFunction<Object> intConverter = v -> (int)v;
+  public static  ToDoubleFunction<Object> longConverter = v -> (long)v;
+  public static  ToDoubleFunction<Object> doubleConverter = v -> (double)v;
 
   private T value;
   private ToDoubleFunction<T> apply;
@@ -59,10 +62,10 @@ public class GaugeMetricsSample<T> extends MetricsSample {
 
   public static class GaugeBuilder<T> {
 
-    private final Map<String, String> tags = new HashMap<>();
+    private final Map<String, String> tags = new HashMap<>(1);
     private String name;
     private T value;
-    private ToDoubleFunction<T> apply = t -> 1;
+    private ToDoubleFunction<T> apply;
 
     public GaugeBuilder<T> name(String name) {
       this.name = name;

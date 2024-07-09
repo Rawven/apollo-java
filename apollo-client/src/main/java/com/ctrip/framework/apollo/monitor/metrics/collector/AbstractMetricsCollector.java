@@ -34,8 +34,8 @@ public abstract class AbstractMetricsCollector implements MetricsCollector {
 
   private final AtomicBoolean isUpdated = new AtomicBoolean();
   private final List<String> tags;
-  public Map<String, CounterMetricsSample> counterSamples = Maps.newHashMap();
-  public Map<String, GaugeMetricsSample> gaugeSamples = Maps.newHashMap();
+  public final Map<String, CounterMetricsSample> counterSamples = Maps.newHashMap();
+  public final Map<String, GaugeMetricsSample> gaugeSamples = Maps.newHashMap();
 
   public AbstractMetricsCollector(String... tags) {
     this.tags = Arrays.asList(tags);

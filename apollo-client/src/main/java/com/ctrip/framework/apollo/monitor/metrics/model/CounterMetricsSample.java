@@ -17,7 +17,6 @@
 package com.ctrip.framework.apollo.monitor.metrics.model;
 
 import com.ctrip.framework.apollo.monitor.metrics.util.MeterType;
-import com.google.common.util.concurrent.AtomicDouble;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,24 +25,33 @@ import java.util.Map;
  */
 public class CounterMetricsSample extends MetricsSample {
 
-  private final AtomicDouble value;
+  private  double nowValue;
+  private  double increaseValue;
 
   public CounterMetricsSample(String name, double num) {
     this.name = name;
-    this.value = new AtomicDouble(num);
+    this.nowValue = num;
+    this.increaseValue = num;
     this.type = MeterType.COUNTER;
   }
 
   public static CounterBuilder builder() {
     return new CounterBuilder();
   }
+  public void resetValue(double value) {
+    increaseValue = value - nowValue;
+    nowValue = value;
+  }
 
   public Double getValue() {
-    return value.get();
+    return nowValue;
+  }
+  public Double getIncreaseValue() {
+    return increaseValue;
   }
 
   public void setValue(Double value) {
-    this.value.set(value);
+    this.nowValue=value;
   }
 
   public static class CounterBuilder {

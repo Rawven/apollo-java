@@ -17,7 +17,8 @@
 package com.ctrip.framework.apollo.monitor.metrics.collector.internal;
 
 
-import static com.ctrip.framework.apollo.monitor.metrics.model.GaugeMetricsSample.*;
+import static com.ctrip.framework.apollo.monitor.metrics.model.GaugeMetricsSample.intConverter;
+import static com.ctrip.framework.apollo.monitor.metrics.model.GaugeMetricsSample.longConverter;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
@@ -37,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToDoubleFunction;
 import org.slf4j.Logger;
 
@@ -135,7 +135,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
       counterSamples.put(mapKey,
           CounterMetricsSample.builder().putTag(NAMESPACE, namespace).name(key).value(0).build());
     }
-    counterSamples.get(mapKey).setValue(value);
+    counterSamples.get(mapKey).resetValue(value);
   }
 
   @SuppressWarnings("unchecked")
@@ -242,7 +242,7 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
 
   public static class NamespaceMetrics {
 
-    private final AtomicInteger usageCount = new AtomicInteger(0);
+    private  int usageCount;
     private long firstLoadSpend;
     private long latestUpdateTime;
     private String releaseKey = "default";
@@ -266,11 +266,11 @@ public class DefaultNamespaceCollector extends AbstractMetricsCollector implemen
     }
 
     public int getUsageCount() {
-      return usageCount.getAndSet(0);
+      return usageCount;
     }
 
     public void incrementUsageCount() {
-      this.usageCount.incrementAndGet();
+      this.usageCount++;
     }
 
     public long getFirstLoadSpend() {

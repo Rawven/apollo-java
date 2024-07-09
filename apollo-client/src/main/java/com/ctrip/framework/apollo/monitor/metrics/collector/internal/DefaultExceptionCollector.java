@@ -70,7 +70,7 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
       counterSamples.put(EXCEPTION_NUM, CounterMetricsSample.builder().name(EXCEPTION_NUM).value(0)
           .build());
     }
-    counterSamples.get(EXCEPTION_NUM).setValue((double) exceptionNum.getAndSet(0));
+    counterSamples.get(EXCEPTION_NUM).resetValue(exceptionNum.get());
   }
 
   @Override

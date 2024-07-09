@@ -103,7 +103,7 @@ public class DefaultThreadPoolCollector extends AbstractMetricsCollector impleme
         gaugeSamples.put(name + THREAD_POOL_PARAMS[i + 1],
             GaugeMetricsSample.builder().putTag(THREAD_POOL_PARAMS[0], name)
                 .name(THREAD_POOL_PARAMS[i + 1])
-                .value(0).apply(value -> (double) value).build());
+                .value(0).apply(GaugeMetricsSample.doubleConverter).build());
       }
       gaugeSamples.get(name + THREAD_POOL_PARAMS[i + 1]).setValue(list.get(i));
     }

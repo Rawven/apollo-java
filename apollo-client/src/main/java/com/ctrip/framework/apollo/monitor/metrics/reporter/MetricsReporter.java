@@ -34,9 +34,7 @@ public interface MetricsReporter extends Ordered {
 
   /**
    * is support
-   *
    * @param form form
-   * @return
    */
   boolean isSupport(String form);
 

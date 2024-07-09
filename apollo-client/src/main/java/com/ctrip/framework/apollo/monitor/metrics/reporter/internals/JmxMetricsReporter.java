@@ -27,7 +27,7 @@ import com.ctrip.framework.apollo.monitor.metrics.util.JMXUtil;
 import java.util.List;
 
 /**
- * jmx reporter
+ * @author Rawven
  */
 public class JmxMetricsReporter implements MetricsReporter {
 

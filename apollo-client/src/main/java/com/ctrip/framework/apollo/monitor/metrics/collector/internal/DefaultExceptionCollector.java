@@ -38,7 +38,6 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
     ExceptionExposer {
 
   public static final String EXCEPTION_NUM = "exception_num";
-  //TODO 会进行增长 但是不会有删除操作 使用ArrayBlockingQueue 线程安全且大小固定
   private static final int MAX_EXCEPTIONS_SIZE = 25;
   private final BlockingQueue<String> exceptions = new ArrayBlockingQueue<>(MAX_EXCEPTIONS_SIZE);
   private final AtomicInteger exceptionNum = new AtomicInteger(0);
@@ -66,13 +65,12 @@ public class DefaultExceptionCollector extends AbstractMetricsCollector implemen
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public void export0() {
     if (!counterSamples.containsKey(EXCEPTION_NUM)) {
       counterSamples.put(EXCEPTION_NUM, CounterMetricsSample.builder().name(EXCEPTION_NUM).value(0)
           .build());
     }
-    gaugeSamples.get(EXCEPTION_NUM).setValue((double) exceptionNum.getAndSet(0));
+    counterSamples.get(EXCEPTION_NUM).setValue((double) exceptionNum.getAndSet(0));
   }
 
   @Override

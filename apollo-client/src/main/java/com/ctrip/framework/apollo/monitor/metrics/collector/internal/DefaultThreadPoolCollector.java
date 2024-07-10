@@ -56,12 +56,6 @@ public class DefaultThreadPoolCollector extends AbstractMetricsCollector impleme
     this.abstractConfigExecutorService = (ThreadPoolExecutor) abstractConfigExecutorService;
     this.abstractConfigFileExecutorService = (ThreadPoolExecutor) abstractConfigFileExecutorService;
   }
-
-  @Override
-  public boolean isSupport(MetricsEvent event) {
-    return false;
-  }
-
   @Override
   public void collect0(MetricsEvent event) {
   }

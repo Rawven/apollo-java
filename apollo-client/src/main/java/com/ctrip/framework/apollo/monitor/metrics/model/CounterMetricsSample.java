@@ -73,11 +73,6 @@ public class CounterMetricsSample extends MetricsSample {
       return this;
     }
 
-    public CounterBuilder tags(Map<String, String> tags) {
-      this.tags.putAll(tags);
-      return this;
-    }
-
     public CounterMetricsSample build() {
       CounterMetricsSample sample = new CounterMetricsSample(name, value);
       sample.tags.putAll(tags);

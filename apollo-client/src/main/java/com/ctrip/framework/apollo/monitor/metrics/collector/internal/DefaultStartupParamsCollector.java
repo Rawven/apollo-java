@@ -90,27 +90,14 @@ public class DefaultStartupParamsCollector extends AbstractMetricsCollector impl
   }
 
   @Override
-  public boolean isSamplesUpdated() {
-    return false;
-  }
-
-  @Override
   public String getStartupParams(String key) {
-    Object value = map.get(key);
-    if (value == null) {
-      return "No value";
-    }
-    return value.toString();
+    return map.getOrDefault(key, "").toString();
   }
 
 
   @Override
   public String getApolloAccessKeySecret() {
-    Object value = map.get(APOLLO_ACCESS_KEY_SECRET);
-    if (value == null) {
-      return "";
-    }
-    return value.toString();
+    return  map.getOrDefault(APOLLO_ACCESS_KEY_SECRET, "").toString();
   }
 
   @Override

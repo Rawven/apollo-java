@@ -17,21 +17,33 @@
 package com.ctrip.framework.apollo.monitor.metrics;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
+import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.monitor.metrics.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.metrics.collector.MetricsCollectorManager;
+import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.util.ConfigUtil;
+import org.slf4j.Logger;
 
 /**
  * @author Rawven
  */
 public abstract class Metrics {
+  protected static final Logger log = DeferredLoggerFactory.getLogger(
+      Metrics.class);
 
   private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
   private static volatile MetricsCollectorManager collectorManager;
 
   static {
     if (m_configUtil.isClientMonitorEnabled()) {
-      collectorManager = ApolloInjector.getInstance(MetricsCollectorManager.class);
+      try {
+        collectorManager = ApolloInjector.getInstance(MetricsCollectorManager.class);
+      }catch (Throwable ex) {
+        Throwable realCause = ex.getCause().getCause().getCause();
+        Tracer.logError(realCause);
+        throw new ApolloConfigException(realCause.getMessage(), realCause);
+      }
     }
   }
 

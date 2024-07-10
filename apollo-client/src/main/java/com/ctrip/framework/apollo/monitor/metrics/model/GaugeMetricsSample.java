@@ -88,11 +88,6 @@ public class GaugeMetricsSample<T> extends MetricsSample {
       return this;
     }
 
-    public GaugeBuilder<T> tags(Map<String, String> tags) {
-      this.tags.putAll(tags);
-      return this;
-    }
-
     public GaugeMetricsSample<T> build() {
       GaugeMetricsSample<T> sample = new GaugeMetricsSample<>(name, value, apply);
       sample.tags.putAll(tags);

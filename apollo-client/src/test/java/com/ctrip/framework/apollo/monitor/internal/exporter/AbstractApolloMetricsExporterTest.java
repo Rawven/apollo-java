@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.monitor.metrics.reporter;
+package com.ctrip.framework.apollo.monitor.internal.exporter;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,7 +29,6 @@ import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.model.CounterModel;
 import com.ctrip.framework.apollo.monitor.internal.model.GaugeModel;
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsModel;
-import com.ctrip.framework.apollo.monitor.internal.exporter.AbstractMetricsExporter;
 import com.ctrip.framework.apollo.monitor.internal.util.MeterType;
 import java.util.Collections;
 import java.util.HashMap;

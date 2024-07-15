@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Apollo Authors
+ * Copyright 2022  Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,39 +22,46 @@ import javax.management.MXBean;
  * @author Rawven
  */
 @MXBean
-public interface ApolloStartupParamsMonitorApi {
+public interface ApolloRunningParamsMonitorApi {
 
   String getStartupParams(String key);
 
-  String getApolloAccessKeySecret();
+  String getConfigServiceUrl();
 
-  Boolean getApolloAutoUpdateInjectedSpringProperties();
+  String getAccessKeySecret();
 
-  Boolean getApolloBootstrapEnabled();
+  Boolean getAutoUpdateInjectedSpringProperties();
 
-  String getApolloBootstrapNamespaces();
+  Boolean getBootstrapEnabled();
 
-  Boolean getApolloBootstrapEagerLoadEnabled();
+  String getBootstrapNamespaces();
 
-  Boolean getApolloOverrideSystemProperties();
+  Boolean getBootstrapEagerLoadEnabled();
 
-  String getApolloCacheDir();
+  Boolean getOverrideSystemProperties();
 
-  String getApolloCluster();
+  String getCacheDir();
 
-  String getApolloConfigService();
+  String getCluster();
 
-  String getApolloClientMonitorForm();
+  String getConfigService();
 
-  Boolean getApolloClientMonitorEnabled();
+  String getClientMonitorForm();
 
-  long getApolloClientMonitorExportPeriod();
+  Boolean getClientMonitorEnabled();
 
-  String getApolloMeta();
+  long getClientMonitorExportPeriod();
 
-  Boolean getApolloPropertyNamesCacheEnable();
+  String getMeta();
 
-  Boolean getApolloPropertyOrderEnable();
+  String getMetaLatestFreshTime();
+
+  Boolean getPropertyNamesCacheEnable();
+
+  Boolean getPropertyOrderEnable();
+
+
+  String getVersion();
 
   String getEnv();
 

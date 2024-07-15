@@ -27,7 +27,7 @@ public interface ConfigMonitor {
 
   ApolloNamespaceMonitorApi getClientEventExposer();
 
-  ApolloStartupParamsMonitorApi getStartupParamsExposer();
+  ApolloRunningParamsMonitorApi getStartupParamsExposer();
 
   String getDataWithCurrentMonitoringSystemFormat();
 }

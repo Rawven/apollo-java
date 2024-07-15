@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.monitor.metrics;
+package com.ctrip.framework.apollo.monitor.internal;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -23,11 +23,10 @@ import static org.mockito.Mockito.when;
 
 import com.ctrip.framework.apollo.build.MockInjector;
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
-import com.ctrip.framework.apollo.monitor.internal.ApolloMetrics;
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollectorManager;
-import com.ctrip.framework.apollo.monitor.metrics.collector.MockMetricsCollectorManager;
+import com.ctrip.framework.apollo.monitor.internal.collector.MockMetricsCollectorManager;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import org.junit.Test;
 

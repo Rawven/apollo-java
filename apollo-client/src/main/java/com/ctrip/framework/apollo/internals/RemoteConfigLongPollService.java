@@ -17,7 +17,7 @@
 package com.ctrip.framework.apollo.internals;
 
 import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.NAMESPACE;
-import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.TIMESTAMP;
+import static com.ctrip.framework.apollo.tracer.internals.MonitorMessageProducer.APOLLO_CONFIG_EXCEPTION;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -31,8 +31,8 @@ import com.ctrip.framework.apollo.core.signature.Signature;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
-import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
 import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector;
+import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
 import com.ctrip.framework.apollo.spi.ConfigServiceLoadBalancerClient;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
@@ -215,13 +215,13 @@ public class RemoteConfigLongPollService {
         transaction.setStatus(Transaction.SUCCESS);
       } catch (Throwable ex) {
         lastServiceDto = null;
-        Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(ex));
+        Tracer.logEvent(APOLLO_CONFIG_EXCEPTION, ExceptionUtil.getDetailMessage(ex));
         transaction.setStatus(ex);
         long sleepTimeInSecond = m_longPollFailSchedulePolicyInSecond.fail();
         if (ex.getCause() instanceof SocketTimeoutException) {
           MetricsEvent.builder().withName(DefaultApolloNamespaceCollector.NAMESPACE_TIMEOUT)
               .putAttachment(NAMESPACE, assembleNamespaces())
-              .withTag(DefaultApolloNamespaceCollector.NAMESPACE_METRICS).push();
+              .withTag(DefaultApolloNamespaceCollector.NAMESPACE_MONITOR).push();
         }
         logger.warn(
             "Long polling failed, will retry in {} seconds. appId: {}, cluster: {}, namespaces: {}, long polling url: {}, reason: {}",
@@ -276,11 +276,6 @@ public class RemoteConfigLongPollService {
       if (m_notifications.containsKey(namespaceNameWithPropertiesSuffix)) {
         m_notifications.put(namespaceNameWithPropertiesSuffix, notification.getNotificationId());
       }
-
-      MetricsEvent.builder().withName(DefaultApolloNamespaceCollector.NAMESPACE_UPDATE_TIME)
-          .putAttachment(NAMESPACE, namespaceName)
-          .putAttachment(TIMESTAMP,System.currentTimeMillis())
-          .withTag(DefaultApolloNamespaceCollector.NAMESPACE_METRICS).push();
     }
   }
 

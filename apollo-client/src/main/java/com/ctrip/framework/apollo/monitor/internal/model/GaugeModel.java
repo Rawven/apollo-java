@@ -23,9 +23,9 @@ import java.util.function.ToDoubleFunction;
 
 public class GaugeModel<T> extends MetricsModel {
 
-  public static ToDoubleFunction<Object> intConverter = v -> (int) v;
-  public static ToDoubleFunction<Object> longConverter = v -> (long) v;
-  public static ToDoubleFunction<Object> doubleConverter = v -> (double) v;
+  public static final ToDoubleFunction<Object> intConverter = v -> (int) v;
+  public static final ToDoubleFunction<Object> longConverter = v -> (long) v;
+  public static final ToDoubleFunction<Object> doubleConverter = v -> (double) v;
 
   private T value;
   private ToDoubleFunction<T> apply;

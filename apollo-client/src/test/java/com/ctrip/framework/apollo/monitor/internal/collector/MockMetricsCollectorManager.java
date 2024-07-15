@@ -14,10 +14,8 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.monitor.metrics.collector;
+package com.ctrip.framework.apollo.monitor.internal.collector;
 
-import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
-import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollectorManager;
 import java.util.ArrayList;
 import java.util.List;
 

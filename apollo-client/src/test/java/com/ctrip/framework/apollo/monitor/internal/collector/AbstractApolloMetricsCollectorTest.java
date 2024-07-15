@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.monitor.metrics.collector;
+package com.ctrip.framework.apollo.monitor.internal.collector;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
-import com.ctrip.framework.apollo.monitor.internal.collector.AbstractMetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsModel;
 import java.util.List;
 import org.junit.Before;

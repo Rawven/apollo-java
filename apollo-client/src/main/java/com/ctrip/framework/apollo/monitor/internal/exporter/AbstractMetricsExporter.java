@@ -22,7 +22,6 @@ import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.model.CounterModel;
 import com.ctrip.framework.apollo.monitor.internal.model.GaugeModel;
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsModel;
-import com.ctrip.framework.apollo.monitor.internal.util.MeterType;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -42,7 +41,7 @@ public abstract class AbstractMetricsExporter implements MetricsExporter {
   private static final long INITIAL_DELAY = 5L;
   private static final int THREAD_POOL_SIZE = 1;
 
-  protected static ScheduledExecutorService m_executorService;
+  protected static final ScheduledExecutorService m_executorService;
 
   static {
     m_executorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
@@ -82,10 +81,10 @@ public abstract class AbstractMetricsExporter implements MetricsExporter {
   protected void registerSample(MetricsModel sample) {
     try {
       switch (sample.getType()) {
-        case MeterType.GAUGE:
+        case GAUGE:
           registerGaugeSample((GaugeModel<?>) sample);
           break;
-        case MeterType.COUNTER:
+        case COUNTER:
           registerCounterSample((CounterModel) sample);
           break;
         default:

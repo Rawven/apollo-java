@@ -7,7 +7,7 @@ import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollectorManager;
 import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloExceptionCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector;
-import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloStartupParamsCollector;
+import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloRunningParamsCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloThreadPoolCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultMetricsCollectorManager;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporter;
@@ -37,7 +37,7 @@ public class ConfigMonitorInitializer {
     DefaultApolloNamespaceCollector namespaceCollector = new DefaultApolloNamespaceCollector(
         configManager.m_configs,
         configManager.m_configLocks, configManager.m_configFiles, configManager.m_configFileLocks);
-    DefaultApolloStartupParamsCollector startupCollector = new DefaultApolloStartupParamsCollector(
+    DefaultApolloRunningParamsCollector startupCollector = new DefaultApolloRunningParamsCollector(
         configUtil);
     List<MetricsCollector> collectors = Lists.newArrayList(exceptionCollector, namespaceCollector,
         threadPoolCollector,

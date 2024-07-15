@@ -36,7 +36,7 @@ public abstract class ApolloMetrics {
       ApolloMetrics.class);
 
   private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
-  private static volatile MetricsCollectorManager collectorManager = ApolloInjector.getInstance(
+  private static final MetricsCollectorManager collectorManager = ApolloInjector.getInstance(
       MetricsCollectorManager.class);
 
   static {

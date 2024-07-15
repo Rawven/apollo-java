@@ -17,6 +17,7 @@
 package com.ctrip.framework.apollo.monitor.internal.collector.internal;
 
 
+import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.monitor.internal.model.GaugeModel.intConverter;
 import static com.ctrip.framework.apollo.monitor.internal.model.GaugeModel.longConverter;
 
@@ -49,14 +50,13 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
 
   public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
       "yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
-  public static final String NAMESPACE_METRICS = "namespaceStatusMetrics";
-  public static final String NAMESPACE_UPDATE_TIME = "namespace_latest_update_time";
+  public static final String NAMESPACE_MONITOR = "namespace_monitor";
+  public static final String NAMESPACE_Latest_UPDATE_TIME = "namespace_latest_update_time";
   public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_first_load_spend_time";
   public static final String NAMESPACE_USAGE_COUNT = "namespace_usage_count";
   public static final String NAMESPACE_RELEASE_KEY = "namespace_release_key";
   public static final String NAMESPACE_ITEM_NUM = "namespace_item_num";
   public static final String CONFIG_FILE_NUM = "config_file_num";
-  public static final String NAMESPACE_LATEST_RELEASE_KEY = "namespace_latest_release_key";
   public static final String NAMESPACE_NOT_FOUND = "namespace_not_found";
   public static final String NAMESPACE_TIMEOUT = "namespace_timeout";
   private static final Logger logger = DeferredLoggerFactory.getLogger(
@@ -73,7 +73,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
       Map<String, Object> m_configLocks,
       Map<String, ConfigFile> m_configFiles,
       Map<String, Object> m_configFileLocks) {
-    super(NAMESPACE_METRICS, NAMESPACE_METRICS);
+    super(NAMESPACE_MONITOR, NAMESPACE_MONITOR);
     this.m_configs = m_configs;
     this.m_configLocks = m_configLocks;
     this.m_configFiles = m_configFiles;
@@ -83,14 +83,14 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
 
   @Override
   public void collect0(MetricsEvent event) {
-    String namespace = event.getAttachmentValue(MetricsConstant.NAMESPACE);
+    String namespace = event.getAttachmentValue(NAMESPACE);
     NamespaceMetrics namespaceMetrics = namespaces.computeIfAbsent(namespace,
         k -> new NamespaceMetrics());
     switch (event.getName()) {
       case NAMESPACE_USAGE_COUNT:
         namespaceMetrics.incrementUsageCount();
         break;
-      case NAMESPACE_UPDATE_TIME:
+      case NAMESPACE_Latest_UPDATE_TIME:
         long updateTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
         namespaceMetrics.setLatestUpdateTime(updateTime);
         break;
@@ -99,7 +99,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
         namespaceMetrics.setFirstLoadSpend(firstLoadSpendTime);
         break;
       case NAMESPACE_RELEASE_KEY:
-        String releaseKey = event.getAttachmentValue(NAMESPACE_LATEST_RELEASE_KEY);
+        String releaseKey = event.getAttachmentValue(NAMESPACE_RELEASE_KEY);
         namespaceMetrics.setReleaseKey(releaseKey);
         break;
       case NAMESPACE_TIMEOUT:
@@ -120,7 +120,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
       updateCounterSample(NAMESPACE_USAGE_COUNT, k, v.getUsageCount());
       updateGaugeSample(NAMESPACE_FIRST_LOAD_SPEND, k, v.getFirstLoadSpend(),
           longConverter);
-      updateGaugeSample(NAMESPACE_UPDATE_TIME, k, v.getLatestUpdateTime(),
+      updateGaugeSample(NAMESPACE_Latest_UPDATE_TIME, k, v.getLatestUpdateTime(),
           longConverter);
       updateGaugeSample(NAMESPACE_ITEM_NUM, k, m_configs.get(k).getPropertyNames().size(),
           intConverter);
@@ -134,7 +134,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
     String mapKey = namespace + key;
     if (!counterSamples.containsKey(mapKey)) {
       counterSamples.put(mapKey,
-          CounterModel.builder().putTag(NAMESPACE_METRICS, namespace).name(key).value(0)
+          CounterModel.builder().putTag(NAMESPACE_MONITOR, namespace).name(key).value(0)
               .build());
     }
     counterSamples.get(mapKey).updateValue(value);
@@ -146,7 +146,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
     String mapKey = namespace + key;
     if (!gaugeSamples.containsKey(mapKey)) {
       gaugeSamples.put(mapKey,
-          GaugeModel.builder().putTag(NAMESPACE_METRICS, namespace).name(key).value(0)
+          GaugeModel.builder().putTag(NAMESPACE, namespace).name(key).value(0)
               .apply(applyFunction).build());
     }
     gaugeSamples.get(mapKey).updateValue(value);
@@ -241,7 +241,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
 
     private int usageCount;
     private long firstLoadSpend;
-    private long latestUpdateTime;
+    private long latestUpdateTime = System.currentTimeMillis();
     private String releaseKey = "default";
 
     public String getReleaseKey() {

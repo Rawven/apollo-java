@@ -29,13 +29,14 @@ import java.util.List;
  * @author Rawven
  */
 public class ClientMessageProducerManager implements MessageProducerManager {
+
   private static MessageProducer producer;
   private static ConfigUtil m_configUtil = new ConfigUtil();
 
   public ClientMessageProducerManager() {
     List<MessageProducer> producers = new ArrayList<>();
-    if(m_configUtil.isClientMonitorEnabled()){
-      producers.add(new MetricsMessageProducer());
+    if (m_configUtil.isClientMonitorEnabled()) {
+      producers.add(new MonitorMessageProducer());
     }
     if (ClassLoaderUtil.isClassPresent(CatNames.CAT_CLASS)) {
       producers.add(new CatMessageProducer());

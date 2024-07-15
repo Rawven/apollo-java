@@ -16,8 +16,8 @@
  */
 package com.ctrip.framework.apollo.monitor.internal.collector.internal;
 
-import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.ERROR_METRICS;
-import static com.ctrip.framework.apollo.tracer.internals.MetricsMessageProducer.THROWABLE;
+import static com.ctrip.framework.apollo.tracer.internals.MonitorMessageProducer.ERROR_METRICS;
+import static com.ctrip.framework.apollo.tracer.internals.MonitorMessageProducer.THROWABLE;
 
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.monitor.api.ApolloExceptionMonitorApi;
@@ -39,7 +39,7 @@ public class DefaultApolloExceptionCollector extends AbstractMetricsCollector im
   public static final String EXCEPTION_NUM = "exception_num";
 
   private static final int MAX_EXCEPTIONS_SIZE = 25;
-  private final BlockingQueue<ApolloConfigException> exceptions = new ArrayBlockingQueue<ApolloConfigException>(
+  private final BlockingQueue<ApolloConfigException> exceptions = new ArrayBlockingQueue<>(
       MAX_EXCEPTIONS_SIZE);
 
   private final AtomicInteger exceptionNum = new AtomicInteger(0);
@@ -65,6 +65,9 @@ public class DefaultApolloExceptionCollector extends AbstractMetricsCollector im
   @Override
   public void collect0(MetricsEvent event) {
     ApolloConfigException exception = event.getAttachmentValue(THROWABLE);
+    if (exceptions.size() >= MAX_EXCEPTIONS_SIZE) {
+      exceptions.poll();
+    }
     exceptions.add(exception);
     exceptionNum.incrementAndGet();
   }

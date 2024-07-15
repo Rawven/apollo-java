@@ -14,31 +14,29 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
+package com.ctrip.framework.apollo.monitor.internal.collector.internal;
 
-import com.ctrip.framework.apollo.tracer.spi.Transaction;
+import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
+import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollectorManager;
+import java.util.List;
 
 /**
- * @author Jason Song(song_s@ctrip.com)
+ * @author Rawven
  */
-public class NullTransaction implements Transaction {
-  @Override
-  public void setStatus(String status) {
+public class DefaultMetricsCollectorManager implements MetricsCollectorManager {
 
+  private List<MetricsCollector> collectors;
+
+  public DefaultMetricsCollectorManager() {
   }
 
   @Override
-  public void setStatus(Throwable e) {
-
+  public List<MetricsCollector> getCollectors() {
+    return collectors;
   }
 
-  @Override
-  public void addData(String key, Object value) {
-
+  public void setCollectors(List<MetricsCollector> collectors) {
+    this.collectors = collectors;
   }
 
-  @Override
-  public void complete() {
-
-  }
 }

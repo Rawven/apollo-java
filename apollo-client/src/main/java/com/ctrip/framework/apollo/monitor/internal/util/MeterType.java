@@ -14,31 +14,12 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
-
-import com.ctrip.framework.apollo.tracer.spi.Transaction;
+package com.ctrip.framework.apollo.monitor.internal.util;
 
 /**
- * @author Jason Song(song_s@ctrip.com)
+ * @author Rawven
  */
-public class NullTransaction implements Transaction {
-  @Override
-  public void setStatus(String status) {
-
-  }
-
-  @Override
-  public void setStatus(Throwable e) {
-
-  }
-
-  @Override
-  public void addData(String key, Object value) {
-
-  }
-
-  @Override
-  public void complete() {
-
-  }
+public enum MeterType {
+  COUNTER,
+  GAUGE
 }

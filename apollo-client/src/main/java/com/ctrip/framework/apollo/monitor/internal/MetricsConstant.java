@@ -14,31 +14,18 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
-
-import com.ctrip.framework.apollo.tracer.spi.Transaction;
+package com.ctrip.framework.apollo.monitor.internal;
 
 /**
- * @author Jason Song(song_s@ctrip.com)
+ * metrics constant
+ *
+ * @author Rawven
  */
-public class NullTransaction implements Transaction {
-  @Override
-  public void setStatus(String status) {
+public class MetricsConstant {
 
-  }
+  public static final String NAMESPACE = "namespace";
+  public static final String TIMESTAMP = "timestamp";
+  public static final String JMX = "jmx";
+  public static final String MBEAN_NAME = "apollo.client.monitor:type=";
 
-  @Override
-  public void setStatus(Throwable e) {
-
-  }
-
-  @Override
-  public void addData(String key, Object value) {
-
-  }
-
-  @Override
-  public void complete() {
-
-  }
 }

@@ -16,15 +16,15 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultNamespaceCollector.NAMESPACE_METRICS;
-import static com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultNamespaceCollector.NAMESPACE_USAGE_COUNT;
+import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector.NAMESPACE_METRICS;
+import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector.NAMESPACE_USAGE_COUNT;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
-import com.ctrip.framework.apollo.monitor.metrics.MetricsConstant;
-import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.monitor.internal.MetricsConstant;
+import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
 import com.google.common.collect.Maps;

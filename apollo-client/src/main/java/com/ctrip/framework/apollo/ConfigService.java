@@ -20,7 +20,7 @@ import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.internals.ConfigManager;
-import com.ctrip.framework.apollo.internals.ConfigMonitor;
+import com.ctrip.framework.apollo.monitor.api.ConfigMonitor;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigRegistry;
 import com.ctrip.framework.apollo.util.ConfigUtil;

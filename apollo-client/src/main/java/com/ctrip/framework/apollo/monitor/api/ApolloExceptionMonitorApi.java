@@ -14,31 +14,25 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
+package com.ctrip.framework.apollo.monitor.api;
 
-import com.ctrip.framework.apollo.tracer.spi.Transaction;
+import java.util.List;
+import javax.management.MXBean;
 
 /**
- * @author Jason Song(song_s@ctrip.com)
+ * @author Rawven
  */
-public class NullTransaction implements Transaction {
-  @Override
-  public void setStatus(String status) {
+@MXBean
+public interface ApolloExceptionMonitorApi {
 
-  }
 
-  @Override
-  public void setStatus(Throwable e) {
+  /**
+   * get the number of exceptions
+   */
+  Integer getExceptionNum();
 
-  }
-
-  @Override
-  public void addData(String key, Object value) {
-
-  }
-
-  @Override
-  public void complete() {
-
-  }
+  /**
+   * get exception details
+   */
+  List<String> getExceptionDetails();
 }

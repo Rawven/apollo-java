@@ -16,7 +16,7 @@
  */
 package com.ctrip.framework.apollo.tracer.internals;
 
-import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 

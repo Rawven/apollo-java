@@ -17,8 +17,8 @@
 package com.ctrip.framework.apollo.internals;
 
 
-import static com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultNamespaceCollector.NAMESPACE_METRICS;
-import static com.ctrip.framework.apollo.monitor.metrics.MetricsConstant.TIMESTAMP;
+import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector.NAMESPACE_METRICS;
+import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.TIMESTAMP;
 
 import com.ctrip.framework.apollo.Apollo;
 import com.ctrip.framework.apollo.build.ApolloInjector;
@@ -35,8 +35,8 @@ import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.enums.ConfigSourceType;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigStatusCodeException;
-import com.ctrip.framework.apollo.monitor.metrics.collector.internal.DefaultNamespaceCollector;
-import com.ctrip.framework.apollo.monitor.metrics.MetricsEvent;
+import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector;
+import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import com.ctrip.framework.apollo.util.ConfigUtil;
@@ -122,7 +122,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
       this.sync();
 
-      MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_FIRST_LOAD_SPEND).withTag(
+      MetricsEvent.builder().withName(DefaultApolloNamespaceCollector.NAMESPACE_FIRST_LOAD_SPEND).withTag(
               NAMESPACE_METRICS)
           .putAttachment(NAMESPACE_METRICS, m_namespace)
           .putAttachment(TIMESTAMP, System.currentTimeMillis() - start).push();
@@ -176,8 +176,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       if (current != null) {
         Tracer.logEvent(String.format("Apollo.Client.Configs.%s", current.getNamespaceName()),
             current.getReleaseKey());
-        MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_RELEASE_KEY).withTag(
-            NAMESPACE_METRICS).putAttachment(DefaultNamespaceCollector.NAMESPACE_LATEST_RELEASE_KEY,
+
+
+        MetricsEvent.builder().withName(DefaultApolloNamespaceCollector.NAMESPACE_RELEASE_KEY).withTag(
+            NAMESPACE_METRICS).putAttachment(DefaultApolloNamespaceCollector.NAMESPACE_LATEST_RELEASE_KEY,
             current.getReleaseKey()).putAttachment(NAMESPACE_METRICS,current.getNamespaceName()).push();
       }
 
@@ -279,7 +281,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
                 appId, cluster, m_namespace);
             statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
                 message);
-            MetricsEvent.builder().withName(DefaultNamespaceCollector.NAMESPACE_NOT_FOUND).withTag(
+            MetricsEvent.builder().withName(DefaultApolloNamespaceCollector.NAMESPACE_NOT_FOUND).withTag(
                 NAMESPACE_METRICS).putAttachment(NAMESPACE_METRICS, m_namespace).push();
           }
           Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(statusCodeException));

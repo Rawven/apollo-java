@@ -14,31 +14,35 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
+package com.ctrip.framework.apollo.monitor.internal.model;
 
-import com.ctrip.framework.apollo.tracer.spi.Transaction;
+import com.ctrip.framework.apollo.monitor.internal.util.MeterType;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * @author Jason Song(song_s@ctrip.com)
+ * @author Rawven
  */
-public class NullTransaction implements Transaction {
-  @Override
-  public void setStatus(String status) {
+public class MetricsModel {
 
+  protected final Map<String, String> tags = new HashMap<>();
+  protected String name;
+  protected MeterType type;
+
+  public String getName() {
+    return "Apollo_Client_" + name;
   }
 
-  @Override
-  public void setStatus(Throwable e) {
-
+  public void setName(String name) {
+    this.name = name;
   }
 
-  @Override
-  public void addData(String key, Object value) {
-
+  public MeterType getType() {
+    return type;
   }
 
-  @Override
-  public void complete() {
-
+  public Map<String, String> getTags() {
+    return tags;
   }
 }
+

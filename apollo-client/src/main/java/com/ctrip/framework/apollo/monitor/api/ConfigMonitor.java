@@ -14,31 +14,20 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
-
-import com.ctrip.framework.apollo.tracer.spi.Transaction;
+package com.ctrip.framework.apollo.monitor.api;
 
 /**
- * @author Jason Song(song_s@ctrip.com)
+ * @author Rawven
  */
-public class NullTransaction implements Transaction {
-  @Override
-  public void setStatus(String status) {
+public interface ConfigMonitor {
 
-  }
+  ApolloThreadPoolMonitorApi getMemoryStatusExposer();
 
-  @Override
-  public void setStatus(Throwable e) {
+  ApolloExceptionMonitorApi getTracerEventExposer();
 
-  }
+  ApolloNamespaceMonitorApi getClientEventExposer();
 
-  @Override
-  public void addData(String key, Object value) {
+  ApolloStartupParamsMonitorApi getStartupParamsExposer();
 
-  }
-
-  @Override
-  public void complete() {
-
-  }
+  String getDataWithCurrentMonitoringSystemFormat();
 }

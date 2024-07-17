@@ -125,17 +125,24 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
       updateGaugeSample(NAMESPACE_ITEM_NUM, k, m_configs.get(k).getPropertyNames().size(),
           intConverter);
       updateGaugeSample(CONFIG_FILE_NUM, k, m_configFiles.size(), intConverter);
-      updateGaugeSample(NAMESPACE_NOT_FOUND, k, namespace404.size(), intConverter);
-      updateGaugeSample(NAMESPACE_TIMEOUT, k, namespaceTimeout.size(), intConverter);
     });
+
+    updateGaugeSample(NAMESPACE_NOT_FOUND, "", namespace404.size(), intConverter);
+    updateGaugeSample(NAMESPACE_TIMEOUT, "", namespaceTimeout.size(), intConverter);
   }
 
   private void updateCounterSample(String key, String namespace, double value) {
     String mapKey = namespace + key;
     if (!counterSamples.containsKey(mapKey)) {
-      counterSamples.put(mapKey,
-          CounterModel.builder().putTag(NAMESPACE_MONITOR, namespace).name(key).value(0)
-              .build());
+      if ("".equals(namespace)){
+        counterSamples.put(mapKey,
+            CounterModel.builder().name(key).value(0)
+                .build());
+      }else {
+        counterSamples.put(mapKey,
+            CounterModel.builder().putTag(NAMESPACE_MONITOR, namespace).name(key).value(0)
+                .build());
+      }
     }
     counterSamples.get(mapKey).updateValue(value);
   }
@@ -145,9 +152,15 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
       ToDoubleFunction<Object> applyFunction) {
     String mapKey = namespace + key;
     if (!gaugeSamples.containsKey(mapKey)) {
-      gaugeSamples.put(mapKey,
-          GaugeModel.builder().putTag(NAMESPACE, namespace).name(key).value(0)
-              .apply(applyFunction).build());
+      if ("".equals(namespace)){
+        gaugeSamples.put(mapKey,
+            GaugeModel.builder().name(key).value(0).apply(applyFunction)
+                .build());
+      }else {
+        gaugeSamples.put(mapKey,
+            GaugeModel.builder().putTag(NAMESPACE_MONITOR, namespace).name(key).value(0).apply(applyFunction)
+                .build());
+      }
     }
     gaugeSamples.get(mapKey).updateValue(value);
   }

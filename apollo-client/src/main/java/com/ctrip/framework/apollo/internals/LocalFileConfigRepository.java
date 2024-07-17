@@ -16,7 +16,7 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.tracer.internals.MonitorMessageProducer.APOLLO_CONFIG_EXCEPTION;
+import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CONFIG_EXCEPTION;
 
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
 import com.ctrip.framework.apollo.enums.ConfigSourceType;

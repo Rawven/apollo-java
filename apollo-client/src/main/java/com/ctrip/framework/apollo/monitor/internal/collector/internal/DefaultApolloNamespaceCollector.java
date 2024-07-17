@@ -51,7 +51,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
   public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
       "yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
   public static final String NAMESPACE_MONITOR = "namespace_monitor";
-  public static final String NAMESPACE_Latest_UPDATE_TIME = "namespace_latest_update_time";
+  public static final String NAMESPACE_LATEST_UPDATE_TIME = "namespace_latest_update_time";
   public static final String NAMESPACE_FIRST_LOAD_SPEND = "namespace_first_load_spend_time";
   public static final String NAMESPACE_USAGE_COUNT = "namespace_usage_count";
   public static final String NAMESPACE_RELEASE_KEY = "namespace_release_key";
@@ -90,7 +90,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
       case NAMESPACE_USAGE_COUNT:
         namespaceMetrics.incrementUsageCount();
         break;
-      case NAMESPACE_Latest_UPDATE_TIME:
+      case NAMESPACE_LATEST_UPDATE_TIME:
         long updateTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
         namespaceMetrics.setLatestUpdateTime(updateTime);
         break;
@@ -120,7 +120,7 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
       updateCounterSample(NAMESPACE_USAGE_COUNT, k, v.getUsageCount());
       updateGaugeSample(NAMESPACE_FIRST_LOAD_SPEND, k, v.getFirstLoadSpend(),
           longConverter);
-      updateGaugeSample(NAMESPACE_Latest_UPDATE_TIME, k, v.getLatestUpdateTime(),
+      updateGaugeSample(NAMESPACE_LATEST_UPDATE_TIME, k, v.getLatestUpdateTime(),
           longConverter);
       updateGaugeSample(NAMESPACE_ITEM_NUM, k, m_configs.get(k).getPropertyNames().size(),
           intConverter);

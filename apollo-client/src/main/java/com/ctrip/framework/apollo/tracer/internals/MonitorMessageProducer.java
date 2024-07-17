@@ -20,6 +20,7 @@ import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.NAMESP
 import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.TIMESTAMP;
 import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector.*;
 import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloRunningParamsCollector.*;
+import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.*;
 
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
@@ -37,17 +38,6 @@ import java.util.List;
  */
 public class MonitorMessageProducer implements MessageProducer {
 
-  public static final String ERROR_METRICS = "errorMetrics";
-  public static final String THROWABLE = ERROR_METRICS + ".throwable";
-  public static final String APOLLO_CLIENT_CONFIG_CHANGES = "Apollo.Client.ConfigChanges";
-  public static final String APOLLO_CONFIG_EXCEPTION = "ApolloConfigException";
-  public static final String APOLLO_META_SERVICE = "Apollo.MetaService";
-  public static final String APOLLO_CONFIG_SERVICES = "Apollo.Config.Services";
-  public static final String APOLLO_CLIENT_VERSION = "Apollo.Client.Version";
-  public static final String APOLLO_CONFIGSERVICE = "Apollo.ConfigService";
-  public static final String APOLLO_CLIENT_CONFIGS = "Apollo.Client.Configs.";
-  public static final String APOLLO_CLIENT_CONFIG_META = "Apollo.Client.ConfigMeta";
-  public static final String HELP_STR = "periodicRefresh: ";
   public static final List<String> TAGS = Collections.unmodifiableList(
       Arrays.asList(
           APOLLO_CLIENT_CONFIG_CHANGES,
@@ -93,7 +83,7 @@ public class MonitorMessageProducer implements MessageProducer {
       case APOLLO_CLIENT_CONFIG_CHANGES: {
         namespace = name;
         MetricsEvent.builder()
-            .withName(NAMESPACE_Latest_UPDATE_TIME)
+            .withName(NAMESPACE_LATEST_UPDATE_TIME)
             .putAttachment(NAMESPACE, namespace)
             .putAttachment(TIMESTAMP, System.currentTimeMillis())
             .withTag(NAMESPACE_MONITOR)

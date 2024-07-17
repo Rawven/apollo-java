@@ -17,7 +17,7 @@
 package com.ctrip.framework.apollo.internals;
 
 import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.NAMESPACE;
-import static com.ctrip.framework.apollo.tracer.internals.MonitorMessageProducer.APOLLO_CONFIG_EXCEPTION;
+import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CONFIG_EXCEPTION;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;

@@ -168,12 +168,17 @@ public class ApolloClientSystemConsts {
   public static final String APOLLO_CLIENT_MONITOR_ENABLED = "apollo.client.monitor.enabled";
 
   /**
+   * apollo client monitor jmx enabled
+   */
+  public static final String APOLLO_CLIENT_MONITOR_JMX_ENABLED = "apollo.client.monitor.jmx.enabled";
+
+  /**
    * apollo client monitor form {such as jmx,prometheus}
    */
-  public static final String APOLLO_CLIENT_MONITOR_FORM = "apollo.client.monitor.form";
+  public static final String APOLLO_CLIENT_MONITOR_EXTERNAL_TYPE = "apollo.client.monitor.external.type";
 
   /**
    * apollo client monitor collect period
    */
-  public static final String APOLLO_CLIENT_MONITOR_EXPORT_PERIOD = "apollo.client.monitor.export-period";
+  public static final String APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD = "apollo.client.monitor.external.export-period";
 }

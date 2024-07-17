@@ -16,6 +16,8 @@
  */
 package com.ctrip.framework.apollo.monitor.internal.exporter.internals;
 
+import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.MBEAN_NAME;
+
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
@@ -23,6 +25,7 @@ import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultMetricsCollectorManager;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporter;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporterFactory;
+import com.ctrip.framework.apollo.monitor.internal.util.JMXUtil;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.foundation.internals.ServiceBootstrap;
@@ -42,24 +45,29 @@ public class DefaultMetricsExporterFactory implements MetricsExporterFactory {
   @Override
   public MetricsExporter getMetricsReporter(List<MetricsCollector> collectors) {
     //init reporter
-    String form = m_configUtil.getMonitorForm();
+    if (m_configUtil.isClientMonitorJmxEnabled()) {
+      collectors.forEach(metricsCollector ->
+          JMXUtil.register(MBEAN_NAME + metricsCollector.name(),
+              metricsCollector));
+    }
+    String externalSystemType = m_configUtil.getMonitorExternalType();
     MetricsExporter reporter = null;
-    if (form != null) {
+    if (externalSystemType != null) {
       List<MetricsExporter> metricsExporters = ServiceBootstrap.loadAllOrdered(
           MetricsExporter.class);
       for (MetricsExporter metricsExporter : metricsExporters) {
-        if (metricsExporter.isSupport(form)) {
+        if (metricsExporter.isSupport(externalSystemType)) {
           reporter = metricsExporter;
-          reporter.init(collectors, m_configUtil.getMonitorExportPeriod());
+          reporter.init(collectors, m_configUtil.getMonitorExternalExportPeriod());
           break;
         }
       }
       if (reporter == null) {
         ApolloConfigException exception = new ApolloConfigException(
-            "Error initializing MetricsReporter for form: " + form);
+            "Error initializing MetricsReporter for type: " + externalSystemType);
         logger.error(
             "Error initializing MetricsReporter for protocol: {},Please check whether necessary dependencies are imported, such as apollo-plugin-client-prometheus",
-            form, exception);
+            externalSystemType, exception);
         Tracer.logError(exception);
         throw exception;
       }

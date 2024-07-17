@@ -64,24 +64,32 @@
       "defaultValue": ""
     },
     {
-      "name": "apollo.client.monitor.form",
+      "name": "apollo.client.monitor.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.ctrip.framework.apollo.core.ApolloClientSystemConsts",
+      "description": "apollo client monitor enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "apollo.client.monitor.jmx.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.ctrip.framework.apollo.core.ApolloClientSystemConsts",
+      "description": "apollo client monitor jmx enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "apollo.client.monitor.external.type",
       "type": "java.lang.String",
       "sourceType": "com.ctrip.framework.apollo.core.ApolloClientSystemConsts",
-      "description": "apollo client monitor form ",
+      "description": "apollo client monitor external monitoring system type.",
       "defaultValue": ""
     },
+
     {
-      "name": "apollo.client.monitor.enabled",
+      "name": "apollo.client.monitor.external.export-period",
       "type": "java.lang.String",
       "sourceType": "com.ctrip.framework.apollo.core.ApolloClientSystemConsts",
-      "description": "apollo client monitor enabled",
-      "defaultValue": "flase"
-    },
-    {
-      "name": "apollo.client.monitor.export-period",
-      "type": "java.lang.String",
-      "sourceType": "com.ctrip.framework.apollo.core.ApolloClientSystemConsts",
-      "description": "apollo client export period",
+      "description": "apollo client monitor external metrics export period.",
       "defaultValue": ""
     },
     {

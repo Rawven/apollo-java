@@ -46,11 +46,13 @@ public interface ApolloRunningParamsMonitorApi {
 
   String getConfigService();
 
-  String getClientMonitorForm();
-
   Boolean getClientMonitorEnabled();
 
-  long getClientMonitorExportPeriod();
+  Boolean getClientMonitorJmxEnabled();
+
+  String getClientMonitorExternalForm();
+
+  long getClientMonitorExternalExportPeriod();
 
   String getMeta();
 

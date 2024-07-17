@@ -16,17 +16,14 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import com.ctrip.framework.apollo.build.MockInjector;
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
-import com.ctrip.framework.apollo.monitor.internal.exporter.internals.DefaultMetricsExporterFactory;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporter;
-import com.ctrip.framework.apollo.monitor.internal.exporter.internals.JmxMetricsExporter;
+import com.ctrip.framework.apollo.monitor.internal.exporter.internals.DefaultMetricsExporterFactory;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,24 +35,16 @@ public class DefaultApolloMetricsExporterFactoryTest {
 
   public void setUp(String form, String period) {
     if (form!=null){
-      System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_FORM,form);
+      System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_TYPE,form);
     }
     if (period!=null){
-      System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD,period);
+      System.setProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD,period);
     }
     ConfigUtil mockConfigUtil = new ConfigUtil();
     defaultMetricsReporterFactory = new DefaultMetricsExporterFactory();
     MockInjector.setInstance(ConfigUtil.class, mockConfigUtil);
   }
 
-  @Test
-  public void testGetMetricsReporter_Success() {
-    setUp("jmx","300");
-    List<MetricsCollector> collectors = new ArrayList<>();
-    MetricsExporter reporter = defaultMetricsReporterFactory.getMetricsReporter(collectors);
-    assertNotNull(reporter);
-    assertTrue(reporter instanceof JmxMetricsExporter);
-  }
 
   @Test(expected = ApolloConfigException.class)
   public void testGetMetricsReporter_NoSupportedReporter() {

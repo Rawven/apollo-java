@@ -74,8 +74,9 @@ public class ConfigUtil {
   private boolean propertyFileCacheEnabled = true;
   private boolean overrideSystemProperties = true;
   private boolean isClientMonitorEnabled = false;
-  private String monitorForm = null;
-  private long monitorCollectPeriod = 10;
+  private boolean isClientMonitorJmxEnabled = false;
+  private String monitorExternalType = null;
+  private long monitorExternalExportPeriod = 10;
 
   public ConfigUtil() {
     warnLogRateLimiter = RateLimiter.create(0.017); // 1 warning log output per minute
@@ -91,10 +92,12 @@ public class ConfigUtil {
     initPropertyNamesCacheEnabled();
     initPropertyFileCacheEnabled();
     initOverrideSystemProperties();
-    initMonitorForm();
-    initMonitorCollectPeriod();
+    initMonitorExternalType();
+    initMonitorExternalCollectPeriod();
     initClientMonitorEnabled();
+    initClientMonitorJmxEnabled();
   }
+
 
   static Integer getCustomizedIntegerValue(String systemKey) {
     String customizedValue = System.getProperty(systemKey);
@@ -504,37 +507,37 @@ public class ConfigUtil {
         overrideSystemProperties);
   }
 
-  private void initMonitorForm() {
-    monitorForm = System.getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_FORM);
-    if (Strings.isNullOrEmpty(monitorForm)) {
-      monitorForm = Foundation.app()
-          .getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_FORM, null);
+  private void initMonitorExternalType() {
+    monitorExternalType = System.getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_TYPE);
+    if (Strings.isNullOrEmpty(monitorExternalType)) {
+      monitorExternalType = Foundation.app()
+          .getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_TYPE, null);
     }
   }
 
-  public String getMonitorForm() {
-    return monitorForm;
+  public String getMonitorExternalType() {
+    return monitorExternalType;
   }
 
-  private void initMonitorCollectPeriod() {
+  private void initMonitorExternalCollectPeriod() {
     String collectPeriod = System.getProperty(
-        ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD);
+        ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD);
     if (Strings.isNullOrEmpty(collectPeriod)) {
       collectPeriod = Foundation.app()
-          .getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD, null);
+          .getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD, null);
     }
     if (!Strings.isNullOrEmpty(collectPeriod)) {
       try {
-        monitorCollectPeriod = Long.parseLong(collectPeriod);
+        monitorExternalExportPeriod = Long.parseLong(collectPeriod);
       } catch (Throwable ex) {
         logger.error("Config for {} is invalid: {}",
-            ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD, collectPeriod);
+            ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD, collectPeriod);
       }
     }
   }
 
-  public long getMonitorExportPeriod() {
-    return monitorCollectPeriod;
+  public long getMonitorExternalExportPeriod() {
+    return monitorExternalExportPeriod;
   }
 
 
@@ -549,6 +552,18 @@ public class ConfigUtil {
 
   public boolean isClientMonitorEnabled() {
     return isClientMonitorEnabled;
+  }
+
+  private void initClientMonitorJmxEnabled() {
+    String enabled = System.getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_JMX_ENABLED);
+    if (enabled == null) {
+      enabled = Foundation.app()
+          .getProperty(ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_JMX_ENABLED, "false");
+    }
+    isClientMonitorJmxEnabled = Boolean.parseBoolean(enabled);
+  }
+  public boolean isClientMonitorJmxEnabled() {
+    return isClientMonitorJmxEnabled;
   }
 
 

@@ -19,8 +19,9 @@ package com.ctrip.framework.apollo.monitor.internal.collector.internal;
 import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_ACCESS_KEY_SECRET;
 import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CACHE_DIR;
 import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_ENABLED;
-import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXPORT_PERIOD;
-import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_FORM;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_EXTERNAL_TYPE;
+import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLIENT_MONITOR_JMX_ENABLED;
 import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CLUSTER;
 import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_CONFIG_SERVICE;
 import static com.ctrip.framework.apollo.core.ApolloClientSystemConsts.APOLLO_META;
@@ -70,12 +71,13 @@ public class DefaultApolloRunningParamsCollector extends AbstractMetricsCollecto
     map.put(APOLLO_CLUSTER, configUtil.getCluster());
     map.put(APOLLO_CONFIG_SERVICE,
         System.getProperty(APOLLO_CONFIG_SERVICE));
-    map.put(APOLLO_CLIENT_MONITOR_FORM, configUtil.getMonitorForm());
+    map.put(APOLLO_CLIENT_MONITOR_EXTERNAL_TYPE, configUtil.getMonitorExternalType());
     map.put(APOLLO_CLIENT_MONITOR_ENABLED, configUtil.isClientMonitorEnabled());
-    map.put(APOLLO_CLIENT_MONITOR_EXPORT_PERIOD, configUtil.getMonitorExportPeriod());
+    map.put(APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD, configUtil.getMonitorExternalExportPeriod());
     map.put(APOLLO_META, configUtil.getMetaServerDomainName());
     map.put(APOLLO_PROPERTY_NAMES_CACHE_ENABLE, configUtil.isPropertyNamesCacheEnabled());
     map.put(APOLLO_PROPERTY_ORDER_ENABLE, configUtil.isPropertiesOrderEnabled());
+    map.put(APOLLO_CLIENT_MONITOR_JMX_ENABLED,configUtil.isClientMonitorJmxEnabled());
     map.put(APP_ID, configUtil.getAppId());
     map.put(ENV, configUtil.getApolloEnv());
     map.put(VERSION, Apollo.VERSION);
@@ -170,8 +172,8 @@ public class DefaultApolloRunningParamsCollector extends AbstractMetricsCollecto
   }
 
   @Override
-  public String getClientMonitorForm() {
-    return map.get(APOLLO_CLIENT_MONITOR_FORM).toString();
+  public String getClientMonitorExternalForm() {
+    return map.get(APOLLO_CLIENT_MONITOR_EXTERNAL_TYPE).toString();
   }
 
   @Override
@@ -180,8 +182,13 @@ public class DefaultApolloRunningParamsCollector extends AbstractMetricsCollecto
   }
 
   @Override
-  public long getClientMonitorExportPeriod() {
-    return (Long) map.get(APOLLO_CLIENT_MONITOR_EXPORT_PERIOD);
+  public Boolean getClientMonitorJmxEnabled() {
+    return (Boolean) map.get(APOLLO_CLIENT_MONITOR_JMX_ENABLED);
+  }
+
+  @Override
+  public long getClientMonitorExternalExportPeriod() {
+    return (Long) map.get(APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD);
   }
 
   @Override

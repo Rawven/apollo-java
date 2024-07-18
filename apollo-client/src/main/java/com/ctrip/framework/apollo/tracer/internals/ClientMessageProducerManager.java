@@ -16,14 +16,9 @@
  */
 package com.ctrip.framework.apollo.tracer.internals;
 
-import com.ctrip.framework.apollo.core.utils.ClassLoaderUtil;
-import com.ctrip.framework.apollo.tracer.internals.cat.CatMessageProducer;
-import com.ctrip.framework.apollo.tracer.internals.cat.CatNames;
+import com.ctrip.framework.apollo.internals.ConfigMonitorInitializer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducerManager;
-import com.ctrip.framework.apollo.util.ConfigUtil;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Rawven
@@ -31,20 +26,9 @@ import java.util.List;
 public class ClientMessageProducerManager implements MessageProducerManager {
 
   private static MessageProducer producer;
-  private static ConfigUtil m_configUtil = new ConfigUtil();
 
   public ClientMessageProducerManager() {
-    List<MessageProducer> producers = new ArrayList<>();
-    if (m_configUtil.isClientMonitorEnabled()) {
-      producers.add(new MonitorMessageProducer());
-    }
-    if (ClassLoaderUtil.isClassPresent(CatNames.CAT_CLASS)) {
-      producers.add(new CatMessageProducer());
-    }
-    if (producers.isEmpty()) {
-      producers.add(new NullMessageProducer());
-    }
-    producer = new MessageProducerComposite(producers);
+    producer = ConfigMonitorInitializer.initializeMessageProducerComposite();
   }
 
   @Override

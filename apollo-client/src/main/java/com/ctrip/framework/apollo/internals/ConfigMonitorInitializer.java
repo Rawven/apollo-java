@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
+import com.ctrip.framework.apollo.core.utils.ClassLoaderUtil;
 import com.ctrip.framework.apollo.monitor.api.ConfigMonitor;
 import com.ctrip.framework.apollo.monitor.internal.DefaultConfigMonitor;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
@@ -12,43 +13,78 @@ import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApo
 import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultMetricsCollectorManager;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporter;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporterFactory;
+import com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite;
+import com.ctrip.framework.apollo.tracer.internals.MonitorMessageProducer;
+import com.ctrip.framework.apollo.tracer.internals.NullMessageProducer;
+import com.ctrip.framework.apollo.tracer.internals.cat.CatMessageProducer;
+import com.ctrip.framework.apollo.tracer.internals.cat.CatNames;
+import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.util.ConfigUtil;
+import com.ctrip.framework.foundation.internals.ServiceBootstrap;
 import com.google.common.collect.Lists;
 import java.util.List;
 
 /**
  * @author Rawven
  */
+
 public class ConfigMonitorInitializer {
 
-  public static void init() {
-    DefaultMetricsCollectorManager manager = (DefaultMetricsCollectorManager) ApolloInjector.getInstance(
-        MetricsCollectorManager.class);
-    ConfigUtil configUtil = ApolloInjector.getInstance(ConfigUtil.class);
-    DefaultConfigManager configManager = (DefaultConfigManager) ApolloInjector.getInstance(
-        ConfigManager.class);
-    MetricsExporterFactory reporterFactory = ApolloInjector.getInstance(
-        MetricsExporterFactory.class);
-    //init collector
+  private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
+
+  public static void initializeMonitorSystem() {
+    DefaultMetricsCollectorManager manager = initializeMetricsCollectorManager();
+    List<MetricsCollector> collectors = initializeCollectors(manager);
+    MetricsExporter metricsExporter = initializeMetricsExporter(collectors);
+    initializeConfigMonitor(collectors, metricsExporter);
+  }
+
+  private static DefaultMetricsCollectorManager initializeMetricsCollectorManager() {
+    return (DefaultMetricsCollectorManager) ApolloInjector.getInstance(MetricsCollectorManager.class);
+  }
+
+  private static List<MetricsCollector> initializeCollectors(DefaultMetricsCollectorManager manager) {
+    DefaultConfigManager configManager = (DefaultConfigManager) ApolloInjector.getInstance(ConfigManager.class);
     DefaultApolloExceptionCollector exceptionCollector = new DefaultApolloExceptionCollector();
     DefaultApolloThreadPoolCollector threadPoolCollector = new DefaultApolloThreadPoolCollector(
-        RemoteConfigRepository.m_executorService, AbstractConfig.m_executorService,
-        AbstractConfigFile.m_executorService);
+        RemoteConfigRepository.m_executorService, AbstractConfig.m_executorService, AbstractConfigFile.m_executorService);
     DefaultApolloNamespaceCollector namespaceCollector = new DefaultApolloNamespaceCollector(
-        configManager.m_configs,
-        configManager.m_configLocks, configManager.m_configFiles, configManager.m_configFileLocks);
-    DefaultApolloRunningParamsCollector startupCollector = new DefaultApolloRunningParamsCollector(
-        configUtil);
-    List<MetricsCollector> collectors = Lists.newArrayList(exceptionCollector, namespaceCollector,
-        threadPoolCollector,
-        startupCollector);
+        configManager.m_configs, configManager.m_configLocks, configManager.m_configFiles, configManager.m_configFileLocks);
+    DefaultApolloRunningParamsCollector startupCollector = new DefaultApolloRunningParamsCollector(m_configUtil);
+
+    List<MetricsCollector> collectors = Lists.newArrayList(exceptionCollector, namespaceCollector, threadPoolCollector, startupCollector);
     manager.setCollectors(collectors);
-    //init reporter and monitor
-    MetricsExporter metricsExporter = reporterFactory.getMetricsReporter(collectors);
-    DefaultConfigMonitor defaultConfigMonitor = (DefaultConfigMonitor) ApolloInjector.getInstance(
-        ConfigMonitor.class);
-    defaultConfigMonitor.init(namespaceCollector, threadPoolCollector, exceptionCollector,
-        startupCollector, metricsExporter
-    );
+    return collectors;
+  }
+
+  private static MetricsExporter initializeMetricsExporter(List<MetricsCollector> collectors) {
+    MetricsExporterFactory reporterFactory = ApolloInjector.getInstance(MetricsExporterFactory.class);
+    return reporterFactory.getMetricsReporter(collectors);
+  }
+
+  private static void initializeConfigMonitor(List<MetricsCollector> collectors, MetricsExporter metricsExporter) {
+    DefaultConfigMonitor defaultConfigMonitor = (DefaultConfigMonitor) ApolloInjector.getInstance(ConfigMonitor.class);
+    DefaultApolloExceptionCollector exceptionCollector = (DefaultApolloExceptionCollector) collectors.get(0);
+    DefaultApolloNamespaceCollector namespaceCollector = (DefaultApolloNamespaceCollector) collectors.get(1);
+    DefaultApolloThreadPoolCollector threadPoolCollector = (DefaultApolloThreadPoolCollector) collectors.get(2);
+    DefaultApolloRunningParamsCollector startupCollector = (DefaultApolloRunningParamsCollector) collectors.get(3);
+    defaultConfigMonitor.init(namespaceCollector, threadPoolCollector, exceptionCollector, startupCollector, metricsExporter);
+  }
+
+  public static MessageProducerComposite initializeMessageProducerComposite() {
+    // Prioritize loading user-defined producers from SPI
+    List<MessageProducer> producers = ServiceBootstrap.loadAllOrdered(MessageProducer.class);
+    // The producer that comes with the client
+    if (m_configUtil.isClientMonitorEnabled()) {
+      producers.add(new MonitorMessageProducer());
+    }
+    if (ClassLoaderUtil.isClassPresent(CatNames.CAT_CLASS)) {
+      producers.add(new CatMessageProducer());
+    }
+    // default logic
+    if (producers.isEmpty()) {
+      producers.add(new NullMessageProducer());
+    }
+    return new MessageProducerComposite(producers);
   }
 }

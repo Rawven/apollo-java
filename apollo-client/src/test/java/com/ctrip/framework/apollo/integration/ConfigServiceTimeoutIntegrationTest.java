@@ -106,7 +106,7 @@ class ConfigServiceTimeoutIntegrationTest extends BaseIntegrationTest {
     List<String> nsList = new ArrayList<>(numberOfNamespace);
     List<SettableFuture<Config>> futureList = new ArrayList<>(numberOfNamespace);
 
-    // init
+    // initializeMonitorSystem
     for (int i = 0; i < numberOfNamespace; i++) {
       final String ns = nsPrefix + i;
       nsList.add(ns);

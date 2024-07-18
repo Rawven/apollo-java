@@ -36,13 +36,13 @@ public abstract class ApolloMetrics {
       ApolloMetrics.class);
 
   private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
-  private static final MetricsCollectorManager collectorManager = ApolloInjector.getInstance(
+  private static final MetricsCollectorManager COLLECTOR_MANAGER = ApolloInjector.getInstance(
       MetricsCollectorManager.class);
 
   static {
     if (m_configUtil.isClientMonitorEnabled()) {
       try {
-        ConfigMonitorInitializer.init();
+        ConfigMonitorInitializer.initializeMonitorSystem();
       } catch (Throwable ex) {
         Throwable realCause = ex.getCause().getCause().getCause();
         Tracer.logError(realCause);
@@ -53,8 +53,8 @@ public abstract class ApolloMetrics {
 
 
   public static void push(MetricsEvent event) {
-    if (collectorManager != null) {
-      for (MetricsCollector collector : collectorManager.getCollectors()) {
+    if (COLLECTOR_MANAGER != null) {
+      for (MetricsCollector collector : COLLECTOR_MANAGER.getCollectors()) {
         if (collector.isSupport(event)) {
           collector.collect(event);
           return;

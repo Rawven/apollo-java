@@ -44,7 +44,7 @@ public class DefaultMetricsExporterFactory implements MetricsExporterFactory {
 
   @Override
   public MetricsExporter getMetricsReporter(List<MetricsCollector> collectors) {
-    //init reporter
+    //initializeMonitorSystem reporter
     if (m_configUtil.isClientMonitorJmxEnabled()) {
       collectors.forEach(metricsCollector ->
           JMXUtil.register(MBEAN_NAME + metricsCollector.name(),

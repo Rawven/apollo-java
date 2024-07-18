@@ -21,10 +21,6 @@ import com.ctrip.framework.apollo.monitor.api.ApolloNamespaceMonitorApi;
 import com.ctrip.framework.apollo.monitor.api.ApolloRunningParamsMonitorApi;
 import com.ctrip.framework.apollo.monitor.api.ApolloThreadPoolMonitorApi;
 import com.ctrip.framework.apollo.monitor.api.ConfigMonitor;
-import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloExceptionCollector;
-import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector;
-import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloRunningParamsCollector;
-import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloThreadPoolCollector;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporter;
 
 /**
@@ -35,19 +31,19 @@ import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporter;
 public class DefaultConfigMonitor implements ConfigMonitor {
 
   private MetricsExporter reporter;
-  private ApolloThreadPoolMonitorApi memoryStatusExposer;
-  private ApolloExceptionMonitorApi tracerEventExposer;
+  private ApolloThreadPoolMonitorApi threadPoolMonitorApi;
+  private ApolloExceptionMonitorApi exceptionMonitorApi;
   private ApolloNamespaceMonitorApi apolloNamespaceMonitorApi;
   private ApolloRunningParamsMonitorApi apolloRunningParamsMonitorApi;
 
   @Override
-  public ApolloThreadPoolMonitorApi getMemoryStatusExposer() {
-    return memoryStatusExposer;
+  public ApolloThreadPoolMonitorApi getThreadPoolMonitorApi() {
+    return threadPoolMonitorApi;
   }
 
   @Override
-  public ApolloExceptionMonitorApi getTracerEventExposer() {
-    return tracerEventExposer;
+  public ApolloExceptionMonitorApi getExceptionMonitorApi() {
+    return exceptionMonitorApi;
   }
 
   @Override
@@ -68,15 +64,15 @@ public class DefaultConfigMonitor implements ConfigMonitor {
     return reporter.response();
   }
 
-  public void init(DefaultApolloNamespaceCollector ClientEventCollector,
-      DefaultApolloThreadPoolCollector threadPoolCollector,
-      DefaultApolloExceptionCollector defaultTracerEventCollector,
-      DefaultApolloRunningParamsCollector startupCollector,
+  public void init(ApolloNamespaceMonitorApi apolloNamespaceMonitorApi,
+      ApolloThreadPoolMonitorApi threadPoolMonitorApi,
+      ApolloExceptionMonitorApi exceptionMonitorApi,
+      ApolloRunningParamsMonitorApi apolloRunningParamsMonitorApi,
       MetricsExporter reporter) {
-    this.apolloNamespaceMonitorApi = ClientEventCollector;
-    this.memoryStatusExposer = threadPoolCollector;
-    this.tracerEventExposer = defaultTracerEventCollector;
-    this.apolloRunningParamsMonitorApi = startupCollector;
+    this.apolloNamespaceMonitorApi = apolloNamespaceMonitorApi;
+    this.threadPoolMonitorApi = threadPoolMonitorApi;
+    this.exceptionMonitorApi = exceptionMonitorApi;
+    this.apolloRunningParamsMonitorApi = apolloRunningParamsMonitorApi;
     this.reporter = reporter;
   }
 }

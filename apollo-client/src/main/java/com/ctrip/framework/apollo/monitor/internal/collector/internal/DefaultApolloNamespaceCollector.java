@@ -126,7 +126,6 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
           intConverter);
       updateGaugeSample(CONFIG_FILE_NUM, k, m_configFiles.size(), intConverter);
     });
-
     updateGaugeSample(NAMESPACE_NOT_FOUND, "", namespace404.size(), intConverter);
     updateGaugeSample(NAMESPACE_TIMEOUT, "", namespaceTimeout.size(), intConverter);
   }
@@ -134,36 +133,28 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
   private void updateCounterSample(String key, String namespace, double value) {
     String mapKey = namespace + key;
     if (!counterSamples.containsKey(mapKey)) {
-      if ("".equals(namespace)){
-        counterSamples.put(mapKey,
-            CounterModel.builder().name(key).value(0)
-                .build());
-      }else {
-        counterSamples.put(mapKey,
-            CounterModel.builder().putTag(NAMESPACE_MONITOR, namespace).name(key).value(0)
-                .build());
+      CounterModel.CounterBuilder builder = CounterModel.builder().name(key).value(0);
+      if (!namespace.isEmpty()) {
+        builder.putTag(NAMESPACE, namespace);
       }
+      counterSamples.put(mapKey, builder.build());
     }
     counterSamples.get(mapKey).updateValue(value);
   }
 
   @SuppressWarnings("unchecked")
-  private void updateGaugeSample(String key, String namespace, Object value,
-      ToDoubleFunction<Object> applyFunction) {
+  private void updateGaugeSample(String key, String namespace, Object value, ToDoubleFunction<Object> applyFunction) {
     String mapKey = namespace + key;
     if (!gaugeSamples.containsKey(mapKey)) {
-      if ("".equals(namespace)){
-        gaugeSamples.put(mapKey,
-            GaugeModel.builder().name(key).value(0).apply(applyFunction)
-                .build());
-      }else {
-        gaugeSamples.put(mapKey,
-            GaugeModel.builder().putTag(NAMESPACE_MONITOR, namespace).name(key).value(0).apply(applyFunction)
-                .build());
+      GaugeModel.GaugeBuilder<Object> builder = GaugeModel.builder().name(key).value(0).apply(applyFunction);
+      if (!namespace.isEmpty()) {
+        builder.putTag(NAMESPACE, namespace);
       }
+      gaugeSamples.put(mapKey, builder.build());
     }
     gaugeSamples.get(mapKey).updateValue(value);
   }
+
 
   @Override
   public String getNamespaceReleaseKey(String namespace) {

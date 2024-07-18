@@ -21,9 +21,9 @@ package com.ctrip.framework.apollo.monitor.api;
  */
 public interface ConfigMonitor {
 
-  ApolloThreadPoolMonitorApi getMemoryStatusExposer();
+  ApolloThreadPoolMonitorApi getThreadPoolMonitorApi();
 
-  ApolloExceptionMonitorApi getTracerEventExposer();
+  ApolloExceptionMonitorApi getExceptionMonitorApi();
 
   ApolloNamespaceMonitorApi getClientEventExposer();
 

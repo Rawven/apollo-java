@@ -28,7 +28,7 @@ import java.util.List;
 public interface MetricsExporter extends Ordered {
 
   /**
-   * init method
+   * initializeMonitorSystem method
    */
   void init(List<MetricsCollector> collectors, long collectPeriod);
 

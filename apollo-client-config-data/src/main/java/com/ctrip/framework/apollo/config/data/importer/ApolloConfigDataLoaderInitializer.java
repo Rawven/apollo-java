@@ -67,7 +67,7 @@ class ApolloConfigDataLoaderInitializer {
   }
 
   /**
-   * initializeMonitorSystem apollo client (only once)
+   * init apollo client (only once)
    *
    * @return initial sources as placeholders or empty list if already initialized
    */

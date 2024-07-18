@@ -63,7 +63,7 @@ public class ApolloConfigDataLoader implements ConfigDataLoader<ApolloConfigData
             bootstrapContext)));
     ApolloConfigDataLoaderInitializer apolloConfigDataLoaderInitializer = bootstrapContext
         .get(ApolloConfigDataLoaderInitializer.class);
-    // initializeMonitorSystem apollo client
+    // init apollo client
     List<PropertySource<?>> initialPropertySourceList = apolloConfigDataLoaderInitializer
         .initApolloClient();
     // load config

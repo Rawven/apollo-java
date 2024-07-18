@@ -16,6 +16,7 @@
  */
 package com.ctrip.framework.apollo.tracer.internals;
 
+
 import static org.junit.Assert.assertTrue;
 
 import com.ctrip.framework.apollo.tracer.internals.cat.CatMessageProducer;

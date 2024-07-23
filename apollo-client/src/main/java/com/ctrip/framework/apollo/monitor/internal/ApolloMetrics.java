@@ -18,12 +18,10 @@ package com.ctrip.framework.apollo.monitor.internal;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
-import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.internals.ConfigMonitorInitializer;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollectorManager;
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
-import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import org.slf4j.Logger;
 
@@ -41,13 +39,7 @@ public abstract class ApolloMetrics {
 
   static {
     if (m_configUtil.isClientMonitorEnabled()) {
-      try {
         ConfigMonitorInitializer.initializeMonitorSystem();
-      } catch (Throwable ex) {
-        Throwable realCause = ex.getCause().getCause().getCause();
-        Tracer.logError(realCause);
-        throw new ApolloConfigException(realCause.getMessage(), realCause);
-      }
     }
   }
 

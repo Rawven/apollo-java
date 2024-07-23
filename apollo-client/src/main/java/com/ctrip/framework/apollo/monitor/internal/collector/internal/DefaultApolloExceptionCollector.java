@@ -16,7 +16,9 @@
  */
 package com.ctrip.framework.apollo.monitor.internal.collector.internal;
 
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.*;
+import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.ERROR_METRICS;
+import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.THROWABLE;
+
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.monitor.api.ApolloExceptionMonitorApi;
 import com.ctrip.framework.apollo.monitor.internal.collector.AbstractMetricsCollector;

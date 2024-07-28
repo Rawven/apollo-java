@@ -17,22 +17,20 @@
 package com.ctrip.framework.apollo.monitor.internal.model;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
-import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollectorManager;
-import org.slf4j.Logger;
+import com.ctrip.framework.apollo.util.ConfigUtil;
 
 /**
  * @author Rawven
  */
 public abstract class MetricsEventPusher {
-  protected static final Logger log = DeferredLoggerFactory.getLogger(
-      MetricsEventPusher.class);
   private static final MetricsCollectorManager COLLECTOR_MANAGER = ApolloInjector.getInstance(
       MetricsCollectorManager.class);
+  private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
 
   public static void push(MetricsEvent event) {
-    if (COLLECTOR_MANAGER != null) {
+    if (m_configUtil.isClientMonitorEnabled()) {
       for (MetricsCollector collector : COLLECTOR_MANAGER.getCollectors()) {
         if (collector.isSupport(event)) {
           collector.collect(event);
@@ -41,7 +39,6 @@ public abstract class MetricsEventPusher {
       }
     }
   }
-
 }
 
 

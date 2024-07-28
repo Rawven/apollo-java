@@ -16,11 +16,8 @@
  */
 package com.ctrip.framework.apollo.tracer.internals;
 
-import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
-import com.ctrip.framework.apollo.util.ConfigUtil;
-import com.google.common.collect.Lists;
 import java.util.List;
 
 /**
@@ -41,10 +38,7 @@ public class MessageProducerComposite implements MessageProducer {
   public static final String APOLLO_CLIENT_CONFIGS = "Apollo.Client.Configs.";
   public static final String APOLLO_CLIENT_CONFIG_META = "Apollo.Client.ConfigMeta";
   public static final String HELP_STR = "periodicRefresh: ";
-
-  private List<MessageProducer> producers = Lists.newArrayList();
-
-  private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
+  private List<MessageProducer> producers;
 
   public MessageProducerComposite(List<MessageProducer> producers) {
     this.producers = producers;

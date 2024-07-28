@@ -21,11 +21,9 @@ package com.ctrip.framework.apollo.monitor.internal;
  *
  * @author Rawven
  */
-public class MetricsConstant {
+public class MonitorConstant {
 
   public static final String NAMESPACE = "namespace";
   public static final String TIMESTAMP = "timestamp";
-  public static final String JMX = "jmx";
   public static final String MBEAN_NAME = "apollo.client.monitor:type=";
-
 }

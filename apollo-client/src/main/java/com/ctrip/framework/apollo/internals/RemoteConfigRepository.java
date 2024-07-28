@@ -16,8 +16,8 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.NAMESPACE;
-import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.TIMESTAMP;
+import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.NAMESPACE;
+import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.TIMESTAMP;
 import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector.NAMESPACE_MONITOR;
 import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CLIENT_CONFIGS;
 import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CLIENT_CONFIG_META;

@@ -23,7 +23,7 @@ import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
-import com.ctrip.framework.apollo.monitor.internal.MetricsConstant;
+import com.ctrip.framework.apollo.monitor.internal.MonitorConstant;
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
@@ -64,7 +64,7 @@ public class DefaultConfigManager implements ConfigManager {
     }
 
     MetricsEvent.builder().withName(NAMESPACE_USAGE_COUNT)
-        .putAttachment(MetricsConstant.NAMESPACE, namespace)
+        .putAttachment(MonitorConstant.NAMESPACE, namespace)
         .withTag(NAMESPACE_MONITOR).push();
 
     return config;

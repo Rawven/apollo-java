@@ -16,7 +16,7 @@
  */
 package com.ctrip.framework.apollo.monitor.internal.exporter.internals;
 
-import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.MBEAN_NAME;
+import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.MBEAN_NAME;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;

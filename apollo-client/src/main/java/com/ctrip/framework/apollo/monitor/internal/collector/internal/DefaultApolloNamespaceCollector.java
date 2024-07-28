@@ -17,7 +17,7 @@
 package com.ctrip.framework.apollo.monitor.internal.collector.internal;
 
 
-import static com.ctrip.framework.apollo.monitor.internal.MetricsConstant.NAMESPACE;
+import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.monitor.internal.model.GaugeModel.intConverter;
 import static com.ctrip.framework.apollo.monitor.internal.model.GaugeModel.longConverter;
 
@@ -25,7 +25,7 @@ import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
 import com.ctrip.framework.apollo.monitor.api.ApolloNamespaceMonitorApi;
-import com.ctrip.framework.apollo.monitor.internal.MetricsConstant;
+import com.ctrip.framework.apollo.monitor.internal.MonitorConstant;
 import com.ctrip.framework.apollo.monitor.internal.collector.AbstractMetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.model.CounterModel;
 import com.ctrip.framework.apollo.monitor.internal.model.GaugeModel;
@@ -91,11 +91,11 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
         namespaceMetrics.incrementUsageCount();
         break;
       case NAMESPACE_LATEST_UPDATE_TIME:
-        long updateTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
+        long updateTime = event.getAttachmentValue(MonitorConstant.TIMESTAMP);
         namespaceMetrics.setLatestUpdateTime(updateTime);
         break;
       case NAMESPACE_FIRST_LOAD_SPEND:
-        long firstLoadSpendTime = event.getAttachmentValue(MetricsConstant.TIMESTAMP);
+        long firstLoadSpendTime = event.getAttachmentValue(MonitorConstant.TIMESTAMP);
         namespaceMetrics.setFirstLoadSpend(firstLoadSpendTime);
         break;
       case NAMESPACE_RELEASE_KEY:

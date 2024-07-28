@@ -33,7 +33,7 @@ public class AbstractApolloMetricsCollectorTest {
 
   @Before
   public void setUp() {
-    metricsCollector = new AbstractMetricsCollector("tag1", "tag2") {
+    metricsCollector = new AbstractMetricsCollector("mock","tag1", "tag2") {
       @Override
       public String name() {
         return "MockMetricsCollector";

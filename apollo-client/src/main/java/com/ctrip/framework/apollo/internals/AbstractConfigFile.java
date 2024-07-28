@@ -17,7 +17,7 @@
 package com.ctrip.framework.apollo.internals;
 
 
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CLIENT_CONFIG_CHANGES;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CLIENT_CONFIGCHANGES;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
@@ -115,7 +115,7 @@ public abstract class AbstractConfigFile implements ConfigFile, RepositoryChange
 
     this.fireConfigChange(new ConfigFileChangeEvent(m_namespace, oldValue, newValue, changeType));
 
-    Tracer.logEvent(APOLLO_CLIENT_CONFIG_CHANGES, m_namespace);
+    Tracer.logEvent(APOLLO_CLIENT_CONFIGCHANGES, m_namespace);
   }
 
   @Override

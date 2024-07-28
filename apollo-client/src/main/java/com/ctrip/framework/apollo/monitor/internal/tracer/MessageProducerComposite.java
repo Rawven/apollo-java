@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
+package com.ctrip.framework.apollo.monitor.internal.tracer;
 
+import com.ctrip.framework.apollo.tracer.internals.NullTransaction;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import java.util.List;
@@ -29,15 +30,16 @@ public class MessageProducerComposite implements MessageProducer {
 
   public static final String ERROR_METRICS = "errorMetrics";
   public static final String THROWABLE = ERROR_METRICS + ".throwable";
-  public static final String APOLLO_CLIENT_CONFIG_CHANGES = "Apollo.Client.ConfigChanges";
+  public static final String APOLLO_CLIENT_CONFIGCHANGES = "Apollo.Client.ConfigChanges";
   public static final String APOLLO_CONFIG_EXCEPTION = "ApolloConfigException";
   public static final String APOLLO_META_SERVICE = "Apollo.MetaService";
   public static final String APOLLO_CONFIG_SERVICES = "Apollo.Config.Services";
   public static final String APOLLO_CLIENT_VERSION = "Apollo.Client.Version";
   public static final String APOLLO_CONFIGSERVICE = "Apollo.ConfigService";
   public static final String APOLLO_CLIENT_CONFIGS = "Apollo.Client.Configs.";
-  public static final String APOLLO_CLIENT_CONFIG_META = "Apollo.Client.ConfigMeta";
+  public static final String APOLLO_CLIENT_CONFIGMETA = "Apollo.Client.ConfigMeta";
   public static final String HELP_STR = "periodicRefresh: ";
+  private static final NullTransaction NULL_TRANSACTION = new NullTransaction();
   private List<MessageProducer> producers;
 
   public MessageProducerComposite(List<MessageProducer> producers) {
@@ -75,7 +77,7 @@ public class MessageProducerComposite implements MessageProducer {
         return transaction;
       }
     }
-    return NullMessageProducer.NULL_TRANSACTION;
+    return NULL_TRANSACTION;
   }
 
   public List<MessageProducer> getProducers() {

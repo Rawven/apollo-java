@@ -13,8 +13,8 @@ import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApo
 import com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultMetricsCollectorManager;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporter;
 import com.ctrip.framework.apollo.monitor.internal.exporter.MetricsExporterFactory;
-import com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite;
-import com.ctrip.framework.apollo.tracer.internals.MonitorMessageProducer;
+import com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite;
+import com.ctrip.framework.apollo.monitor.internal.tracer.MonitorMessageProducer;
 import com.ctrip.framework.apollo.tracer.internals.NullMessageProducer;
 import com.ctrip.framework.apollo.tracer.internals.cat.CatMessageProducer;
 import com.ctrip.framework.apollo.tracer.internals.cat.CatNames;
@@ -30,13 +30,17 @@ import java.util.List;
 
 public class ConfigMonitorInitializer {
 
-  private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
+  private static  ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
+  private static  Boolean hasInitialized = false;
 
   public static void initializeMonitorSystem() {
-    DefaultMetricsCollectorManager manager = initializeMetricsCollectorManager();
-    List<MetricsCollector> collectors = initializeCollectors(manager);
-    MetricsExporter metricsExporter = initializeMetricsExporter(collectors);
-    initializeConfigMonitor(collectors, metricsExporter);
+    if (m_configUtil.isClientMonitorEnabled() && !hasInitialized) {
+      DefaultMetricsCollectorManager manager = initializeMetricsCollectorManager();
+      List<MetricsCollector> collectors = initializeCollectors(manager);
+      MetricsExporter metricsExporter = initializeMetricsExporter(collectors);
+      initializeConfigMonitor(collectors, metricsExporter);
+      hasInitialized = true;
+    }
   }
 
   private static DefaultMetricsCollectorManager initializeMetricsCollectorManager() {
@@ -72,15 +76,19 @@ public class ConfigMonitorInitializer {
   }
 
   public static MessageProducerComposite initializeMessageProducerComposite() {
+
     // Prioritize loading user-defined producers from SPI
     List<MessageProducer> producers = ServiceBootstrap.loadAllOrdered(MessageProducer.class);
+
     // The producer that comes with the client
     if (m_configUtil.isClientMonitorEnabled()) {
       producers.add(new MonitorMessageProducer());
     }
+
     if (ClassLoaderUtil.isClassPresent(CatNames.CAT_CLASS)) {
       producers.add(new CatMessageProducer());
     }
+
     // default logic
     if (producers.isEmpty()) {
       producers.add(new NullMessageProducer());

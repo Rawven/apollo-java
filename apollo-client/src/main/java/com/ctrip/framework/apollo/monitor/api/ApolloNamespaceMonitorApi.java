@@ -25,34 +25,16 @@ import javax.management.MXBean;
 @MXBean
 public interface ApolloNamespaceMonitorApi {
 
-  /**
-   * get namespace release key
-   */
   String getNamespaceReleaseKey(String namespace);
 
-  /**
-   * get namespace usage count
-   */
   long getNamespaceUsageCount(String namespace);
 
-  /**
-   * get namespace latest update time
-   */
   String getNamespaceLatestUpdateTime(String namespace);
 
-  /**
-   * get time which namespace first load spend
-   */
   long getNamespaceFirstLoadSpend(String namespace);
 
-  /**
-   * get the namespaces which 404
-   */
   String getNamespace404();
 
-  /**
-   * get the namespace which timeout
-   */
   String getNamespaceTimeout();
 
   List<String> getNamespaceItemName(String namespace);

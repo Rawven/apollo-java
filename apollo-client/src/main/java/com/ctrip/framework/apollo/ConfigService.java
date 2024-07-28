@@ -20,6 +20,7 @@ import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.internals.ConfigManager;
+import com.ctrip.framework.apollo.internals.ConfigMonitorInitializer;
 import com.ctrip.framework.apollo.monitor.api.ConfigMonitor;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigRegistry;
@@ -38,19 +39,25 @@ public class ConfigService {
   private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
 
   private ConfigMonitor getMonitor() {
+      getManager();
       if(!m_configUtil.isClientMonitorEnabled()){
-          throw new UnsupportedOperationException("Metrics is not enabled");
+        //TODO
+//          throw new UnsupportedOperationException("Metrics is not enabled");
       }
-        if (m_configMonitor == null) {
+      if (m_configMonitor == null) {
             synchronized (this) {
                 if (m_configMonitor == null) {
                     m_configMonitor = ApolloInjector.getInstance(
                         ConfigMonitor.class);
                 }
             }
-        }
+      }
       return m_configMonitor;
   }
+  private void doInitMonitor(){
+    ConfigMonitorInitializer.initializeMonitorSystem();
+  }
+
   private ConfigManager getManager() {
     if (m_configManager == null) {
       synchronized (this) {
@@ -59,7 +66,7 @@ public class ConfigService {
         }
       }
     }
-
+    doInitMonitor();
     return m_configManager;
   }
 

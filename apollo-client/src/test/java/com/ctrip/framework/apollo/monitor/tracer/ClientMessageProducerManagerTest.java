@@ -19,8 +19,8 @@ package com.ctrip.framework.apollo.monitor.tracer;
 import static org.junit.Assert.assertTrue;
 
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
-import com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite;
-import com.ctrip.framework.apollo.tracer.internals.MonitorMessageProducer;
+import com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite;
+import com.ctrip.framework.apollo.monitor.internal.tracer.MonitorMessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducerManager;
 import com.ctrip.framework.foundation.internals.ServiceBootstrap;

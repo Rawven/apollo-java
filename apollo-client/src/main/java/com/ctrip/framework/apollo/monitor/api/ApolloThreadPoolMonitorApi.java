@@ -45,7 +45,6 @@ public interface ApolloThreadPoolMonitorApi {
 
   double getRemoteConfigRepositoryThreadPoolCurrentLoad();
 
-
   int getAbstractConfigThreadPoolActiveCount();
 
   int getAbstractConfigThreadPoolQueueSize();

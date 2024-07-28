@@ -47,12 +47,12 @@ public class DefaultConfigMonitor implements ConfigMonitor {
   }
 
   @Override
-  public ApolloNamespaceMonitorApi getClientEventExposer() {
+  public ApolloNamespaceMonitorApi getNamespaceMonitorApi() {
     return apolloNamespaceMonitorApi;
   }
 
   @Override
-  public ApolloRunningParamsMonitorApi getStartupParamsExposer() {
+  public ApolloRunningParamsMonitorApi getRunningParamsMonitorApi() {
     return apolloRunningParamsMonitorApi;
   }
 
@@ -63,7 +63,6 @@ public class DefaultConfigMonitor implements ConfigMonitor {
     }
     return reporter.response();
   }
-
   public void init(ApolloNamespaceMonitorApi apolloNamespaceMonitorApi,
       ApolloThreadPoolMonitorApi threadPoolMonitorApi,
       ApolloExceptionMonitorApi exceptionMonitorApi,

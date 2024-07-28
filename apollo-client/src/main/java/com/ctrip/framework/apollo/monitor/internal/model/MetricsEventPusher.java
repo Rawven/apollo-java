@@ -14,35 +14,22 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.monitor.internal;
+package com.ctrip.framework.apollo.monitor.internal.model;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
-import com.ctrip.framework.apollo.internals.ConfigMonitorInitializer;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollector;
 import com.ctrip.framework.apollo.monitor.internal.collector.MetricsCollectorManager;
-import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
-import com.ctrip.framework.apollo.util.ConfigUtil;
 import org.slf4j.Logger;
 
 /**
  * @author Rawven
  */
-public abstract class ApolloMetrics {
-
+public abstract class MetricsEventPusher {
   protected static final Logger log = DeferredLoggerFactory.getLogger(
-      ApolloMetrics.class);
-
-  private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);
+      MetricsEventPusher.class);
   private static final MetricsCollectorManager COLLECTOR_MANAGER = ApolloInjector.getInstance(
       MetricsCollectorManager.class);
-
-  static {
-    if (m_configUtil.isClientMonitorEnabled()) {
-        ConfigMonitorInitializer.initializeMonitorSystem();
-    }
-  }
-
 
   public static void push(MetricsEvent event) {
     if (COLLECTOR_MANAGER != null) {

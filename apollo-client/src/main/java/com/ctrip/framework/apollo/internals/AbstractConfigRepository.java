@@ -16,7 +16,7 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CONFIG_EXCEPTION;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CONFIG_EXCEPTION;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.util.factory.PropertiesFactory;

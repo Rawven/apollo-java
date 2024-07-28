@@ -14,13 +14,13 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
+package com.ctrip.framework.apollo.monitor.internal.tracer;
 
 import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.TIMESTAMP;
 import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector.*;
 import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloRunningParamsCollector.*;
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.*;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.*;
 
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.monitor.internal.model.MetricsEvent;
@@ -40,13 +40,13 @@ public class MonitorMessageProducer implements MessageProducer {
 
   public static final List<String> TAGS = Collections.unmodifiableList(
       Arrays.asList(
-          APOLLO_CLIENT_CONFIG_CHANGES,
+          APOLLO_CLIENT_CONFIGCHANGES,
           APOLLO_CONFIG_EXCEPTION,
           APOLLO_META_SERVICE,
           APOLLO_CONFIG_SERVICES,
           APOLLO_CLIENT_VERSION,
           APOLLO_CONFIGSERVICE,
-          APOLLO_CLIENT_CONFIG_META
+          APOLLO_CLIENT_CONFIGMETA
       )
   );
 
@@ -80,7 +80,7 @@ public class MonitorMessageProducer implements MessageProducer {
       case APOLLO_CONFIGSERVICE: {
         name = name.substring(HELP_STR.length());
       }
-      case APOLLO_CLIENT_CONFIG_CHANGES: {
+      case APOLLO_CLIENT_CONFIGCHANGES: {
         namespace = name;
         MetricsEvent.builder()
             .withName(NAMESPACE_LATEST_UPDATE_TIME)
@@ -118,7 +118,7 @@ public class MonitorMessageProducer implements MessageProducer {
             .push();
         break;
       }
-      case APOLLO_CLIENT_CONFIG_META:
+      case APOLLO_CLIENT_CONFIGMETA:
         // 不需要收集
         break;
       default:

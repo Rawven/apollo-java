@@ -19,11 +19,11 @@ package com.ctrip.framework.apollo.internals;
 import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.NAMESPACE;
 import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.TIMESTAMP;
 import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector.NAMESPACE_MONITOR;
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CLIENT_CONFIGS;
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CLIENT_CONFIG_META;
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CLIENT_VERSION;
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CONFIGSERVICE;
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CONFIG_EXCEPTION;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CLIENT_CONFIGS;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CLIENT_CONFIGMETA;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CLIENT_VERSION;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CONFIGSERVICE;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CONFIG_EXCEPTION;
 
 import com.ctrip.framework.apollo.Apollo;
 import com.ctrip.framework.apollo.build.ApolloInjector;
@@ -207,7 +207,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     String cluster = m_configUtil.getCluster();
     String dataCenter = m_configUtil.getDataCenter();
     String secret = m_configUtil.getAccessKeySecret();
-    Tracer.logEvent(APOLLO_CLIENT_CONFIG_META, STRING_JOINER.join(appId, cluster, m_namespace));
+    Tracer.logEvent(APOLLO_CLIENT_CONFIGMETA, STRING_JOINER.join(appId, cluster, m_namespace));
     int maxRetries = m_configNeedForceRefresh.get() ? 2 : 1;
     long onErrorSleepTime = 0; // 0 means no sleep
     Throwable exception = null;

@@ -62,7 +62,6 @@ public interface ApolloRunningParamsMonitorApi {
 
   Boolean getPropertyOrderEnable();
 
-
   String getVersion();
 
   String getEnv();

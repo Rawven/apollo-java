@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.ctrip.framework.apollo.tracer.internals;
+package com.ctrip.framework.apollo.monitor.internal.tracer;
 
 import com.ctrip.framework.apollo.internals.ConfigMonitorInitializer;
 import com.ctrip.framework.apollo.tracer.spi.MessageProducer;

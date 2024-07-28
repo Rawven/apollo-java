@@ -16,7 +16,6 @@
  */
 package com.ctrip.framework.apollo.monitor.internal.model;
 
-import com.ctrip.framework.apollo.monitor.internal.ApolloMetrics;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,7 +84,7 @@ public class MetricsEvent {
     }
 
     public void push() {
-      ApolloMetrics.push(this.build());
+      MetricsEventPusher.push(this.build());
     }
 
     public MetricsEvent build() {

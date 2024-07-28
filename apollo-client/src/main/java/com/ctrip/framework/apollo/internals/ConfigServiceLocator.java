@@ -16,9 +16,9 @@
  */
 package com.ctrip.framework.apollo.internals;
 
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CONFIG_EXCEPTION;
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_CONFIG_SERVICES;
-import static com.ctrip.framework.apollo.tracer.internals.MessageProducerComposite.APOLLO_META_SERVICE;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CONFIG_EXCEPTION;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_CONFIG_SERVICES;
+import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.APOLLO_META_SERVICE;
 
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;

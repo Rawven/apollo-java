@@ -73,11 +73,12 @@ public class DefaultApolloRunningParamsCollector extends AbstractMetricsCollecto
         System.getProperty(APOLLO_CONFIG_SERVICE));
     map.put(APOLLO_CLIENT_MONITOR_EXTERNAL_TYPE, configUtil.getMonitorExternalType());
     map.put(APOLLO_CLIENT_MONITOR_ENABLED, configUtil.isClientMonitorEnabled());
-    map.put(APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD, configUtil.getMonitorExternalExportPeriod());
+    map.put(APOLLO_CLIENT_MONITOR_EXTERNAL_EXPORT_PERIOD,
+        configUtil.getMonitorExternalExportPeriod());
     map.put(APOLLO_META, configUtil.getMetaServerDomainName());
     map.put(APOLLO_PROPERTY_NAMES_CACHE_ENABLE, configUtil.isPropertyNamesCacheEnabled());
     map.put(APOLLO_PROPERTY_ORDER_ENABLE, configUtil.isPropertiesOrderEnabled());
-    map.put(APOLLO_CLIENT_MONITOR_JMX_ENABLED,configUtil.isClientMonitorJmxEnabled());
+    map.put(APOLLO_CLIENT_MONITOR_JMX_ENABLED, configUtil.isClientMonitorJmxEnabled());
     map.put(APP_ID, configUtil.getAppId());
     map.put(ENV, configUtil.getApolloEnv());
     map.put(VERSION, Apollo.VERSION);

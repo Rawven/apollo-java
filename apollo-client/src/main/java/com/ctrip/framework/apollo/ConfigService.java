@@ -54,10 +54,6 @@ public class ConfigService {
       }
       return m_configMonitor;
   }
-  private void doInitMonitor(){
-    ConfigMonitorInitializer.initializeMonitorSystem();
-  }
-
   private ConfigManager getManager() {
     if (m_configManager == null) {
       synchronized (this) {
@@ -66,7 +62,7 @@ public class ConfigService {
         }
       }
     }
-    doInitMonitor();
+    ConfigMonitorInitializer.initializeMonitorSystem();
     return m_configManager;
   }
 

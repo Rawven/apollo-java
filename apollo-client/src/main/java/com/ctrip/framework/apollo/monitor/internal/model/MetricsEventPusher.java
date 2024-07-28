@@ -25,6 +25,7 @@ import com.ctrip.framework.apollo.util.ConfigUtil;
  * @author Rawven
  */
 public abstract class MetricsEventPusher {
+
   private static final MetricsCollectorManager COLLECTOR_MANAGER = ApolloInjector.getInstance(
       MetricsCollectorManager.class);
   private static final ConfigUtil m_configUtil = ApolloInjector.getInstance(ConfigUtil.class);

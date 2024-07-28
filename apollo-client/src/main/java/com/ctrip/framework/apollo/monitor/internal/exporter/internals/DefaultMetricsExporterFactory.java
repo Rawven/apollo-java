@@ -64,7 +64,7 @@ public class DefaultMetricsExporterFactory implements MetricsExporterFactory {
       }
       if (reporter == null) {
         ApolloConfigException exception = new ApolloConfigException(
-            "No matching exporter found with monitor-external-type "+externalSystemType
+            "No matching exporter found with monitor-external-type " + externalSystemType
         );
         logger.error(
             "Error initializing exporter for external-type: {},Please check if external-type is misspelled or the correct dependency is not introduced, such as apollo-plugin-client-prometheus",

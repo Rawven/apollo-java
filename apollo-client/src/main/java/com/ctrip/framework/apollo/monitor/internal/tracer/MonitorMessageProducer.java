@@ -16,8 +16,7 @@
  */
 package com.ctrip.framework.apollo.monitor.internal.tracer;
 
-import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.NAMESPACE;
-import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.TIMESTAMP;
+import static com.ctrip.framework.apollo.monitor.internal.MonitorConstant.*;
 import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloNamespaceCollector.*;
 import static com.ctrip.framework.apollo.monitor.internal.collector.internal.DefaultApolloRunningParamsCollector.*;
 import static com.ctrip.framework.apollo.monitor.internal.tracer.MessageProducerComposite.*;
@@ -98,7 +97,8 @@ public class MonitorMessageProducer implements MessageProducer {
         MetricsEvent.builder()
             .withName(META_FRESH)
             .withTag(RUNNING_PARAMS)
-            .putAttachment(META_FRESH, DATE_FORMATTER.format(Instant.ofEpochMilli(System.currentTimeMillis())))
+            .putAttachment(META_FRESH,
+                DATE_FORMATTER.format(Instant.ofEpochMilli(System.currentTimeMillis())))
             .push();
         break;
       }

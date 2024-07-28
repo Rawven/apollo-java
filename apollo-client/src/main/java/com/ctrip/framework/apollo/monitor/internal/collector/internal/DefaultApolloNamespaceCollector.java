@@ -143,10 +143,12 @@ public class DefaultApolloNamespaceCollector extends AbstractMetricsCollector im
   }
 
   @SuppressWarnings("unchecked")
-  private void updateGaugeSample(String key, String namespace, Object value, ToDoubleFunction<Object> applyFunction) {
+  private void updateGaugeSample(String key, String namespace, Object value,
+      ToDoubleFunction<Object> applyFunction) {
     String mapKey = namespace + key;
     if (!gaugeSamples.containsKey(mapKey)) {
-      GaugeModel.GaugeBuilder<Object> builder = GaugeModel.builder().name(key).value(0).apply(applyFunction);
+      GaugeModel.GaugeBuilder<Object> builder = GaugeModel.builder().name(key).value(0)
+          .apply(applyFunction);
       if (!namespace.isEmpty()) {
         builder.putTag(NAMESPACE, namespace);
       }

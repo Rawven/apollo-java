@@ -63,6 +63,7 @@ public class DefaultConfigMonitor implements ConfigMonitor {
     }
     return reporter.response();
   }
+
   public void init(ApolloNamespaceMonitorApi apolloNamespaceMonitorApi,
       ApolloThreadPoolMonitorApi threadPoolMonitorApi,
       ApolloExceptionMonitorApi exceptionMonitorApi,

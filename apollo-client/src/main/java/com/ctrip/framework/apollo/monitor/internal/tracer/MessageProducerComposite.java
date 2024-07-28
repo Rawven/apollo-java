@@ -47,7 +47,6 @@ public class MessageProducerComposite implements MessageProducer {
   }
 
 
-
   @Override
   public void logError(Throwable cause) {
     producers.forEach(producer -> producer.logError(cause));

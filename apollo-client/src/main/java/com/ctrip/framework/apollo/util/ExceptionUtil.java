@@ -16,9 +16,10 @@
  */
 package com.ctrip.framework.apollo.util;
 
+import java.util.List;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import java.util.List;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -62,6 +63,5 @@ public class ExceptionUtil {
 
     return builder.toString();
   }
-
 
 }

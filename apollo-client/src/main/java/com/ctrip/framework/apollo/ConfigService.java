@@ -22,9 +22,12 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.internals.ConfigManager;
 import com.ctrip.framework.apollo.internals.ConfigMonitorInitializer;
 import com.ctrip.framework.apollo.monitor.api.ConfigMonitor;
+import com.ctrip.framework.apollo.monitor.internal.NullConfigMonitor;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigRegistry;
 import com.ctrip.framework.apollo.util.ConfigUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Entry point for client config use
@@ -33,6 +36,7 @@ import com.ctrip.framework.apollo.util.ConfigUtil;
  */
 public class ConfigService {
   private static final ConfigService s_instance = new ConfigService();
+  private static final Logger log = LoggerFactory.getLogger(ConfigService.class);
   private volatile ConfigMonitor m_configMonitor;
   private volatile ConfigManager m_configManager;
   private volatile ConfigRegistry m_configRegistry;
@@ -40,20 +44,22 @@ public class ConfigService {
 
   private ConfigMonitor getMonitor() {
       getManager();
-      if(!m_configUtil.isClientMonitorEnabled()){
-        //TODO
-//          throw new UnsupportedOperationException("Metrics is not enabled");
-      }
       if (m_configMonitor == null) {
             synchronized (this) {
                 if (m_configMonitor == null) {
+                  if (m_configUtil.isClientMonitorEnabled()) {
                     m_configMonitor = ApolloInjector.getInstance(
                         ConfigMonitor.class);
+                  }else {
+                    log.warn("ConfigService.getMonitor is called but apollo.client.monitor.enabled is set to false, so return NullConfigMonitor");
+                    m_configMonitor = new NullConfigMonitor();
+                  }
                 }
             }
       }
       return m_configMonitor;
   }
+  
   private ConfigManager getManager() {
     if (m_configManager == null) {
       synchronized (this) {

@@ -29,6 +29,9 @@ import com.ctrip.framework.apollo.monitor.internal.listener.AbstractApolloClient
 import com.ctrip.framework.apollo.monitor.internal.event.ApolloClientMonitorEvent;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.Maps;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.slf4j.Logger;
 
@@ -38,7 +41,7 @@ import org.slf4j.Logger;
 public class DefaultApolloClientBootstrapArgsApi extends
     AbstractApolloClientMonitorEventListener implements
     ApolloClientBootstrapArgsMonitorApi, ApolloClientJmxBootstrapArgsMBean {
-
+  public static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
   private static final Logger logger = DeferredLoggerFactory.getLogger(
       DefaultApolloClientBootstrapArgsApi.class);
   private final Map<String, Object> bootstrapArgs = Maps.newHashMap();
@@ -73,6 +76,8 @@ public class DefaultApolloClientBootstrapArgsApi extends
     bootstrapArgs.put(APP_ID, configUtil.getAppId());
     bootstrapArgs.put(ENV, configUtil.getApolloEnv());
     bootstrapArgs.put(VERSION, Apollo.VERSION);
+    bootstrapArgs.put(META_FRESH, LocalDateTime.now().format(FORMATTER));
+    bootstrapArgs.put(CONFIG_SERVICE_URL,"");
     bootstrapArgs.forEach((key, value) -> {
       if (value != null) {
         bootstrapArgsString.put(key, value.toString());
@@ -85,10 +90,15 @@ public class DefaultApolloClientBootstrapArgsApi extends
   public void collect0(ApolloClientMonitorEvent event) {
     String argName = event.getName();
     if (bootstrapArgs.containsKey(argName)) {
-      bootstrapArgs.put(argName, event.getAttachmentValue(argName));
+      putAttachment(argName, event.getAttachmentValue(argName));
     } else {
-      logger.warn("Unhandled event name: {}", argName);
+      logger.debug("Unhandled event name: {}", argName);
     }
+  }
+  
+  private void putAttachment(String key, Object value) {
+    bootstrapArgs.put(key, value);
+    bootstrapArgsString.put(key, value.toString());
   }
 
   @Override

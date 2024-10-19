@@ -18,9 +18,9 @@ package com.ctrip.framework.apollo.monitor.internal.listener.impl;
 
 
 import static com.ctrip.framework.apollo.monitor.internal.ApolloClientMonitorConstant.*;
+import static com.ctrip.framework.apollo.monitor.internal.listener.impl.DefaultApolloClientBootstrapArgsApi.FORMATTER;
 
 import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.core.utils.DeferredLoggerFactory;
 import com.ctrip.framework.apollo.internals.ConfigManager;
 import com.ctrip.framework.apollo.monitor.api.ApolloClientNamespaceMonitorApi;
@@ -182,7 +182,7 @@ public class DefaultApolloClientNamespaceApi extends
     namespaces.forEach((namespace, metrics) -> {
       NamespaceMetricsString namespaceMetricsString = new NamespaceMetricsString();
       namespaceMetricsString.setFirstLoadTimeSpendInMs(metrics.getFirstLoadTimeSpendInMs());
-      namespaceMetricsString.setLatestUpdateTime(metrics.getLatestUpdateTime().toString());
+      namespaceMetricsString.setLatestUpdateTime(metrics.getLatestUpdateTime().format(FORMATTER));
       namespaceMetricsString.setUsageCount(metrics.getUsageCount());
       namespaceMetricsString.setReleaseKey(metrics.getReleaseKey());
       namespaceMetricsStringMap.put(namespace, namespaceMetricsString);
